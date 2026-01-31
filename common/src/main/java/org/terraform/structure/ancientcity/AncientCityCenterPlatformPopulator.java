@@ -21,7 +21,6 @@ import org.terraform.utils.GenUtils;
 import org.terraform.utils.StairwayBuilder;
 import org.terraform.utils.blockdata.SlabBuilder;
 import org.terraform.utils.blockdata.StairBuilder;
-import org.terraform.utils.version.V_1_19;
 import org.terraform.utils.version.Version;
 
 import java.util.HashSet;
@@ -145,14 +144,16 @@ public class AncientCityCenterPlatformPopulator extends AncientCityAbstractRoomP
                             BlockUtils.placeCandle(w.getRear(3).getUp(), rand.nextInt(3) + 1, true);
                         }
                         if (rand.nextBoolean()) {
-                            new StairBuilder(Material.COBBLED_DEEPSLATE_STAIRS,
+                            new StairBuilder(
+                                    Material.COBBLED_DEEPSLATE_STAIRS,
                                     Material.POLISHED_DEEPSLATE_STAIRS
                             ).setFacing(w.getDirection()).apply(w.getRear(4));
                         }
                     }
                     else {
                         if (rand.nextBoolean()) {
-                            new StairBuilder(Material.COBBLED_DEEPSLATE_STAIRS,
+                            new StairBuilder(
+                                    Material.COBBLED_DEEPSLATE_STAIRS,
                                     Material.POLISHED_DEEPSLATE_STAIRS
                             ).setFacing(w.getDirection()).apply(w.getRear(3));
                         }
@@ -168,7 +169,10 @@ public class AncientCityCenterPlatformPopulator extends AncientCityAbstractRoomP
                 new Random(),
                 room.getCenterSimpleBlock(data).getUp(13),
                 AncientCityUtils.deepslateBricks
-        ).setRX(modX).setRZ(modZ).setRY(20).build();
+        ).setRX(modX)
+         .setRZ(modZ)
+         .setRY(20)
+         .build();
 
         // Spawn center head
         spawnCentralHead(room.getCenterSimpleBlock(data).getUp(13), facing);
@@ -176,15 +180,17 @@ public class AncientCityCenterPlatformPopulator extends AncientCityAbstractRoomP
 
         // Stairs at the front and back
         for (BlockFace dir : new BlockFace[] {facing, facing.getOppositeFace()}) {
-            Wall targetStair = new Wall(room.getCenterSimpleBlock(data)
-                                            .getAtY(effectiveRoom.getY() + 1)
-                                            .getRelative(dir, 5),
+            Wall targetStair = new Wall(
+                    room.getCenterSimpleBlock(data)
+                        .getAtY(effectiveRoom.getY() + 1)
+                        .getRelative(dir, 5),
                     dir.getOppositeFace()
             );
 
             for (int radius = 0; radius <= 14; radius++) {
                 for (BlockFace rel : BlockUtils.getAdjacentFaces(facing)) {
-                    new StairwayBuilder(Material.COBBLED_DEEPSLATE_STAIRS,
+                    new StairwayBuilder(
+                            Material.COBBLED_DEEPSLATE_STAIRS,
                             Material.POLISHED_DEEPSLATE_STAIRS
                     ).setAngled(false)
                      .setCarveAirSpace(false)
@@ -194,15 +200,13 @@ public class AncientCityCenterPlatformPopulator extends AncientCityAbstractRoomP
                                  + 4)
                      .setDownTypes(AncientCityUtils.deepslateBricks)
                      .setStairwayDirection(BlockFace.UP)
-                     .build(targetStair.getRelative(
-                             rel,
-                             radius
-                     ));
+                     .build(targetStair.getRelative(rel, radius));
                 }
             }
         }
 
-        CubeRoom basement = new CubeRoom(this.effectiveRoom.getWidthX(),
+        CubeRoom basement = new CubeRoom(
+                this.effectiveRoom.getWidthX(),
                 this.effectiveRoom.getWidthZ(),
                 6,
                 this.effectiveRoom.getX(),
@@ -221,24 +225,8 @@ public class AncientCityCenterPlatformPopulator extends AncientCityAbstractRoomP
         int generalFuzzSize = 3;
         for (int radius = 0; radius <= headWidth; radius++) {
             for (BlockFace rel : BlockUtils.getAdjacentFaces(facing)) {
-                if (Version.VERSION.isAtLeast(Version.v1_19_4)) {
-                    assert V_1_19.REINFORCED_DEEPSLATE != null;
-                    core.getRelative(rel, radius).setType(V_1_19.REINFORCED_DEEPSLATE);
-                    core.getUp(headHeight)
-                        .getRelative(rel, radius)
-                        .setType(V_1_19.REINFORCED_DEEPSLATE);
-                }
-                else if (radius % 2 == 0) {
-                    core.getRelative(rel, radius).setType(AncientCityUtils.deepslateTiles);
-                    core.getUp(headHeight).getRelative(rel, radius).setType(AncientCityUtils.deepslateTiles);
-
-                }
-                else {
-                    core.getRelative(rel, radius).setType(Material.POLISHED_DIORITE, Material.DIORITE);
-                    core.getUp(headHeight)
-                        .getRelative(rel, radius)
-                        .setType(Material.POLISHED_DIORITE, Material.DIORITE);
-                }
+                core.getRelative(rel, radius).setType(Material.REINFORCED_DEEPSLATE);
+                core.getUp(headHeight).getRelative(rel, radius).setType(Material.REINFORCED_DEEPSLATE);
 
                 // Air the warden's teeth
                 if (radius != headWidth) {
@@ -267,13 +255,7 @@ public class AncientCityCenterPlatformPopulator extends AncientCityAbstractRoomP
                     );
 
                 if (radius == headWidth) {
-                    if (Version.VERSION.isAtLeast(Version.v1_19_4)) {
-                        core.getRelative(rel, radius).Pillar(headHeight, V_1_19.REINFORCED_DEEPSLATE);
-                    }
-                    else {
-                        core.getRelative(rel, radius)
-                            .Pillar(headHeight, true, new Random(), Material.DEEPSLATE_TILES, Material.DIORITE);
-                    }
+                    core.getRelative(rel, radius).Pillar(headHeight, Material.REINFORCED_DEEPSLATE);
 
                     // Fuzz left and right
                     for (int i = -2; i <= headHeight + 2; i++) {
@@ -318,7 +300,8 @@ public class AncientCityCenterPlatformPopulator extends AncientCityAbstractRoomP
             for (int relZ = -2; relZ <= 2; relZ++) {
                 SimpleBlock target = core.getRelative(relX, 1, relZ);
                 if (Math.abs(relX) == 2 || Math.abs(relZ) == 2 || (relX == 0 && relZ == 0)) {
-                    target.RPillar(10,
+                    target.RPillar(
+                            10,
                             new Random(),
                             Material.DEEPSLATE_BRICKS,
                             Material.CRACKED_DEEPSLATE_BRICKS,
@@ -401,7 +384,6 @@ public class AncientCityCenterPlatformPopulator extends AncientCityAbstractRoomP
 
         }
     }
-
 
     @Override
     public boolean canPopulate(CubeRoom room) {

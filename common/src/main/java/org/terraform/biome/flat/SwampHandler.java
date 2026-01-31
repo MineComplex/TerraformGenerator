@@ -36,7 +36,7 @@ public class SwampHandler extends BiomeHandler {
     @Override
     public Material @NotNull [] getSurfaceCrust(@NotNull Random rand) {
         return new Material[] {
-                GenUtils.randChoice(rand, Material.GRASS_BLOCK, Material.PODZOL, Material.PODZOL),
+                GenUtils.randChoice(rand, Material.GRASS_BLOCK, Material.PODZOL, Material.GRASS_BLOCK),
                 GenUtils.randChoice(rand, Material.DIRT),
                 GenUtils.randChoice(rand, Material.DIRT, Material.DIRT, Material.STONE),
                 GenUtils.randChoice(rand, Material.DIRT, Material.STONE),
@@ -78,13 +78,15 @@ public class SwampHandler extends BiomeHandler {
                     // Don't do gradient checks for swamp trees, the mud is uneven.
                     // just make sure it's submerged
                     TreeDB.spawnBreathingRoots(tw, new SimpleBlock(data, treeX, treeY, treeZ), Material.OAK_LOG);
-                    FractalTypes.Tree.SWAMP_TOP.build(tw, new SimpleBlock(data, treeX, treeY, treeZ), (t) -> {
-                        t.setCheckGradient(false);
-                        t.setRootMaterial(Material.OAK_WOOD);
-                        t.setBranchMaterial(Material.OAK_LOG);
-                        t.getFractalLeaves().setMaterial(Material.OAK_LEAVES);
-                        t.getFractalLeaves().setMangrovePropagules(false);
-                    });
+                    FractalTypes.Tree.SWAMP_TOP.build(
+                            tw, new SimpleBlock(data, treeX, treeY, treeZ), (t) -> {
+                                t.setCheckGradient(false);
+                                t.setRootMaterial(Material.OAK_WOOD);
+                                t.setBranchMaterial(Material.OAK_LOG);
+                                t.getFractalLeaves().setMaterial(Material.OAK_LEAVES);
+                                t.getFractalLeaves().setMangrovePropagules(false);
+                            }
+                    );
                 }
             }
         }

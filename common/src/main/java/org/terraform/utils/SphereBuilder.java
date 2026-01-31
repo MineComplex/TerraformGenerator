@@ -192,11 +192,7 @@ public class SphereBuilder {
                         if (rel.getY() <= staticWaterLevel) {
                             types = new Material[] {Material.WATER};
                             for (BlockFace face : new BlockFace[] {
-                                    BlockFace.NORTH,
-                                    BlockFace.SOUTH,
-                                    BlockFace.EAST,
-                                    BlockFace.WEST,
-                                    BlockFace.DOWN
+                                    BlockFace.NORTH, BlockFace.SOUTH, BlockFace.EAST, BlockFace.WEST, BlockFace.DOWN
                             }) {
                                 if (BlockUtils.isAir(rel.getRelative(face).getType())) {
                                     types = new Material[] {Material.STONE};
@@ -216,18 +212,22 @@ public class SphereBuilder {
             if (hardReplace || !rel.isSolid()) {
                 rel.setType(GenUtils.randChoice(random, types));
                 if (this.doLiquidContainment) {
-                    rel.replaceAdjacentNonLiquids(new BlockFace[] {
-                            BlockFace.DOWN, BlockFace.NORTH, BlockFace.SOUTH, BlockFace.EAST, BlockFace.WEST
-                    }, types[0], containmentMaterial);
+                    rel.replaceAdjacentNonLiquids(
+                            new BlockFace[] {
+                                    BlockFace.DOWN, BlockFace.NORTH, BlockFace.SOUTH, BlockFace.EAST, BlockFace.WEST
+                            }, types[0], containmentMaterial
+                    );
                 }
             }
         }
         else if (replaceWhitelist.contains(rel.getType())) {
             rel.setType(GenUtils.randChoice(random, types));
             if (this.doLiquidContainment) {
-                rel.replaceAdjacentNonLiquids(new BlockFace[] {
-                        BlockFace.DOWN, BlockFace.NORTH, BlockFace.SOUTH, BlockFace.EAST, BlockFace.WEST
-                }, types[0], containmentMaterial);
+                rel.replaceAdjacentNonLiquids(
+                        new BlockFace[] {
+                                BlockFace.DOWN, BlockFace.NORTH, BlockFace.SOUTH, BlockFace.EAST, BlockFace.WEST
+                        }, types[0], containmentMaterial
+                );
             }
         }
 

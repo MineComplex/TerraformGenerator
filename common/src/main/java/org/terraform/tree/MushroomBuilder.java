@@ -7,7 +7,7 @@ import org.jetbrains.annotations.Nullable;
 import org.terraform.coregen.populatordata.PopulatorDataAbstract;
 import org.terraform.data.SimpleBlock;
 import org.terraform.data.TerraformWorld;
-import org.terraform.main.config.TConfig;
+import org.terraform.main.TConfig;
 import org.terraform.utils.BlockUtils;
 import org.terraform.utils.GenUtils;
 import org.terraform.utils.Vector2f;
@@ -26,8 +26,7 @@ public class MushroomBuilder {
     final int heightVariation = 0;
     Random rand;
     FastNoise noiseGen;
-    @Nullable
-    SimpleBlock stemTop;
+    @Nullable SimpleBlock stemTop;
     FractalTypes.MushroomCap capShape = FractalTypes.MushroomCap.ROUND;
     Material stemType = Material.MUSHROOM_STEM;
     Material capType = Material.RED_MUSHROOM_BLOCK;
@@ -236,19 +235,6 @@ public class MushroomBuilder {
             return;
         }
 
-        if (TConfig.c.DEVSTUFF_VANILLA_MUSHROOMS) {
-            String schemName;
-            if (this.type.toString().contains("RED")) {
-                schemName = VanillaMushroomBuilder.RED_MUSHROOM_CAP;
-            }
-            else {
-                schemName = VanillaMushroomBuilder.BROWN_MUSHROOM_CAP;
-            }
-
-            VanillaMushroomBuilder.buildVanillaMushroom(tw, data, x, y, z, schemName);
-            return;
-        }
-
         this.noiseGen = new FastNoise((int) tw.getSeed());
         this.rand = tw.getRand(16L * 16 * x + 16L * y + z);
         SimpleBlock base = new SimpleBlock(data, x, y, z);
@@ -269,7 +255,8 @@ public class MushroomBuilder {
 
         switch (capShape) {
             case ROUND:
-                spawnSphericalCap(tw.getHashedRand(x, y, z).nextInt(94929297),
+                spawnSphericalCap(
+                        tw.getHashedRand(x, y, z).nextInt(94929297),
                         capRadius,
                         capRadius,
                         stemTop.getRelative(0, capYOffset, 0),
@@ -278,7 +265,8 @@ public class MushroomBuilder {
                 );
                 break;
             case FLAT:
-                spawnSphericalCap(tw.getHashedRand(x, y, z).nextInt(94929297),
+                spawnSphericalCap(
+                        tw.getHashedRand(x, y, z).nextInt(94929297),
                         capRadius,
                         0.6f * capRadius,
                         stemTop.getRelative(0, capYOffset, 0),
@@ -287,7 +275,8 @@ public class MushroomBuilder {
                 );
                 break;
             case POINTY:
-                spawnSphericalCap(tw.getHashedRand(x, y, z).nextInt(94929297),
+                spawnSphericalCap(
+                        tw.getHashedRand(x, y, z).nextInt(94929297),
                         capRadius,
                         capRadius * 1.8f,
                         stemTop.getRelative(0, capYOffset, 0),
@@ -296,7 +285,8 @@ public class MushroomBuilder {
                 );
                 break;
             case FUNNEL: // Implement funnel algorithm
-                spawnFunnelCap(tw.getHashedRand(x, y, z).nextInt(94929297),
+                spawnFunnelCap(
+                        tw.getHashedRand(x, y, z).nextInt(94929297),
                         capRadius,
                         capRadius * 0.7f,
                         capRadius * 0.1f,
@@ -338,8 +328,9 @@ public class MushroomBuilder {
             lastSegment = base.getRelative(stem3d);
 
             if (!changedYs.contains(lastSegment.getY()) || !oneBlockWide) {
-                replaceSphere((float) (thickness / 2f + thicknessIncrement * thicknessIncrementCurve.calculate(1
-                                                                                                               - progress).y),
+                replaceSphere(
+                        (float) (thickness / 2f + thicknessIncrement * thicknessIncrementCurve.calculate(1
+                                                                                                         - progress).y),
                         lastSegment,
                         stemType
                 );
@@ -381,9 +372,16 @@ public class MushroomBuilder {
 
                     double equationResult = Math.pow(x / r, 2)
                                             // For height max height: https://www.geogebra.org/classic/k5nefypu
-                                            + Math.pow(Math.abs(y) / (thickness / (1 - Math.pow(1 - (distToCenter
-                                                                                                     + 0.1), 6))), 4)
-                                            + Math.pow(z / r, 2);
+                                            + Math.pow(
+                            Math.abs(y) / (thickness / (1 - Math.pow(
+                                    1 - (distToCenter
+                                         + 0.1), 6
+                            ))), 4
+                    ) + Math.pow(
+                            z
+                            / r,
+                            2
+                    );
 
                     if (equationResult <= 1) {
                         rel.setType(GenUtils.randChoice(rand, type));
@@ -402,7 +400,8 @@ public class MushroomBuilder {
             angle += Math.PI / (gillAmount / 2.0); // Do full circle
 
             // Points from middle to a point on circle with radius of 0.9r
-            List<Vector2f> points = new BresenhamLine(new Vector2f(0, 0),
+            List<Vector2f> points = new BresenhamLine(
+                    new Vector2f(0, 0),
                     new Vector2f((float) (0.9 * r * Math.cos(angle)), (float) (0.9 * r * Math.sin(angle)))
             ).getPoints();
 

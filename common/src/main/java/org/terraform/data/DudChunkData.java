@@ -1,12 +1,14 @@
 package org.terraform.data;
 
-import org.apache.commons.lang.NotImplementedException;
+import org.apache.commons.lang3.NotImplementedException;
+import org.bukkit.HeightMap;
 import org.bukkit.Material;
 import org.bukkit.block.Biome;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.material.MaterialData;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Range;
 
 /**
  * A dud data structure used to discard writes from height transformation to more-quickly
@@ -80,5 +82,13 @@ public class DudChunkData implements ChunkGenerator.ChunkData {
     @Override
     public byte getData(int i, int i1, int i2) {
         throw new NotImplementedException();
+    }
+
+    @Override
+    public int getHeight(@NotNull HeightMap heightMap,
+                         @Range(from = 0L, to = 15L) int i,
+                         @Range(from = 0L, to = 15L) int i1)
+    {
+        return 0;
     }
 }

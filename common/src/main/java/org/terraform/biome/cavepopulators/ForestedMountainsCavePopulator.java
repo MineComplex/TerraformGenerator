@@ -6,7 +6,7 @@ import org.jetbrains.annotations.NotNull;
 import org.terraform.coregen.bukkit.TerraformGenerator;
 import org.terraform.data.SimpleBlock;
 import org.terraform.data.TerraformWorld;
-import org.terraform.small_items.PlantBuilder;
+import org.terraform.tree.PlantBuilder;
 import org.terraform.utils.BlockUtils;
 import org.terraform.utils.CoralGenerator;
 import org.terraform.utils.CylinderBuilder;
@@ -15,6 +15,7 @@ import org.terraform.utils.GenUtils;
 import java.util.Random;
 
 public class ForestedMountainsCavePopulator extends AbstractCavePopulator {
+
     private final @NotNull MossyCavePopulator mossyCavePop;
 
     public ForestedMountainsCavePopulator() {
@@ -42,7 +43,8 @@ public class ForestedMountainsCavePopulator extends AbstractCavePopulator {
 
                 // Pillars
                 if (GenUtils.chance(random, 1, 100)) {
-                    new CylinderBuilder(random,
+                    new CylinderBuilder(
+                            random,
                             floor.getRelative(0, (ceil.getY() - floor.getY()) / 2, 0),
                             Material.STONE
                     ).setRadius(1.5f).setRY((ceil.getY() - floor.getY()) / 2f + 3).setHardReplace(false).build();

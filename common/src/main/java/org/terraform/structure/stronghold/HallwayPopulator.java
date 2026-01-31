@@ -2,7 +2,6 @@ package org.terraform.structure.stronghold;
 
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
-import org.bukkit.block.data.Bisected;
 import org.bukkit.block.data.Bisected.Half;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.type.Slab;
@@ -37,7 +36,7 @@ public class HallwayPopulator extends RoomPopulatorAbstract {
                 new StairBuilder(
                         Material.STONE_BRICK_STAIRS,
                         Material.MOSSY_STONE_BRICK_STAIRS
-                ).setFacing(w.getDirection().getOppositeFace()).setHalf(Bisected.Half.TOP).apply(w.getUp(4));
+                ).setFacing(w.getDirection().getOppositeFace()).setHalf(Half.TOP).apply(w.getUp(4));
                 w.getUp(5).LPillar(room.getHeight(), rand, BlockUtils.stoneBricks);
                 if (!w.getRear().getUp().isSolid()) {
                     wasAir = true;
@@ -63,7 +62,7 @@ public class HallwayPopulator extends RoomPopulatorAbstract {
                         Material.ANDESITE_STAIRS,
                         Material.STONE_BRICK_STAIRS,
                         Material.MOSSY_STONE_BRICK_STAIRS
-                ).setFacing(w.getDirection().getOppositeFace()).setHalf(Bisected.Half.TOP).apply(w);
+                ).setFacing(w.getDirection().getOppositeFace()).setHalf(Half.TOP).apply(w);
 
                 w = w.getLeft();
             }

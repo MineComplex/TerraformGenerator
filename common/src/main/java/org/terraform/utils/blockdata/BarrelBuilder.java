@@ -8,7 +8,7 @@ import org.bukkit.block.data.Directional;
 import org.jetbrains.annotations.NotNull;
 import org.terraform.coregen.TerraLootTable;
 import org.terraform.data.SimpleBlock;
-import org.terraform.main.config.TConfig;
+import org.terraform.main.TConfig;
 
 import java.util.Random;
 
@@ -32,7 +32,9 @@ public class BarrelBuilder {
 
     public @NotNull BarrelBuilder apply(@NotNull SimpleBlock block) {
         //Don't place barrels if decorations are off
-        if(!TConfig.areDecorationsEnabled()) return this;
+        if (!TConfig.areDecorationsEnabled()) {
+            return this;
+        }
         block.setBlockData(blockData);
         if (lootTable != null) {
             block.getPopData().lootTableChest(block.getX(), block.getY(), block.getZ(), lootTable);

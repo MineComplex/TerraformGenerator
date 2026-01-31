@@ -17,12 +17,7 @@ public class NoiseCacheHandler {
     // set of storable things is bounded by this enum, there's
     // no reason to use a complex cache that frees things lazily - just store
     // everything and leave it there until the world is unloaded.
-    private static final ConcurrentHashMap<NoiseCacheKey, FastNoise> NOISE_CACHE = new ConcurrentHashMap<>();
-    public static void flushNoiseCaches(TerraformWorld tw){
-        for(NoiseCacheKey k:NOISE_CACHE.keySet()){
-            if(k.tw.equals(tw)) NOISE_CACHE.remove(k);
-        }
-    }
+    public static final ConcurrentHashMap<NoiseCacheKey, FastNoise> NOISE_CACHE = new ConcurrentHashMap<>();
 
     public static @NotNull FastNoise getNoise(TerraformWorld world,
                                               NoiseCacheEntry entry,
@@ -130,7 +125,8 @@ public class NoiseCacheHandler {
         FRACTALTREES_BASE_NOISE
     }
 
-    public record NoiseCacheKey(TerraformWorld tw, NoiseCacheEntry entry) {}
+    public record NoiseCacheKey(TerraformWorld tw, NoiseCacheEntry entry) {
+    }
 
 
 }

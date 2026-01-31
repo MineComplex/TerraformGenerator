@@ -15,7 +15,7 @@ import org.terraform.data.SimpleBlock;
 import org.terraform.data.SimpleLocation;
 import org.terraform.data.TerraformWorld;
 import org.terraform.main.TerraformGeneratorPlugin;
-import org.terraform.small_items.PlantBuilder;
+import org.terraform.tree.PlantBuilder;
 import org.terraform.utils.datastructs.ConcurrentLRUCache;
 import org.terraform.utils.noise.FastNoise;
 
@@ -24,7 +24,7 @@ import java.util.*;
 public class GenUtils {
     public static final Random RANDOMIZER = new Random();
     private static final EnumSet<Material> BLACKLIST_HIGHEST_GROUND = EnumSet.noneOf(Material.class);
-    public static ConcurrentLRUCache<ChunkCache, EnumSet<BiomeBank>> biomeQueryCache;
+    public static ConcurrentLRUCache<ChunkCache, EnumSet<BiomeBank>> BIOME_QUERY_CACHE;
 
     public static void initGenUtils() {
 
@@ -77,9 +77,9 @@ public class GenUtils {
      * This will now use StoneLike, and not just any solid block.
      */
     public static @NotNull Collection<CoordPair> getCaveCeilFloors(PopulatorDataAbstract data,
-                                                               int x,
-                                                               int z,
-                                                               int minimumHeight)
+                                                                   int x,
+                                                                   int z,
+                                                                   int minimumHeight)
     {
         int y = getHighestGround(data, x, z); //The check for transformedGround is ALREADY done here.
         final int INVAL = TerraformGeneratorPlugin.injector.getMinY() - 1;
@@ -91,7 +91,7 @@ public class GenUtils {
             if (BlockUtils.isStoneLike(type)) {
                 pair[1] = ny;
                 if (pair[0] - pair[1] >= minimumHeight) {
-                    list.add(new CoordPair(pair[0],pair[1]));
+                    list.add(new CoordPair(pair[0], pair[1]));
                 }
                 pair[0] = INVAL;
                 pair[1] = INVAL;
@@ -121,7 +121,7 @@ public class GenUtils {
     }
 
     public static @NotNull EnumSet<BiomeBank> getBiomesInChunk(TerraformWorld tw, int chunkX, int chunkZ) {
-        return biomeQueryCache.get(new ChunkCache(tw, chunkX, chunkZ));
+        return BIOME_QUERY_CACHE.get(new ChunkCache(tw, chunkX, chunkZ));
     }
 
     /**
@@ -388,12 +388,14 @@ public class GenUtils {
      */
     public static int getTransformedHeight(@NotNull TerraformWorld tw, int rawX, int rawZ)
     {
-        ChunkCache cache = TerraformGenerator.getCache(tw, rawX>>4, rawZ>>4);
+        ChunkCache cache = TerraformGenerator.getCache(tw, rawX >> 4, rawZ >> 4);
+
         int cachedY = cache.getTransformedHeight(rawX & 0xF, rawZ & 0xF);
         if (cachedY == TerraformGeneratorPlugin.injector.getMinY() - 1) {
             TerraformGenerator.buildFilledCache(tw, rawX >> 4, rawZ >> 4, cache);
             cachedY = cache.getTransformedHeight(rawX & 0xF, rawZ & 0xF);
         }
+
         return cachedY;
     }
 
@@ -416,7 +418,7 @@ public class GenUtils {
         }
 
         int y = TerraformGeneratorPlugin.injector.getMaxY() - 1;
-        ChunkCache cache = TerraformGenerator.getCache(data.getTerraformWorld(), x>>4, z>>4);
+        ChunkCache cache = TerraformGenerator.getCache(data.getTerraformWorld(), x >> 4, z >> 4);
         int cachedY = cache.getHighestGround(x, z);
         if (cachedY != TerraformGeneratorPlugin.injector.getMinY() - 1) {
             // Basic check to ensure block above is not ground

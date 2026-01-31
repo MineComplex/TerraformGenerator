@@ -330,8 +330,7 @@ public final class Range<T> implements Serializable {
      */
     public @NotNull Range<T> intersectionWith(final @NotNull Range<T> other) {
         if (!this.isOverlappedBy(other)) {
-            throw new IllegalArgumentException(String.format(
-                    "Cannot calculate intersection with non-overlapping range %s",
+            throw new IllegalArgumentException(String.format("Cannot calculate intersection with non-overlapping range %s",
                     other
             ));
         }

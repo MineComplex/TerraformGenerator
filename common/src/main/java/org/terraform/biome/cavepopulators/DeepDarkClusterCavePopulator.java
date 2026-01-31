@@ -3,6 +3,7 @@ package org.terraform.biome.cavepopulators;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Tag;
+import org.bukkit.block.Biome;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.MultipleFacing;
 import org.jetbrains.annotations.NotNull;
@@ -14,7 +15,6 @@ import org.terraform.main.TerraformGeneratorPlugin;
 import org.terraform.utils.BlockUtils;
 import org.terraform.utils.GenUtils;
 import org.terraform.utils.blockdata.MultipleFacingBuilder;
-import org.terraform.utils.version.V_1_19;
 
 import java.util.Random;
 
@@ -52,7 +52,7 @@ public class DeepDarkClusterCavePopulator extends AbstractCaveClusterPopulator {
         }
 
         // Already processed
-        if (ceil.getType() == V_1_19.SCULK || floor.getType() == V_1_19.SCULK) {
+        if (ceil.getType() == Material.SCULK || floor.getType() == Material.SCULK) {
             return;
         }
         // =========================
@@ -69,10 +69,10 @@ public class DeepDarkClusterCavePopulator extends AbstractCaveClusterPopulator {
 
             // Ceiling is ALWAYS sculk/veins
             if (BlockUtils.isStoneLike(ceil.getType())) {
-                ceil.setType(V_1_19.SCULK);
+                ceil.setType(Material.SCULK);
             }
             else {
-                MultipleFacing sculkVein = (MultipleFacing) Bukkit.createBlockData(V_1_19.SCULK_VEIN);
+                MultipleFacing sculkVein = (MultipleFacing) Bukkit.createBlockData(Material.SCULK_VEIN);
                 sculkVein.setFace(BlockFace.UP, true);
                 ceil.getDown().setBlockData(sculkVein);
             }
@@ -90,25 +90,25 @@ public class DeepDarkClusterCavePopulator extends AbstractCaveClusterPopulator {
         // Ground is sculk
         // Ceiling is ALWAYS sculk/veins
         if (BlockUtils.isStoneLike(ceil.getType())) {
-            floor.setType(V_1_19.SCULK);
+            floor.setType(Material.SCULK);
         }
         else {
-            MultipleFacing sculkVein = (MultipleFacing) Bukkit.createBlockData(V_1_19.SCULK_VEIN);
+            MultipleFacing sculkVein = (MultipleFacing) Bukkit.createBlockData(Material.SCULK_VEIN);
             sculkVein.setFace(BlockFace.DOWN, true);
             floor.getUp().setBlockData(sculkVein);
         }
 
 
         if (GenUtils.chance(random, 1, 20)) { // Sculk Catalysts
-            floor.getUp().setType(V_1_19.SCULK_CATALYST);
+            floor.getUp().setType(Material.SCULK_CATALYST);
         }
         else if (GenUtils.chance(random, 1, 17)) { // Sculk Sensors
-            floor.getUp().setType(V_1_19.SCULK_SENSOR);
+            floor.getUp().setType(Material.SCULK_SENSOR);
         }
         else if (GenUtils.chance(random, 1, 25))
         // Sculk Shrieker
         {
-            floor.getUp().setType(V_1_19.SCULK_SHRIEKER);
+            floor.getUp().setType(Material.SCULK_SHRIEKER);
         }
 
 
@@ -121,9 +121,9 @@ public class DeepDarkClusterCavePopulator extends AbstractCaveClusterPopulator {
             for (BlockFace face : BlockUtils.directBlockFaces) {
                 SimpleBlock rel = target.getRelative(face);
                 if (BlockUtils.isStoneLike(rel.getType())) {
-                    rel.setType(V_1_19.SCULK);
+                    rel.setType(Material.SCULK);
                     if (BlockUtils.isAir(target.getType()) && GenUtils.chance(random, 1, 5)) {
-                        new MultipleFacingBuilder(V_1_19.SCULK_VEIN).setFace(face, true).apply(target);
+                        new MultipleFacingBuilder(Material.SCULK_VEIN).setFace(face, true).apply(target);
                     }
                 }
             }
@@ -135,7 +135,7 @@ public class DeepDarkClusterCavePopulator extends AbstractCaveClusterPopulator {
         // =========================
         if (TerraformGeneratorPlugin.injector.getICAData(ceil.getPopData()) instanceof PopulatorDataICABiomeWriterAbstract data) {
             while (floor.getY() < ceil.getY()) {
-                data.setBiome(floor.getX(), floor.getY(), floor.getZ(), V_1_19.DEEP_DARK);
+                data.setBiome(floor.getX(), floor.getY(), floor.getZ(), Biome.DEEP_DARK);
                 floor = floor.getUp();
             }
         }

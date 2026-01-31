@@ -11,9 +11,6 @@ import org.terraform.structure.room.RoomPopulatorAbstract;
 import org.terraform.utils.BlockUtils;
 import org.terraform.utils.GenUtils;
 import org.terraform.utils.blockdata.ChestBuilder;
-import org.terraform.utils.version.V_1_19;
-import org.terraform.utils.version.V_1_20;
-import org.terraform.utils.version.Version;
 
 import java.util.Map;
 import java.util.Random;
@@ -31,7 +28,7 @@ public class TrailRuinsHutRoom extends RoomPopulatorAbstract {
             for (int i = 1; i < entry.getValue() - 1; i++) {
                 if (w.getDown().isSolid()) {
                     int h = GenUtils.randInt(rand, 1, 5);
-                    w.Pillar(Math.min(2, h), V_1_19.MUD_BRICKS);
+                    w.Pillar(Math.min(2, h), Material.MUD_BRICKS);
                     w.getUp(2).Pillar(Math.min(0, h - 2), terracottaType);
 
                     // If this is inside a jungle, allow jungle chests.
@@ -53,19 +50,17 @@ public class TrailRuinsHutRoom extends RoomPopulatorAbstract {
         }
 
         // Suspicious gravel
-        if (Version.VERSION.isAtLeast(Version.v1_20)) {
-            for (int i = 0; i < rand.nextInt(4); i++) {
-                int[] coords = room.randomCoords(rand);
-                data.setType(coords[0], room.getY(), coords[2], V_1_20.SUSPICIOUS_GRAVEL);
-                data.lootTableChest(
-                        coords[0],
-                        room.getY(),
-                        coords[2],
-                        GenUtils.chance(rand, 1, 3)
-                        ? TerraLootTable.TRAIL_RUINS_ARCHAEOLOGY_RARE
-                        : TerraLootTable.TRAIL_RUINS_ARCHAEOLOGY_COMMON
-                );
-            }
+        for (int i = 0; i < rand.nextInt(4); i++) {
+            int[] coords = room.randomCoords(rand);
+            data.setType(coords[0], room.getY(), coords[2], Material.SUSPICIOUS_GRAVEL);
+            data.lootTableChest(
+                    coords[0],
+                    room.getY(),
+                    coords[2],
+                    GenUtils.chance(rand, 1, 3)
+                    ? TerraLootTable.TRAIL_RUINS_ARCHAEOLOGY_RARE
+                    : TerraLootTable.TRAIL_RUINS_ARCHAEOLOGY_COMMON
+            );
         }
     }
 

@@ -4,8 +4,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.terraform.data.SimpleLocation;
 import org.terraform.data.TerraformWorld;
+import org.terraform.main.TConfig;
 import org.terraform.main.TerraformGeneratorPlugin;
-import org.terraform.main.config.TConfig;
 import org.terraform.utils.GenUtils;
 import org.terraform.utils.noise.FastNoise;
 import org.terraform.utils.noise.FastNoise.NoiseType;
@@ -18,7 +18,7 @@ public class BiomeSection {
     public static final int sectionWidth = 1 << bitshifts;
     public static final int minSize = sectionWidth;
     public static final int dominanceThreshold = (int) (0.35 * sectionWidth);
-    public static final int dominanceThresholdSquared = dominanceThreshold*dominanceThreshold;
+    public static final int dominanceThresholdSquared = dominanceThreshold * dominanceThreshold;
     private final int x;
     private final int z;
     private final TerraformWorld tw;
@@ -175,11 +175,7 @@ public class BiomeSection {
         temperature = 3f * 2.5f * tw.getTemperatureOctave().GetNoise(this.x, this.z);
         moisture = 3f * 2.5f * tw.getMoistureOctave().GetNoise(this.x, this.z);
 
-        return BiomeBank.selectBiome(
-                this,
-                temperature,
-                moisture
-        );
+        return BiomeBank.selectBiome(this, temperature, moisture);
     }
 
     /**
@@ -264,7 +260,7 @@ public class BiomeSection {
     /**
      * @return the subsection within this biome section that the coordinates belong in.
      * Works even if the coords are outside the biome section.
-     *
+     * <p>
      * 12/6/2025 WHAT THE FUCK IS THIS
      */
     public @NotNull BiomeSubSection getSubSection(int rawX, int rawZ) {
@@ -318,9 +314,7 @@ public class BiomeSection {
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof BiomeSection other) {
-            return this.tw.getName().equals(other.tw.getName())
-                   && this.x == other.x
-                   && this.z == other.z;
+            return this.tw.getName().equals(other.tw.getName()) && this.x == other.x && this.z == other.z;
         }
         return false;
     }
@@ -354,11 +348,4 @@ public class BiomeSection {
         return tw;
     }
 
-    public double getOceanLevel() {
-        return tw.getOceanicNoise().GetNoise(x, z) * 50.0;
-    }
-
-    public double getMountainLevel() {
-        return tw.getMountainousNoise().GetNoise(x, z) * 50.0;
-    }
 }

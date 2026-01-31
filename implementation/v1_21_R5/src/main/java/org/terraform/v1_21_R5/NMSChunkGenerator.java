@@ -2,7 +2,6 @@ package org.terraform.v1_21_R5;
 
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.MapCodec;
-import it.unimi.dsi.fastutil.ints.IntArraySet;
 import it.unimi.dsi.fastutil.objects.ObjectArraySet;
 import net.minecraft.*;
 import net.minecraft.core.*;
@@ -14,37 +13,27 @@ import net.minecraft.server.level.RegionLimitedWorldAccess;
 import net.minecraft.server.level.WorldServer;
 import net.minecraft.world.level.*;
 import net.minecraft.world.level.BlockColumn;
-import net.minecraft.world.level.biome.*;
+import net.minecraft.world.level.biome.BiomeBase;
+import net.minecraft.world.level.biome.BiomeManager;
+import net.minecraft.world.level.biome.FeatureSorter;
+import net.minecraft.world.level.biome.WorldChunkManager;
 import net.minecraft.world.level.chunk.*;
 import net.minecraft.world.level.levelgen.*;
 import net.minecraft.world.level.levelgen.blending.Blender;
+import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.levelgen.structure.StructureBoundingBox;
 import net.minecraft.world.level.levelgen.structure.StructureSet;
-import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 import net.minecraft.world.level.levelgen.structure.placement.StructurePlacement;
-import net.minecraft.world.level.levelgen.structure.structures.BuriedTreasureStructure;
-import net.minecraft.world.level.levelgen.structure.structures.JigsawStructure;
-import net.minecraft.world.level.levelgen.structure.structures.OceanMonumentStructure;
 import net.minecraft.world.level.levelgen.structure.structures.StrongholdStructure;
-import net.minecraft.world.level.levelgen.structure.structures.WoodlandMansionStructure;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplateManager;
 import org.jetbrains.annotations.NotNull;
 import org.terraform.coregen.bukkit.TerraformGenerator;
 import org.terraform.data.MegaChunk;
 import org.terraform.data.TerraformWorld;
 import org.terraform.main.TerraformGeneratorPlugin;
-import org.terraform.main.config.TConfig;
-import org.terraform.structure.SingleMegaChunkStructurePopulator;
-import org.terraform.structure.StructureLocator;
-import org.terraform.structure.StructurePopulator;
-import org.terraform.structure.StructureRegistry;
-import org.terraform.structure.VanillaStructurePopulator;
-import org.terraform.structure.monument.MonumentPopulator;
-import org.terraform.structure.pillager.mansion.MansionPopulator;
-import org.terraform.structure.small.buriedtreasure.BuriedTreasurePopulator;
+import org.terraform.structure.*;
 import org.terraform.structure.stronghold.StrongholdPopulator;
-import org.terraform.structure.trialchamber.TrialChamberPopulator;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -148,9 +137,9 @@ public class NMSChunkGenerator extends ChunkGenerator {
             TerraformGeneratorPlugin.logger.info("Vanilla locate for " + feature.getClass().getName() + " invoked.");
 
             if (holder.a().getClass() == StrongholdStructure.class) { // stronghold
-                int[] coords = new StrongholdPopulator().getNearestFeature(tw, pX, pZ);
-                return new Pair<>(new BlockPosition(coords[0], 20, coords[1]), holder);
-            }
+                StructureLocator.StructureLocation coords = new StrongholdPopulator().getNearestFeature(tw, pX, pZ);
+                return new Pair<>(new BlockPosition(coords.x(), 20, coords.z()), holder);
+            }/*
             else if(!TConfig.c.DEVSTUFF_VANILLA_LOCATE_DISABLE)
             {
                 if (holder.a().getClass() == OceanMonumentStructure.class) { // Monument
@@ -167,7 +156,7 @@ public class NMSChunkGenerator extends ChunkGenerator {
                             (new BlockPosition(coords[0], 50, coords[1]), holder);
                 } else if (holder.a() instanceof JigsawStructure
                            //bj is structure
-                        && MinecraftServer.getServer().ba().a(Registries.bj).orElseThrow().a(MinecraftKey.a("trial_chambers")) == holder.a()
+                           && MinecraftServer.getServer().ba().a(Registries.bj).orElseThrow().a(MinecraftKey.a("trial_chambers")) == holder.a()
                 ) { // Trial Chamber
 
                     int[] coords = StructureLocator.locateSingleMegaChunkStructure(tw, pX, pZ, new TrialChamberPopulator(), TConfig.c.DEVSTUFF_VANILLA_LOCATE_TIMEOUTMILLIS);
@@ -181,7 +170,7 @@ public class NMSChunkGenerator extends ChunkGenerator {
                     return new Pair<>
                             (new BlockPosition(coords[0], 50, coords[1]), holder);
                 }
-            }
+            }*/
         }
         return null;
     }
@@ -219,9 +208,9 @@ public class NMSChunkGenerator extends ChunkGenerator {
             //seededrandom.setDecorationSeed(generatoraccessseed.getSeed(), blockposition.getX(), blockposition.getZ())
             long i = seededrandom.a(generatoraccessseed.F(), blockposition.u(), blockposition.w());
             Set<Holder<BiomeBase>> set = new ObjectArraySet();
-//            ChunkCoordIntPair.rangeClosed(sectionposition.chunk(),...
+            //            ChunkCoordIntPair.rangeClosed(sectionposition.chunk(),...
             ChunkCoordIntPair.a(sectionposition.r(), 1).forEach((chunkcoordintpair1) -> {
-//              IChunkAccess ichunkaccess1 = generatoraccessseed.getChunk(chunkcoordintpair1.x, chunkcoordintpair1.z);
+                //              IChunkAccess ichunkaccess1 = generatoraccessseed.getChunk(chunkcoordintpair1.x, chunkcoordintpair1.z);
                 IChunkAccess ichunkaccess1 = generatoraccessseed.a(chunkcoordintpair1.h, chunkcoordintpair1.i);
                 ChunkSection[] achunksection = ichunkaccess1.d(); //getSections
                 int j = achunksection.length;
@@ -401,33 +390,33 @@ public class NMSChunkGenerator extends ChunkGenerator {
             if(!(pop instanceof VanillaStructurePopulator vpop)) continue;
             // possibleStructureSets
             possibleStructureSets
-                .stream().filter((resourceLoc)->{
-                    return vpop.structureRegistryKey.equals(resourceLoc.a()); // MinecraftKey.getPath()
-                })
-                //Registries.STRUCTURE_SET
-                .map((resourceLoc)-> MinecraftServer.getServer().ba().a(Registries.bi).orElseThrow().a(resourceLoc))
-                .forEach((structureSet) -> {
-                StructurePlacement structureplacement = structureSet.b(); // placement()
-                List<StructureSet.a> list = structureSet.a(); // structures()
+                    .stream().filter((resourceLoc)->{
+                        return vpop.structureRegistryKey.equals(resourceLoc.a()); // MinecraftKey.getPath()
+                    })
+                    //Registries.STRUCTURE_SET
+                    .map((resourceLoc)-> MinecraftServer.getServer().ba().a(Registries.bi).orElseThrow().a(resourceLoc))
+                    .forEach((structureSet) -> {
+                        StructurePlacement structureplacement = structureSet.b(); // placement()
+                        List<StructureSet.a> list = structureSet.a(); // structures()
 
-                // This will be true depending on the structure manager
-                if (centerCoords[0] == chunkcoordintpair.h
-                        && centerCoords[1] == chunkcoordintpair.i) {
+                        // This will be true depending on the structure manager
+                        if (centerCoords[0] == chunkcoordintpair.h
+                            && centerCoords[1] == chunkcoordintpair.i) {
 
-                    // d() -> getLevelSeed()
-                    try{
-                        Object retVal = tryGenerateStructure.invoke(this, list.getFirst(), structuremanager, iregistrycustom, randomstate,
-                                structuretemplatemanager, chunkgeneratorstructurestate.d(),
-                                ichunkaccess, chunkcoordintpair, sectionposition, resourcekey);
-                        TerraformGeneratorPlugin.logger.info(chunkcoordintpair.h + "," + chunkcoordintpair.i + " will spawn a vanilla structure, with tryGenerateStructure == " + retVal);
-                    }
-                    catch(Throwable t)
-                    {
-                        TerraformGeneratorPlugin.logger.info(chunkcoordintpair.h + "," + chunkcoordintpair.i + " Failed to generate a vanilla structure");
-                        TerraformGeneratorPlugin.logger.stackTrace(t);
-                    }
-                }
-            });
+                            // d() -> getLevelSeed()
+                            try{
+                                Object retVal = tryGenerateStructure.invoke(this, list.getFirst(), structuremanager, iregistrycustom, randomstate,
+                                        structuretemplatemanager, chunkgeneratorstructurestate.d(),
+                                        ichunkaccess, chunkcoordintpair, sectionposition, resourcekey);
+                                //TerraformGeneratorPlugin.logger.info(chunkcoordintpair.h + "," + chunkcoordintpair.i + " will spawn a vanilla structure, with tryGenerateStructure == " + retVal);
+                            }
+                            catch(Throwable t)
+                            {
+                                TerraformGeneratorPlugin.logger.info(chunkcoordintpair.h + "," + chunkcoordintpair.i + " Failed to generate a vanilla structure");
+                                TerraformGeneratorPlugin.logger.stackTrace(t);
+                            }
+                        }
+                    });
         }
     }
     @Override // createReferences. Structure related

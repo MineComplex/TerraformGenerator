@@ -21,9 +21,7 @@ public class NoiseRavine extends NoiseCaveAbstract {
             return false;
         }
         FastNoise ravineNoise = NoiseCacheHandler.getNoise(
-                tw,
-                NoiseCacheHandler.NoiseCacheEntry.CAVE_XRAVINE_NOISE,
-                world -> {
+                tw, NoiseCacheHandler.NoiseCacheEntry.CAVE_XRAVINE_NOISE, world -> {
                     FastNoise n = new FastNoise(tw.getHashedRand(458930, 16328, 54981).nextInt());
                     n.SetNoiseType(FastNoise.NoiseType.SimplexFractal);
                     n.SetFrequency(0.007f);

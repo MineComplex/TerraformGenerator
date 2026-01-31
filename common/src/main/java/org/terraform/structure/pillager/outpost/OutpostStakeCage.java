@@ -14,8 +14,6 @@ import org.terraform.utils.BlockUtils;
 import org.terraform.utils.GenUtils;
 import org.terraform.utils.WoodUtils;
 import org.terraform.utils.WoodUtils.WoodType;
-import org.terraform.utils.version.V_1_19;
-import org.terraform.utils.version.Version;
 
 import java.util.Map.Entry;
 import java.util.Random;
@@ -67,55 +65,42 @@ public class OutpostStakeCage extends RoomPopulatorAbstract {
 
         }
 
-        if (Version.VERSION.isAtLeast(Version.v1_19_4)) {
-            // Spawn the mob.
-            switch (rand.nextInt(3)) {
-                case 0:
-                    // Iron Golem
-                    data.addEntity(room.getX(),
-                            new SimpleBlock(data, room.getX(), room.getY(), room.getZ()).getGroundOrDry().getY() + 1,
-                            room.getZ(),
-                            EntityType.IRON_GOLEM
-                    );
-                    break;
-                case 1:
-                    // Allay (1 to 3)
-                    for (int i = 0; i < 1 + rand.nextInt(3); i++) {
-                        data.addEntity(
-                                room.getX(),
-                                new SimpleBlock(data, room.getX(), room.getY(), room.getZ()).getGroundOrDry().getY()
-                                + 1,
-                                room.getZ(),
-                                V_1_19.ALLAY
-                        );
-                    }
-
-                    // If spawning allays, a roof must be added to the cage.
-                    for (int nx = lowerCorner[0]; nx <= upperCorner[0]; nx++) {
-                        for (int nz = lowerCorner[1]; nz <= upperCorner[1]; nz++) {
-                            int baseHeight = 6 + highestHeight;
-                            SimpleBlock target = new SimpleBlock(data, nx, baseHeight, nz);
-
-                            target.setType(plankMat);
-                        }
-                    }
-                    break;
-                case 2:
-                    // Nothing
-                    break;
-            }
-        }
-        else {
-            if (rand.nextBoolean()) {
+        // Spawn the mob.
+        switch (rand.nextInt(3)) {
+            case 0:
+                // Iron Golem
                 data.addEntity(
                         room.getX(),
                         new SimpleBlock(data, room.getX(), room.getY(), room.getZ()).getGroundOrDry().getY() + 1,
                         room.getZ(),
                         EntityType.IRON_GOLEM
                 );
-            }
-        }
+                break;
+            case 1:
+                // Allay (1 to 3)
+                for (int i = 0; i < 1 + rand.nextInt(3); i++) {
+                    data.addEntity(
+                            room.getX(),
+                            new SimpleBlock(data, room.getX(), room.getY(), room.getZ()).getGroundOrDry().getY() + 1,
+                            room.getZ(),
+                            EntityType.ALLAY
+                    );
+                }
 
+                // If spawning allays, a roof must be added to the cage.
+                for (int nx = lowerCorner[0]; nx <= upperCorner[0]; nx++) {
+                    for (int nz = lowerCorner[1]; nz <= upperCorner[1]; nz++) {
+                        int baseHeight = 6 + highestHeight;
+                        SimpleBlock target = new SimpleBlock(data, nx, baseHeight, nz);
+
+                        target.setType(plankMat);
+                    }
+                }
+                break;
+            case 2:
+                // Nothing
+                break;
+        }
     }
 
     public void spawnOneStake(@NotNull Random rand, int baseHeight, @NotNull SimpleBlock base) {

@@ -16,12 +16,13 @@ import org.terraform.coregen.NaturalSpawnType;
 import org.terraform.coregen.TerraLootTable;
 import org.terraform.coregen.bukkit.TerraformGenerator;
 import org.terraform.data.TerraformWorld;
+import org.terraform.main.TConfig;
 import org.terraform.main.TerraformGeneratorPlugin;
-import org.terraform.main.config.TConfig;
 
 import java.util.Random;
 
 public class PopulatorDataPostGen extends PopulatorDataICABiomeWriterAbstract implements IPopulatorDataPhysicsCapable {
+
     private static int spawnerRetries = 0;
     private final @NotNull World w;
     private final @NotNull Chunk c;

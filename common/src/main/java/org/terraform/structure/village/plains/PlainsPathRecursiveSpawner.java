@@ -288,7 +288,7 @@ public class PlainsPathRecursiveSpawner {
                 }
             }
             if (room.getPop() != null) {
-                TerraformGeneratorPlugin.logger.info("Registered: "
+/*                TerraformGeneratorPlugin.logger.info("Registered: "
                                                      + room.getPop().getClass().getName()
                                                      + " at "
                                                      + room.getX()
@@ -299,7 +299,7 @@ public class PlainsPathRecursiveSpawner {
                                                      + " in a room of size "
                                                      + room.getWidthX()
                                                      + "x"
-                                                     + room.getWidthZ());
+                                                     + room.getWidthZ());*/
                 room.populate(core.getPopData());
             }
         }

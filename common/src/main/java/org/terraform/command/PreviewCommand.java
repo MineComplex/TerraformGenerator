@@ -1,16 +1,20 @@
 package org.terraform.command;
 
+import org.bukkit.FeatureFlag;
+import org.bukkit.HeightMap;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.command.CommandSender;
+import org.bukkit.generator.BiomeProvider;
 import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.generator.WorldInfo;
 import org.bukkit.material.MaterialData;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Range;
+import org.jetbrains.annotations.Unmodifiable;
 import org.terraform.biome.BiomeBank;
-import org.terraform.biome.BiomeType;
 import org.terraform.command.contants.TerraCommand;
 import org.terraform.coregen.bukkit.TerraformGenerator;
 import org.terraform.data.TerraformWorld;
@@ -22,6 +26,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.Random;
+import java.util.Set;
 import java.util.Stack;
 import java.util.UUID;
 
@@ -88,9 +93,6 @@ public class PreviewCommand extends TerraCommand {
 
     @SuppressWarnings("unused")
     private Color getClimateColor(@NotNull BiomeBank bank) {
-        if (bank.getType() == BiomeType.OCEANIC || bank.getType() == BiomeType.DEEP_OCEANIC) {
-            return Color.blue;
-        }
         return switch (bank.getClimate()) {
             case HUMID_VEGETATION -> new Color(118, 163, 3);
             case DRY_VEGETATION -> new Color(172, 187, 2);
@@ -131,12 +133,7 @@ public class PreviewCommand extends TerraCommand {
             case BADLANDS:
                 return Color.red;
             default:
-                if (bank.getType() == BiomeType.OCEANIC || bank.getType() == BiomeType.DEEP_OCEANIC) {
-                    return Color.blue;
-                }
-                else {
-                    return Color.pink;
-                }
+                return Color.pink;
         }
     }
 
@@ -269,6 +266,14 @@ public class PreviewCommand extends TerraCommand {
         public byte getData(int i, int i1, int i2) {
             return 0;
         }
+
+        @Override
+        public int getHeight(@NotNull HeightMap heightMap,
+                             @Range(from = 0L, to = 15L) int i,
+                             @Range(from = 0L, to = 15L) int i1)
+        {
+            return 0;
+        }
     }
 
     private static class ImageWorldInfo implements WorldInfo {
@@ -311,6 +316,16 @@ public class PreviewCommand extends TerraCommand {
         @Override
         public int getMaxHeight() {
             return 0;
+        }
+
+        @Override
+        public @NotNull BiomeProvider vanillaBiomeProvider() {
+            return null;
+        }
+
+        @Override
+        public @Unmodifiable Set<FeatureFlag> getFeatureFlags() {
+            return Set.of();
         }
     }
 }

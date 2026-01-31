@@ -10,10 +10,10 @@ import org.terraform.coregen.populatordata.PopulatorDataAbstract;
 import org.terraform.data.SimpleBlock;
 import org.terraform.data.SimpleLocation;
 import org.terraform.data.TerraformWorld;
-import org.terraform.main.config.TConfig;
-import org.terraform.small_items.PlantBuilder;
+import org.terraform.main.TConfig;
 import org.terraform.tree.FractalTypes;
 import org.terraform.tree.MushroomBuilder;
+import org.terraform.tree.PlantBuilder;
 import org.terraform.utils.BlockUtils;
 import org.terraform.utils.GenUtils;
 
@@ -86,9 +86,11 @@ public class MushroomBeachHandler extends BiomeHandler {
         for (SimpleLocation sLoc : bigTrees) {
             int treeY = GenUtils.getHighestGround(data, sLoc.getX(), sLoc.getZ());
             sLoc = sLoc.getAtY(treeY);
-            if (data.getBiome(sLoc.getX(), sLoc.getZ()) == getBiome() && BlockUtils.isDirtLike(data.getType(sLoc.getX(),
+            if (data.getBiome(sLoc.getX(), sLoc.getZ()) == getBiome() && BlockUtils.isDirtLike(data.getType(
+                    sLoc.getX(),
                     sLoc.getY(),
-                    sLoc.getZ())))
+                    sLoc.getZ()
+            )))
             {
                 int choice = random.nextInt(3);
                 FractalTypes.Mushroom type = switch (choice) {
@@ -109,31 +111,37 @@ public class MushroomBeachHandler extends BiomeHandler {
         for (SimpleLocation sLoc : smallDecorations) {
             int treeY = GenUtils.getHighestGround(data, sLoc.getX(), sLoc.getZ());
             sLoc = sLoc.getAtY(treeY);
-            if (data.getBiome(sLoc.getX(), sLoc.getZ()) == getBiome() && BlockUtils.isDirtLike(data.getType(sLoc.getX(),
+            if (data.getBiome(sLoc.getX(), sLoc.getZ()) == getBiome() && BlockUtils.isDirtLike(data.getType(
+                    sLoc.getX(),
                     sLoc.getY(),
-                    sLoc.getZ())))
+                    sLoc.getZ()
+            )))
             {
                 int choice = random.nextInt(4);
                 switch (choice) {
-                    case 0 -> new MushroomBuilder(FractalTypes.Mushroom.SMALL_POINTY_RED_MUSHROOM).build(tw,
+                    case 0 -> new MushroomBuilder(FractalTypes.Mushroom.SMALL_POINTY_RED_MUSHROOM).build(
+                            tw,
                             data,
                             sLoc.getX(),
                             sLoc.getY() + 1,
                             sLoc.getZ()
                     );
-                    case 1 -> new MushroomBuilder(FractalTypes.Mushroom.SMALL_BROWN_MUSHROOM).build(tw,
+                    case 1 -> new MushroomBuilder(FractalTypes.Mushroom.SMALL_BROWN_MUSHROOM).build(
+                            tw,
                             data,
                             sLoc.getX(),
                             sLoc.getY() + 1,
                             sLoc.getZ()
                     );
-                    case 2 -> new MushroomBuilder(FractalTypes.Mushroom.SMALL_RED_MUSHROOM).build(tw,
+                    case 2 -> new MushroomBuilder(FractalTypes.Mushroom.SMALL_RED_MUSHROOM).build(
+                            tw,
                             data,
                             sLoc.getX(),
                             sLoc.getY() + 1,
                             sLoc.getZ()
                     );
-                    default -> new MushroomBuilder(FractalTypes.Mushroom.TINY_RED_MUSHROOM).build(tw,
+                    default -> new MushroomBuilder(FractalTypes.Mushroom.TINY_RED_MUSHROOM).build(
+                            tw,
                             data,
                             sLoc.getX(),
                             sLoc.getY() + 1,
@@ -154,7 +162,8 @@ public class MushroomBeachHandler extends BiomeHandler {
                     continue;
                 }
                 if (HeightMap.getTrueHeightGradient(data, x, z, 3) > 2 && GenUtils.chance(random, 1, 20)) {
-                    BlockUtils.replaceCircle(random.nextInt(919292),
+                    BlockUtils.replaceCircle(
+                            random.nextInt(919292),
                             3,
                             new SimpleBlock(data, x, y - 2, z),
                             GenUtils.randChoice(random, Material.BROWN_MUSHROOM_BLOCK, Material.RED_MUSHROOM_BLOCK)

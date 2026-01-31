@@ -17,7 +17,7 @@ import org.terraform.data.SimpleBlock;
 import org.terraform.data.TerraformWorld;
 import org.terraform.data.Wall;
 import org.terraform.main.TerraformGeneratorPlugin;
-import org.terraform.main.config.TConfig;
+import org.terraform.main.TConfig;
 import org.terraform.schematic.TerraSchematic;
 import org.terraform.structure.villagehouse.VillageHousePopulator;
 import org.terraform.utils.BlockUtils;
@@ -64,14 +64,14 @@ public class FarmhousePopulator extends VillageHousePopulator {
             farmHouse.setFace(BlockUtils.getDirectBlockFace(random));
             farmHouse.apply();
 
-            TerraformGeneratorPlugin.logger.info("Spawning farmhouse at "
+/*            TerraformGeneratorPlugin.logger.info("Spawning farmhouse at "
                                                  + x
                                                  + ","
                                                  + y
                                                  + ","
                                                  + z
                                                  + " with rotation of "
-                                                 + farmHouse.getFace());
+                                                 + farmHouse.getFace());*/
 
             data.addEntity(x, y + 1, z, EntityType.VILLAGER); // Two villagers
             data.addEntity(x, y + 1, z, EntityType.VILLAGER);

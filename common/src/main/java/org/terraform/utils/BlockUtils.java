@@ -14,17 +14,13 @@ import org.terraform.coregen.populatordata.PopulatorDataAbstract;
 import org.terraform.data.SimpleBlock;
 import org.terraform.data.SimpleChunkLocation;
 import org.terraform.data.Wall;
+import org.terraform.main.TConfig;
 import org.terraform.main.TerraformGeneratorPlugin;
-import org.terraform.main.config.TConfig;
-import org.terraform.small_items.PlantBuilder;
+import org.terraform.tree.PlantBuilder;
 import org.terraform.utils.blockdata.StairBuilder;
 import org.terraform.utils.blockdata.fixers.v1_16_R1_BlockDataFixer;
 import org.terraform.utils.noise.FastNoise;
 import org.terraform.utils.noise.FastNoise.NoiseType;
-import org.terraform.utils.version.V_1_19;
-import org.terraform.utils.version.V_1_20;
-import org.terraform.utils.version.V_1_21_5;
-import org.terraform.utils.version.Version;
 
 import java.util.EnumSet;
 import java.util.HashMap;
@@ -37,10 +33,10 @@ public class BlockUtils {
     // This is needed as REPLACABLE_BY_TREES is a 1.20 tag.
     // Also this has mushrooms and saplings, snow and coral fans
     public static final EnumSet<Material> replacableByTrees = EnumSet.of(
-            V_1_21_5.BUSH,
-            V_1_21_5.FIREFLY_BUSH,
-            V_1_21_5.WILDFLOWERS,
-            V_1_21_5.LEAF_LITTER,
+            Material.BUSH,
+            Material.FIREFLY_BUSH,
+            Material.WILDFLOWERS,
+            Material.LEAF_LITTER,
             Material.ACACIA_LEAVES,
             Material.AZALEA_LEAVES,
             Material.DARK_OAK_LEAVES,
@@ -48,11 +44,11 @@ public class BlockUtils {
             Material.SPRUCE_LEAVES,
             Material.JUNGLE_LEAVES,
             Material.OAK_LEAVES,
-            V_1_20.CHERRY_LEAVES,
+            Material.CHERRY_LEAVES,
             Material.FLOWERING_AZALEA_LEAVES,
             Material.BROWN_MUSHROOM,
             Material.RED_MUSHROOM,
-            Material.GRASS,
+            Material.GRASS_BLOCK,
             Material.FERN,
             Material.DEAD_BUSH,
             Material.VINE,
@@ -64,7 +60,7 @@ public class BlockUtils {
             Material.TALL_GRASS,
             Material.LARGE_FERN,
             Material.HANGING_ROOTS,
-            V_1_20.PITCHER_PLANT,
+            Material.PITCHER_PLANT,
             Material.WATER,
             Material.AIR,
             Material.CAVE_AIR,
@@ -109,12 +105,14 @@ public class BlockUtils {
             BlockFace.NORTH_WEST
     };
     public static final EnumSet<Material> fluids = EnumSet.of(Material.WATER, Material.LAVA);
-    public static final EnumSet<Material> wetMaterials = EnumSet.of(Material.WATER,
+    public static final EnumSet<Material> wetMaterials = EnumSet.of(
+            Material.WATER,
             Material.KELP_PLANT,
             Material.SEAGRASS,
             Material.TALL_SEAGRASS
     );
-    public static final EnumSet<Material> amethysts = EnumSet.of(Material.AMETHYST_BLOCK,
+    public static final EnumSet<Material> amethysts = EnumSet.of(
+            Material.AMETHYST_BLOCK,
             Material.AMETHYST_CLUSTER,
             Material.BUDDING_AMETHYST,
             Material.LARGE_AMETHYST_BUD,
@@ -134,22 +132,14 @@ public class BlockUtils {
     };
     public static final BlockFace[] BLOCK_FACES = BlockFace.values();
     public static final BlockFace[] xzDiagonalPlaneBlockFaces = {
-            BlockFace.NORTH_EAST,
-            BlockFace.SOUTH_EAST,
-            BlockFace.SOUTH_WEST,
-            BlockFace.NORTH_WEST
+            BlockFace.NORTH_EAST, BlockFace.SOUTH_EAST, BlockFace.SOUTH_WEST, BlockFace.NORTH_WEST
     };
     public static final Material[] stoneBricks = {
-            Material.STONE_BRICKS,
-            Material.MOSSY_STONE_BRICKS,
-            Material.CRACKED_STONE_BRICKS
+            Material.STONE_BRICKS, Material.MOSSY_STONE_BRICKS, Material.CRACKED_STONE_BRICKS
     };
     public static final Material[] stoneBrickSlabs = {Material.STONE_BRICK_SLAB, Material.MOSSY_STONE_BRICK_SLAB};
     public static final BlockFace[] directBlockFaces = {
-            BlockFace.NORTH,
-            BlockFace.SOUTH,
-            BlockFace.EAST,
-            BlockFace.WEST
+            BlockFace.NORTH, BlockFace.SOUTH, BlockFace.EAST, BlockFace.WEST
     };
     public static final BlockFace[][] cornerBlockFaces = {
             {BlockFace.NORTH, BlockFace.EAST},
@@ -158,18 +148,14 @@ public class BlockUtils {
             {BlockFace.SOUTH, BlockFace.WEST},
             };
     public static final BlockFace[] sixBlockFaces = {
-            BlockFace.NORTH,
-            BlockFace.SOUTH,
-            BlockFace.EAST,
-            BlockFace.WEST,
-            BlockFace.UP,
-            BlockFace.DOWN
+            BlockFace.NORTH, BlockFace.SOUTH, BlockFace.EAST, BlockFace.WEST, BlockFace.UP, BlockFace.DOWN
     };
     /**
      * Everything here <strong>must</strong> be solid blocks that tend to generate
      * in the ground.
      */
-    public static final EnumSet<Material> stoneLike = EnumSet.of(Material.STONE,
+    public static final EnumSet<Material> stoneLike = EnumSet.of(
+            Material.STONE,
             Material.COBBLESTONE,
             Material.MOSSY_COBBLESTONE,
             Material.GRANITE,
@@ -192,9 +178,10 @@ public class BlockUtils {
             Material.MYCELIUM,
             Material.ROOTED_DIRT,
             Material.DIRT_PATH,
-            V_1_19.SCULK
+            Material.SCULK
     );
-    public static final EnumSet<Material> caveDecoratorMaterials = EnumSet.of(Material.ANDESITE_WALL,
+    public static final EnumSet<Material> caveDecoratorMaterials = EnumSet.of(
+            Material.ANDESITE_WALL,
             Material.DIORITE_WALL,
             Material.GRANITE_WALL,
             Material.COBBLESTONE_WALL,
@@ -215,7 +202,7 @@ public class BlockUtils {
             Material.FLOWERING_AZALEA,
             Material.BIG_DRIPLEAF,
             Material.BIG_DRIPLEAF_STEM,
-            Material.GRASS,
+            Material.SHORT_GRASS,
             Material.TALL_GRASS,
             Material.ICE,
             Material.PACKED_ICE,
@@ -232,7 +219,8 @@ public class BlockUtils {
             Material.RED_MUSHROOM_BLOCK
     );
     // This enumset gets populated more in initBlockUtils
-    public static final EnumSet<Material> badlandsStoneLike = EnumSet.of(Material.TERRACOTTA,
+    public static final EnumSet<Material> badlandsStoneLike = EnumSet.of(
+            Material.TERRACOTTA,
             Material.ORANGE_TERRACOTTA,
             Material.RED_TERRACOTTA,
             Material.BROWN_TERRACOTTA,
@@ -299,13 +287,7 @@ public class BlockUtils {
             Material.RED_TERRACOTTA,
             Material.YELLOW_TERRACOTTA
     };
-    private static final PlantBuilder[] TALL_FLOWER = {
-            PlantBuilder.LILAC,
-            PlantBuilder.ROSE_BUSH,
-            PlantBuilder.PEONY,
-            PlantBuilder.LARGE_FERN,
-            PlantBuilder.SUNFLOWER
-    };
+
     private static final PlantBuilder[] FLOWER = {
             PlantBuilder.DANDELION,
             PlantBuilder.POPPY,
@@ -382,18 +364,17 @@ public class BlockUtils {
                 stoneLike.add(mat);
             }
         }
-        if(Version.VERSION.isAtLeast(Version.v1_19_4)){
-            caveDecoratorMaterials.add(V_1_19.SCULK);
-            caveDecoratorMaterials.add(V_1_19.SCULK_SENSOR);
-            caveDecoratorMaterials.add(V_1_19.SCULK_SHRIEKER);
-            caveDecoratorMaterials.add(V_1_19.SCULK_VEIN);
-            caveDecoratorMaterials.add(V_1_19.SCULK_CATALYST);
-        }
+        caveDecoratorMaterials.add(Material.SCULK);
+        caveDecoratorMaterials.add(Material.SCULK_SENSOR);
+        caveDecoratorMaterials.add(Material.SCULK_SHRIEKER);
+        caveDecoratorMaterials.add(Material.SCULK_VEIN);
+        caveDecoratorMaterials.add(Material.SCULK_CATALYST);
         badlandsStoneLike.addAll(stoneLike);
         caveCarveReplace.addAll(badlandsStoneLike);
         caveCarveReplace.addAll(caveDecoratorMaterials);
-        for(PlantBuilder pb:FLOWER)
+        for (PlantBuilder pb : FLOWER) {
             replacableByTrees.add(pb.material);
+        }
         replacableByTrees.addAll(Tag.SAPLINGS.getValues());
 
         // init glass panes
@@ -583,6 +564,7 @@ public class BlockUtils {
     public static PlantBuilder pickFlower() {
         return pickFlower(GenUtils.RANDOMIZER);
     }
+
     public static PlantBuilder pickFlower(Random rand) {
         return GenUtils.randChoice(rand, FLOWER);
     }
@@ -730,8 +712,9 @@ public class BlockUtils {
         if (!TConfig.arePlantsEnabled()) {
             return;
         }
-        if(data.getType(x,y,z) != Material.AIR
-            || data.getType(x,y+1,z) != Material.AIR) return;
+        if (data.getType(x, y, z) != Material.AIR || data.getType(x, y + 1, z) != Material.AIR) {
+            return;
+        }
 
         Bisected d = ((Bisected) Bukkit.createBlockData(doublePlant));
         d.setHalf(Half.BOTTOM);
@@ -917,8 +900,8 @@ public class BlockUtils {
      * Passes the highest ground to a lambda function in a circle
      */
     public static void lambdaCircularPatch(int seed,
-                                            float radius,
-                                            @NotNull SimpleBlock base,
+                                           float radius,
+                                           @NotNull SimpleBlock base,
                                            Consumer<@NotNull SimpleBlock> lambda)
     {
         if (radius <= 0) {
@@ -1828,8 +1811,9 @@ public class BlockUtils {
         BlockData data = deepslateMap.get("DEEPSLATE_" + target);
         if (data == null) {
             Material mat = Material.getMaterial("DEEPSLATE_" + target);
-            if (mat == null)
+            if (mat == null) {
                 return Bukkit.createBlockData(target);
+            }
             else {
                 data = Bukkit.createBlockData(mat);
                 deepslateMap.put("DEEPSLATE_" + target, data);

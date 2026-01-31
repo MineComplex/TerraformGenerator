@@ -9,7 +9,7 @@ import org.terraform.coregen.populatordata.PopulatorDataAbstract;
 import org.terraform.coregen.populatordata.PopulatorDataSpigotAPI;
 import org.terraform.data.TerraformWorld;
 import org.terraform.main.TerraformGeneratorPlugin;
-import org.terraform.main.config.TConfig;
+import org.terraform.main.TConfig;
 import org.terraform.populators.AmethystGeodePopulator;
 import org.terraform.populators.OrePopulator;
 import org.terraform.structure.MultiMegaChunkStructurePopulator;
@@ -91,8 +91,6 @@ public class TerraformPopulator extends BlockPopulator {
                     TConfig.c.ORE_BADLANDSGOLD_MAXSPAWNHEIGHT,
                     false,
                     BiomeBank.BADLANDS,
-                    BiomeBank.BADLANDS_CANYON,
-                    BiomeBank.BADLANDS_CANYON_PEAK,
                     BiomeBank.BADLANDS_BEACH,
                     BiomeBank.BADLANDS_RIVER
             ),
@@ -116,14 +114,7 @@ public class TerraformPopulator extends BlockPopulator {
                     TConfig.c.ORE_EMERALD_MINSPAWNHEIGHT,
                     TConfig.c.ORE_EMERALD_COMMONSPAWNHEIGHT,
                     TConfig.c.ORE_EMERALD_MAXSPAWNHEIGHT,
-                    false,
-                    BiomeBank.BIRCH_MOUNTAINS,
-                    BiomeBank.ROCKY_MOUNTAINS,
-                    BiomeBank.SNOWY_MOUNTAINS,
-                    BiomeBank.FORESTED_MOUNTAINS,
-                    BiomeBank.COLD_JAGGED_PEAKS,
-                    BiomeBank.JAGGED_PEAKS,
-                    BiomeBank.FORESTED_PEAKS
+                    false
             ),
 
 
@@ -257,12 +248,14 @@ public class TerraformPopulator extends BlockPopulator {
         // Multi-megachunk structures
         for (MultiMegaChunkStructurePopulator spop : StructureRegistry.smallStructureRegistry) {
             if (TConfig.areStructuresEnabled() && spop.canSpawn(tw, data.getChunkX(), data.getChunkZ())) {
+/*
                 TerraformGeneratorPlugin.logger.info("Generating "
                                                      + spop.getClass().getName()
                                                      + " at chunk: "
                                                      + data.getChunkX()
                                                      + ","
                                                      + data.getChunkZ());
+*/
 
                 // No async events
                 // Bukkit.getPluginManager().callEvent(new TerraformStructureSpawnEvent(data.getChunkX()*16+8, data.getChunkZ()*16+8, spop.getClass().getName()));

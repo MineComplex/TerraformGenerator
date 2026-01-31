@@ -325,6 +325,7 @@ public class RoomLayoutGenerator {
                     }
                 }
             }
+            /*
             if (room.pop != null) {
                 TerraformGeneratorPlugin.logger.info("Registered: "
                                                      + room.pop.getClass().getName()
@@ -350,7 +351,7 @@ public class RoomLayoutGenerator {
                                                      + room.getWidthX()
                                                      + "x"
                                                      + room.getWidthZ());
-            }
+            }*/
         }
     }
 

@@ -1,6 +1,6 @@
 package org.terraform.tree;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Tag;
@@ -16,7 +16,7 @@ import org.terraform.coregen.HeightMap;
 import org.terraform.coregen.populatordata.PopulatorDataAbstract;
 import org.terraform.data.SimpleBlock;
 import org.terraform.data.TerraformWorld;
-import org.terraform.main.config.TConfig;
+import org.terraform.main.TConfig;
 import org.terraform.utils.BlockUtils;
 import org.terraform.utils.CoralGenerator;
 import org.terraform.utils.GenUtils;
@@ -25,9 +25,6 @@ import org.terraform.utils.noise.FastNoise.NoiseType;
 import org.terraform.utils.noise.NoiseCacheHandler;
 import org.terraform.utils.noise.NoiseCacheHandler.NoiseCacheEntry;
 import org.terraform.utils.version.BeeHiveSpawner;
-import org.terraform.utils.version.V_1_19;
-import org.terraform.utils.version.V_1_20;
-import org.terraform.utils.version.Version;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -46,8 +43,7 @@ public class FractalTreeBuilder {
     int maxHeight = 999;
     float lengthDecrement = 1;
     float lengthDecrementMultiplier = 1;
-    @Nullable
-    Material trunkType = Material.OAK_WOOD;
+    @Nullable Material trunkType = Material.OAK_WOOD;
     FractalLeaves fractalLeaves = new FractalLeaves();
     Random rand;
     double minBend = 0.8 * Math.PI / 6;
@@ -167,9 +163,8 @@ public class FractalTreeBuilder {
                     .setMaxBend(1.1 * Math.PI / 6)
                     .setLengthDecrement(-0.5f)
                     .setMinThickness(1f)
-                    .setTrunkType(V_1_20.CHERRY_LOG)
-                    .setFractalLeaves(new FractalLeaves().setMaterial(V_1_20.CHERRY_LEAVES)
-                                                         .setRadius(3, 2f, 3));
+                    .setTrunkType(Material.CHERRY_LOG)
+                    .setFractalLeaves(new FractalLeaves().setMaterial(Material.CHERRY_LEAVES).setRadius(3, 2f, 3));
                 break;
             case CHERRY_THICK:
                 this.setBaseHeight(5)
@@ -184,8 +179,8 @@ public class FractalTreeBuilder {
                     .setMaxBend(1.1 * Math.PI / 6)
                     .setLengthDecrement(0.3f)
                     .setMinThickness(1f)
-                    .setTrunkType(V_1_20.CHERRY_WOOD)
-                    .setFractalLeaves(new FractalLeaves().setMaterial(V_1_20.CHERRY_LEAVES)
+                    .setTrunkType(Material.CHERRY_WOOD)
+                    .setFractalLeaves(new FractalLeaves().setMaterial(Material.CHERRY_LEAVES)
                                                          .setRadius(3, 2f, 3)
                                                          .setLeafNoiseFrequency(0.15f));
                 break;
@@ -201,7 +196,8 @@ public class FractalTreeBuilder {
                     .setHeightVariation(2)
                     .setVines(3)
                     .setFractalLeaves(new FractalLeaves().setRadius(4, 2f, 4)
-                                                         .setMaterial(Material.ANDESITE,
+                                                         .setMaterial(
+                                                                 Material.ANDESITE,
                                                                  Material.POLISHED_ANDESITE,
                                                                  Material.ANDESITE
                                                          )
@@ -219,7 +215,8 @@ public class FractalTreeBuilder {
                     .setHeightVariation(2)
                     .setVines(3)
                     .setFractalLeaves(new FractalLeaves().setRadius(4, 2f, 4)
-                                                         .setMaterial(Material.GRANITE,
+                                                         .setMaterial(
+                                                                 Material.GRANITE,
                                                                  Material.POLISHED_GRANITE,
                                                                  Material.GRANITE
                                                          )
@@ -237,7 +234,8 @@ public class FractalTreeBuilder {
                     .setHeightVariation(2)
                     .setVines(3)
                     .setFractalLeaves(new FractalLeaves().setRadius(4, 2f, 4)
-                                                         .setMaterial(Material.DIORITE,
+                                                         .setMaterial(
+                                                                 Material.DIORITE,
                                                                  Material.POLISHED_DIORITE,
                                                                  Material.DIORITE
                                                          )
@@ -402,10 +400,10 @@ public class FractalTreeBuilder {
                     .setMaxDepth(4)
                     .setLengthDecrement(0f)
                     .setHeightVariation(2)
-                    .setTrunkType(V_1_19.MANGROVE_WOOD)
+                    .setTrunkType(Material.MANGROVE_WOOD)
                     .setVines(7)
                     .setFractalLeaves(new FractalLeaves().setWeepingLeaves(0.4f, 7)
-                                                         .setMaterial(V_1_19.MANGROVE_LEAVES)
+                                                         .setMaterial(Material.MANGROVE_LEAVES)
                                                          .setRadius(5, 2, 5)
                                                          .setMangrovePropagules(true));
                 break;
@@ -620,12 +618,14 @@ public class FractalTreeBuilder {
         this.fractalLeaves.setMaxHeight(maxHeight);
         // this.noiseGen = new FastNoise((int) tw.getSeed());
 
-        FastNoise noiseGen = NoiseCacheHandler.getNoise(tw, NoiseCacheEntry.FRACTALTREES_BASE_NOISE, world -> {
-            FastNoise n = new FastNoise((int) world.getSeed());
-            n.SetNoiseType(NoiseType.SimplexFractal);
-            n.SetFractalOctaves(5);
-            return n;
-        });
+        FastNoise noiseGen = NoiseCacheHandler.getNoise(
+                tw, NoiseCacheEntry.FRACTALTREES_BASE_NOISE, world -> {
+                    FastNoise n = new FastNoise((int) world.getSeed());
+                    n.SetNoiseType(NoiseType.SimplexFractal);
+                    n.SetFractalOctaves(5);
+                    return n;
+                }
+        );
 
         // Setup noise to be used in randomising the sphere
         noiseGen.SetFrequency(branchNoiseFrequency);
@@ -751,7 +751,8 @@ public class FractalTreeBuilder {
 
         if (fractalsDone % fractalThreshold != 0 && thickness >= 1 && size >= 1) {
             // Make 1 branch
-            fractalBranch(rand,
+            fractalBranch(
+                    rand,
                     two,
                     pitch - randomAngle(depth),
                     yaw + GenUtils.randInt(rand, 1, 5) * GenUtils.getSign(rand) * rta(),
@@ -786,52 +787,32 @@ public class FractalTreeBuilder {
             // Only spawn branches if depth is sufficient.
             if (depth >= alwaysOneStraightBranchSpawningDepth) {
                 fractalBranch(
-                        rand,
-                        two,
-                        pitch + randomAngle(depth),
-                        -ra(Math.PI / 4,
+                        rand, two, pitch + randomAngle(depth), -ra(
+                                Math.PI / 4,
                                 alwaysOneStraightBranchYawLowerMultiplier,
                                 alwaysOneStraightBranchYawUpperMultiplier
-                        ),
-                        depth + 1,
-                        thickness - thicknessDecrement,
-                        alwaysOneStraightBranchLength
+                        ), depth + 1, thickness - thicknessDecrement, alwaysOneStraightBranchLength
                 );
                 fractalBranch(
-                        rand,
-                        two,
-                        pitch + randomAngle(depth),
-                        ra(Math.PI / 4,
+                        rand, two, pitch + randomAngle(depth), ra(
+                                Math.PI / 4,
                                 alwaysOneStraightBranchYawLowerMultiplier,
                                 alwaysOneStraightBranchYawUpperMultiplier
-                        ),
-                        depth + 1,
-                        thickness - thicknessDecrement,
-                        alwaysOneStraightBranchLength
+                        ), depth + 1, thickness - thicknessDecrement, alwaysOneStraightBranchLength
                 );
                 fractalBranch(
-                        rand,
-                        two,
-                        pitch + randomAngle(depth),
-                        5 * ra(Math.PI / 4,
+                        rand, two, pitch + randomAngle(depth), 5 * ra(
+                                Math.PI / 4,
                                 alwaysOneStraightBranchYawLowerMultiplier,
                                 alwaysOneStraightBranchYawUpperMultiplier
-                        ),
-                        depth + 1,
-                        thickness - thicknessDecrement,
-                        alwaysOneStraightBranchLength
+                        ), depth + 1, thickness - thicknessDecrement, alwaysOneStraightBranchLength
                 );
                 fractalBranch(
-                        rand,
-                        two,
-                        pitch + randomAngle(depth),
-                        -5 * ra(Math.PI / 4,
+                        rand, two, pitch + randomAngle(depth), -5 * ra(
+                                Math.PI / 4,
                                 alwaysOneStraightBranchYawLowerMultiplier,
                                 alwaysOneStraightBranchYawUpperMultiplier
-                        ),
-                        depth + 1,
-                        thickness - thicknessDecrement,
-                        alwaysOneStraightBranchLength
+                        ), depth + 1, thickness - thicknessDecrement, alwaysOneStraightBranchLength
                 );
 
 
@@ -847,40 +828,25 @@ public class FractalTreeBuilder {
                             alwaysOneStraightBranchLength
                     );
                     fractalBranch(
-                            rand,
-                            two,
-                            pitch + randomAngle(depth),
-                            ra(Math.PI / 2,
+                            rand, two, pitch + randomAngle(depth), ra(
+                                    Math.PI / 2,
                                     alwaysOneStraightBranchYawLowerMultiplier,
                                     alwaysOneStraightBranchYawUpperMultiplier
-                            ),
-                            depth + 1,
-                            thickness - thicknessDecrement,
-                            alwaysOneStraightBranchLength
+                            ), depth + 1, thickness - thicknessDecrement, alwaysOneStraightBranchLength
                     );
                     fractalBranch(
-                            rand,
-                            two,
-                            pitch + randomAngle(depth),
-                            ra(Math.PI,
+                            rand, two, pitch + randomAngle(depth), ra(
+                                    Math.PI,
                                     alwaysOneStraightBranchYawLowerMultiplier,
                                     alwaysOneStraightBranchYawUpperMultiplier
-                            ),
-                            depth + 1,
-                            thickness - thicknessDecrement,
-                            alwaysOneStraightBranchLength
+                            ), depth + 1, thickness - thicknessDecrement, alwaysOneStraightBranchLength
                     );
                     fractalBranch(
-                            rand,
-                            two,
-                            pitch + randomAngle(depth),
-                            -ra(Math.PI / 2,
+                            rand, two, pitch + randomAngle(depth), -ra(
+                                    Math.PI / 2,
                                     alwaysOneStraightBranchYawLowerMultiplier,
                                     alwaysOneStraightBranchYawUpperMultiplier
-                            ),
-                            depth + 1,
-                            thickness - thicknessDecrement,
-                            alwaysOneStraightBranchLength
+                            ), depth + 1, thickness - thicknessDecrement, alwaysOneStraightBranchLength
                     );
                 }
             }
@@ -969,12 +935,14 @@ public class FractalTreeBuilder {
         float noiseMultiplier = branchNoiseMultiplier;
 
 
-        FastNoise noiseGen = NoiseCacheHandler.getNoise(tw, NoiseCacheEntry.FRACTALTREES_BASE_NOISE, world -> {
-            FastNoise n = new FastNoise((int) world.getSeed());
-            n.SetNoiseType(NoiseType.SimplexFractal);
-            n.SetFractalOctaves(5);
-            return n;
-        });
+        FastNoise noiseGen = NoiseCacheHandler.getNoise(
+                tw, NoiseCacheEntry.FRACTALTREES_BASE_NOISE, world -> {
+                    FastNoise n = new FastNoise((int) world.getSeed());
+                    n.SetNoiseType(NoiseType.SimplexFractal);
+                    n.SetFractalOctaves(5);
+                    return n;
+                }
+        );
 
         // Setup noise to be used in randomising the sphere
         noiseGen.SetFrequency(branchNoiseFrequency);
@@ -1031,8 +999,7 @@ public class FractalTreeBuilder {
                             if (GenUtils.chance(2, 10)) {
                                 dangleLeavesDown(rel, vines / 2, vines);
                             }
-                            else if (GenUtils.chance(1, 10))
-                            {
+                            else if (GenUtils.chance(1, 10)) {
                                 rel.rsetType(BlockUtils.replacableByTrees, this.trunkType);
                                 BlockUtils.vineUp(rel, 4);
                             }

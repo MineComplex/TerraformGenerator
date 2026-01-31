@@ -58,14 +58,14 @@ public class PlainsVillageTownhallPopulator extends RoomPopulatorAbstract {
             farmHouse.setFace(face);
             farmHouse.apply();
 
-            TerraformGeneratorPlugin.logger.info("Spawning farmhouse at "
+/*            TerraformGeneratorPlugin.logger.info("Spawning farmhouse at "
                                                  + x
                                                  + ","
                                                  + y
                                                  + ","
                                                  + z
                                                  + " with rotation of "
-                                                 + farmHouse.getFace());
+                                                 + farmHouse.getFace());*/
 
             data.addEntity(x, y + 1, z, EntityType.VILLAGER); // Two villagers
             data.addEntity(x, y + 1, z, EntityType.VILLAGER);

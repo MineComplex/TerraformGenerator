@@ -2,7 +2,6 @@ package org.terraform.utils;
 
 import org.bukkit.Material;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.terraform.biome.BiomeBank;
 
 import java.util.Objects;
@@ -11,17 +10,15 @@ public class WoodUtils {
 
     public static @NotNull Material getWoodForBiome(@NotNull BiomeBank biome, @NotNull WoodType wood) {
         return switch (biome) {
-            case BADLANDS, BADLANDS_RIVER, SAVANNA, DESERT_MOUNTAINS, DESERT, DESERT_RIVER, BADLANDS_BEACH,
-                 BADLANDS_CANYON -> wood.getWood(WoodSpecies.ACACIA);
-            case BIRCH_MOUNTAINS, SCARLET_FOREST -> wood.getWood(WoodSpecies.BIRCH);
-            case COLD_OCEAN, WARM_OCEAN, SWAMP, PLAINS, OCEAN, MUDFLATS, CORAL_REEF_OCEAN, DEEP_LUKEWARM_OCEAN,
-                 DEEP_OCEAN, DEEP_WARM_OCEAN, DEEP_DRY_OCEAN, DEEP_HUMID_OCEAN, DRY_OCEAN, HUMID_OCEAN, RIVER,
+            case BADLANDS, BADLANDS_RIVER, SAVANNA, DESERT, DESERT_RIVER, BADLANDS_BEACH -> wood.getWood(WoodSpecies.ACACIA);
+            case SCARLET_FOREST -> wood.getWood(WoodSpecies.BIRCH);
+            case SWAMP, PLAINS, MUDFLATS, RIVER,
                  ERODED_PLAINS, FOREST -> wood.getWood(WoodSpecies.OAK);
-            case FROZEN_OCEAN, TAIGA, SNOWY_WASTELAND, SNOWY_TAIGA, SNOWY_MOUNTAINS, ROCKY_MOUNTAINS, ROCKY_BEACH,
-                 FROZEN_RIVER, DEEP_COLD_OCEAN, DEEP_FROZEN_OCEAN, ICY_BEACH, ICE_SPIKES ->
+            case TAIGA, SNOWY_WASTELAND, SNOWY_TAIGA, ROCKY_BEACH,
+                 FROZEN_RIVER, ICY_BEACH, ICE_SPIKES ->
                     wood.getWood(WoodSpecies.SPRUCE);
             case SANDY_BEACH, JUNGLE, JUNGLE_RIVER, BAMBOO_FOREST -> wood.getWood(WoodSpecies.JUNGLE);
-            case BLACK_OCEAN, DEEP_BLACK_OCEAN, CHERRY_GROVE, DARK_FOREST, DARK_FOREST_RIVER, DARK_FOREST_BEACH ->
+            case CHERRY_GROVE, DARK_FOREST, DARK_FOREST_RIVER, DARK_FOREST_BEACH ->
                     wood.getWood(WoodSpecies.DARK_OAK);
             default -> wood.getWood(WoodSpecies.OAK);
         };

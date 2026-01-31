@@ -49,11 +49,13 @@ public abstract class PopulatorDataAbstract {
     public void setBlockData(@NotNull Vector add, BlockData data) {
         setBlockData((int) Math.round(add.getX()), (int) Math.round(add.getY()), (int) Math.round(add.getZ()), data);
     }
-    public void lsetBlockData(int x, int y, int z, @NotNull BlockData data){
+
+    public void lsetBlockData(int x, int y, int z, @NotNull BlockData data) {
         if (!getType(x, y, z).isSolid()) {
             setBlockData(x, y, z, data);
         }
     }
+
     public void lsetType(int x, int y, int z, @NotNull Material... type) {
         if (!getType(x, y, z).isSolid()) {
             setType(x, y, z, type);

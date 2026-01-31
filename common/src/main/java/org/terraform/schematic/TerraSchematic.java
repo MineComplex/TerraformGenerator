@@ -29,6 +29,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 public class TerraSchematic {
     public static final String SCHEMATIC_FOLDER = File.separator + "schematic";
     public static final @NotNull HashMap<String, HashMap<Vector, BlockData>> cache = new HashMap<>();
+
     final SimpleBlock refPoint;
     private final @NotNull File schematicFolder;
     public @NotNull SchematicParser parser = new SchematicParser();

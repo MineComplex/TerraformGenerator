@@ -1,6 +1,7 @@
 package org.terraform.structure.ancientcity;
 
 import org.bukkit.Material;
+import org.bukkit.block.Biome;
 import org.bukkit.block.BlockFace;
 import org.terraform.coregen.populatordata.PopulatorDataAbstract;
 import org.terraform.coregen.populatordata.PopulatorDataICABiomeWriterAbstract;
@@ -13,7 +14,7 @@ import org.terraform.utils.BlockUtils;
 import org.terraform.utils.GenUtils;
 import org.terraform.utils.noise.FastNoise;
 import org.terraform.utils.noise.NoiseCacheHandler;
-import org.terraform.utils.version.V_1_19;
+import org.terraform.utils.version.V_1_21_5;
 
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -71,7 +72,7 @@ public class AncientCityBFSCarver extends RoomCarver {
         while(!bfsQueue.isEmpty())
         {
             SimpleBlock target = bfsQueue.remove();
-            ica.setBiome(target.getX(), target.getY(), target.getZ(), V_1_19.DEEP_DARK);
+            ica.setBiome(target.getX(), target.getY(), target.getZ(), Biome.DEEP_DARK);
             boolean hasCorner = false;
             for(BlockFace face: BlockUtils.sixBlockFaces) {
                 SimpleBlock rel = target.getRelative(face);
@@ -94,15 +95,13 @@ public class AncientCityBFSCarver extends RoomCarver {
                     //You have to check if target is solid for caves.
                     if (face == BlockFace.DOWN && !target.getUp().isSolid() && target.isSolid()) {
                         if (GenUtils.chance(rand, 1, 230)) {
-                            assert V_1_19.SCULK_CATALYST != null;
-                            target.getUp().setType(V_1_19.SCULK_CATALYST);
+                            target.getUp().setType(Material.SCULK_CATALYST);
                         }
                         else if (GenUtils.chance(rand, 1, 150)) {
-                            assert V_1_19.SCULK_SENSOR != null;
-                            target.getUp().setType(V_1_19.SCULK_SENSOR);
+                            target.getUp().setType(Material.SCULK_SENSOR);
                         }
                         else if (GenUtils.chance(rand, 1, 600)) {
-                            target.getUp().setBlockData(V_1_19.getActiveSculkShrieker());
+                            target.getUp().setBlockData(V_1_21_5.getActiveSculkShrieker());
                         }
                     }
                     continue;
@@ -119,8 +118,7 @@ public class AncientCityBFSCarver extends RoomCarver {
             if(BlockUtils.isWet(target)
                || target.getType() == Material.LAVA
                || (hasCorner && target.isSolid())) {
-                assert V_1_19.SCULK != null;
-                target.setType(V_1_19.SCULK);
+                target.setType(Material.SCULK);
             }
             //If not, carve
             else if(BlockUtils.caveCarveReplace.contains(target.getType()))

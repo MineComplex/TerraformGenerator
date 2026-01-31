@@ -7,8 +7,8 @@ import org.terraform.biome.BiomeHandler;
 import org.terraform.coregen.bukkit.TerraformGenerator;
 import org.terraform.coregen.populatordata.PopulatorDataAbstract;
 import org.terraform.data.TerraformWorld;
-import org.terraform.main.config.TConfig;
-import org.terraform.small_items.PlantBuilder;
+import org.terraform.main.TConfig;
+import org.terraform.tree.PlantBuilder;
 import org.terraform.utils.BlockUtils;
 import org.terraform.utils.GenUtils;
 import org.terraform.utils.noise.FastNoise;
@@ -47,13 +47,15 @@ public class JungleRiverHandler extends BiomeHandler {
     }
 
     public static double getLilyPadNoise(TerraformWorld tw, int x, int z) {
-        FastNoise lilyPadNoise = NoiseCacheHandler.getNoise(tw, NoiseCacheEntry.BIOME_JUNGLE_LILYPADS, world -> {
-            FastNoise n = new FastNoise((int) (world.getSeed() * 2));
-            n.SetNoiseType(FastNoise.NoiseType.SimplexFractal);
-            n.SetFrequency(0.05f);
+        FastNoise lilyPadNoise = NoiseCacheHandler.getNoise(
+                tw, NoiseCacheEntry.BIOME_JUNGLE_LILYPADS, world -> {
+                    FastNoise n = new FastNoise((int) (world.getSeed() * 2));
+                    n.SetNoiseType(FastNoise.NoiseType.SimplexFractal);
+                    n.SetFrequency(0.05f);
 
-            return n;
-        });
+                    return n;
+                }
+        );
 
         return lilyPadNoise.GetNoise(x, z);
     }

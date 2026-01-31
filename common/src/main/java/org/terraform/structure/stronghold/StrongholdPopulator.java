@@ -8,8 +8,9 @@ import org.terraform.data.CoordPair;
 import org.terraform.data.MegaChunk;
 import org.terraform.data.TerraformWorld;
 import org.terraform.main.TerraformGeneratorPlugin;
-import org.terraform.main.config.TConfig;
+import org.terraform.main.TConfig;
 import org.terraform.structure.SingleMegaChunkStructurePopulator;
+import org.terraform.structure.StructureLocator;
 import org.terraform.structure.room.CubeRoom;
 import org.terraform.structure.room.RoomLayout;
 import org.terraform.structure.room.RoomLayoutGenerator;
@@ -242,7 +243,7 @@ public class StrongholdPopulator extends SingleMegaChunkStructurePopulator {
     }
 
     // This has to be kept. It is used to locate strongholds
-    public int[] getNearestFeature(@NotNull TerraformWorld tw, int rawX, int rawZ) {
+    public StructureLocator.StructureLocation getNearestFeature(@NotNull TerraformWorld tw, int rawX, int rawZ) {
         double minDistanceSquared = Double.MAX_VALUE;
         CoordPair min = null;
         for (CoordPair pos : strongholdPositions(tw)) {
@@ -260,7 +261,7 @@ public class StrongholdPopulator extends SingleMegaChunkStructurePopulator {
             }
         }
         assert min != null;
-        return new int[] {min.x(),min.z()};
+        return new StructureLocator.StructureLocation(min.x(),min.z());
     }
 
 

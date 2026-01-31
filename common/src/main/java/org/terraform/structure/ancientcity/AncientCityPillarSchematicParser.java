@@ -6,7 +6,6 @@ import org.bukkit.block.data.BlockData;
 import org.jetbrains.annotations.NotNull;
 import org.terraform.data.SimpleBlock;
 import org.terraform.schematic.SchematicParser;
-import org.terraform.utils.version.V_1_19;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -30,7 +29,7 @@ public class AncientCityPillarSchematicParser extends SchematicParser {
     public void applyData(@NotNull SimpleBlock block, @NotNull BlockData data) {
         Random rand = new Random();
         totalCount += 1;
-        if (block.isSolid() && block.getType() != V_1_19.SCULK_VEIN) {
+        if (block.isSolid() && block.getType() != Material.SCULK_VEIN) {
             failCount += 1;
             return;
         }

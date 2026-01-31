@@ -4,14 +4,11 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.terraform.data.MegaChunk;
 import org.terraform.data.TerraformWorld;
-import org.terraform.main.TerraformGeneratorPlugin;
-import org.terraform.main.config.TConfig;
+import org.terraform.main.TConfig;
 import org.terraform.structure.ancientcity.AncientCityPopulator;
 import org.terraform.structure.catacombs.CatacombsPopulator;
 import org.terraform.structure.caves.LargeCavePopulator;
-import org.terraform.structure.mineshaft.BadlandsMinePopulator;
 import org.terraform.structure.mineshaft.MineshaftPopulator;
-import org.terraform.structure.monument.MonumentPopulator;
 import org.terraform.structure.pillager.mansion.MansionPopulator;
 import org.terraform.structure.pillager.outpost.OutpostPopulator;
 import org.terraform.structure.pyramid.PyramidPopulator;
@@ -27,9 +24,7 @@ import org.terraform.structure.trailruins.TrailRuinsPopulator;
 import org.terraform.structure.trialchamber.TrialChamberPopulator;
 import org.terraform.structure.village.VillagePopulator;
 import org.terraform.structure.villagehouse.VillageHousePopulator;
-import org.terraform.structure.warmoceanruins.WarmOceanRuinsPopulator;
 import org.terraform.utils.datastructs.ConcurrentLRUCache;
-import org.terraform.utils.version.Version;
 
 import java.util.*;
 import java.util.Map.Entry;
@@ -44,7 +39,7 @@ public class StructureRegistry {
     public static final Map<StructureType, SingleMegaChunkStructurePopulator[]> largeStructureRegistry = new EnumMap<>(
             StructureType.class);
     public static final Collection<MultiMegaChunkStructurePopulator> smallStructureRegistry = new ArrayList<>();
-    private static final ConcurrentLRUCache<MegaChunkKey, SingleMegaChunkStructurePopulator[]> queryCache
+    public static final ConcurrentLRUCache<MegaChunkKey, SingleMegaChunkStructurePopulator[]> STRUCTURE_QUERY_CACHE
             = new ConcurrentLRUCache<>("structureQueryCache",50, (MegaChunkKey key)->{
         TerraformWorld tw = key.tw;
         MegaChunk mc = key.mc;
@@ -123,20 +118,15 @@ public class StructureRegistry {
         registerStructure(StructureType.VILLAGE, new OutpostPopulator());
 
         registerStructure(StructureType.MEGA_DUNGEON, new PyramidPopulator());
-        registerStructure(StructureType.MEGA_DUNGEON, new MonumentPopulator());
         registerStructure(StructureType.MEGA_DUNGEON, new StrongholdPopulator());
         registerStructure(StructureType.MEGA_DUNGEON, new MansionPopulator());
         registerStructure(StructureType.MEGA_DUNGEON, new AncientCityPopulator());
-        if (Version.VERSION.isAtLeast(Version.v1_21)) {
-            registerStructure(StructureType.MEGA_DUNGEON, new TrialChamberPopulator());
-        }
+        registerStructure(StructureType.MEGA_DUNGEON, new TrialChamberPopulator());
 
         registerStructure(StructureType.LARGE_CAVE, new LargeCavePopulator());
 
         registerStructure(StructureType.LARGE_MISC, new MineshaftPopulator());
         registerStructure(StructureType.LARGE_MISC, new CatacombsPopulator());
-        registerStructure(StructureType.LARGE_MISC, new BadlandsMinePopulator());
-        registerStructure(StructureType.LARGE_MISC, new WarmOceanRuinsPopulator());
         registerStructure(StructureType.LARGE_MISC, new TrailRuinsPopulator());
 
         registerStructure(StructureType.SMALL, new SmallDungeonPopulator());
@@ -170,7 +160,7 @@ public class StructureRegistry {
     public static SingleMegaChunkStructurePopulator[] getLargeStructureForMegaChunk(@NotNull TerraformWorld tw,
                                                                                     @NotNull MegaChunk mc)
     {
-        return queryCache.get(new MegaChunkKey(tw,mc));
+        return STRUCTURE_QUERY_CACHE.get(new MegaChunkKey(tw,mc));
     }
 
     // Implementing FisherYates shuffle
@@ -206,13 +196,11 @@ public class StructureRegistry {
                 System.arraycopy(existing, 0, pops, 0, existing.length);
                 System.arraycopy(old, 0, pops, existing.length, 1);
             }
-            TerraformGeneratorPlugin.logger.info("[Structure Registry] Registered Large Structure: " + pop.getClass()
-                                                                                                          .getSimpleName());
+            //TerraformGeneratorPlugin.logger.info("[Structure Registry] Registered Large Structure: " + pop.getClass().getSimpleName());
             largeStructureRegistry.put(type, pops);
         }
         else if (pop instanceof MultiMegaChunkStructurePopulator) {
-            TerraformGeneratorPlugin.logger.info("[Structure Registry] Registered Small Structure: " + pop.getClass()
-                                                                                                          .getSimpleName());
+            //TerraformGeneratorPlugin.logger.info("[Structure Registry] Registered Small Structure: " + pop.getClass().getSimpleName());
             smallStructureRegistry.add((MultiMegaChunkStructurePopulator) pop);
         }
 

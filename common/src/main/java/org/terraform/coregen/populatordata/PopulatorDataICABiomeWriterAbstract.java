@@ -9,8 +9,7 @@ public abstract class PopulatorDataICABiomeWriterAbstract extends PopulatorDataI
 
     public abstract void setBiome(int rawX, int rawY, int rawZ, CustomBiomeType cbt, Biome fallback);
 
-    public void setBiome(int rawX, int rawY, int rawZ, @NotNull BiomeBank biomebank)
-    {
+    public void setBiome(int rawX, int rawY, int rawZ, @NotNull BiomeBank biomebank) {
         setBiome(rawX, rawY, rawZ, biomebank.getHandler().getCustomBiome(), biomebank.getHandler().getBiome());
     }
 

@@ -3,15 +3,13 @@ package org.terraform.biome.flat;
 import org.bukkit.Material;
 import org.bukkit.block.Biome;
 import org.jetbrains.annotations.NotNull;
-import org.terraform.biome.BiomeBank;
 import org.terraform.coregen.populatordata.PopulatorDataAbstract;
-import org.terraform.data.SimpleBlock;
 import org.terraform.data.SimpleLocation;
 import org.terraform.data.TerraformWorld;
-import org.terraform.main.config.TConfig;
-import org.terraform.small_items.PlantBuilder;
+import org.terraform.main.TConfig;
 import org.terraform.tree.FractalTreeBuilder;
 import org.terraform.tree.FractalTypes;
+import org.terraform.tree.PlantBuilder;
 import org.terraform.tree.TreeDB;
 import org.terraform.utils.BlockUtils;
 import org.terraform.utils.GenUtils;
@@ -38,17 +36,9 @@ public class SparseJungleHandler extends JungleHandler {
         // populateLargeItems
         // Generate grass
         if (BlockUtils.isDirtLike(data.getType(rawX, surfaceY, rawZ))) {
-            if (BlockUtils.isAir(data.getType(rawX, surfaceY + 1, rawZ))
-                && GenUtils.chance(2, 7)) {
-                if (random.nextBoolean()) {
-                    GenUtils.weightedRandomSmallItem(random, PlantBuilder.GRASS, 5, BlockUtils.pickFlower(), 1)
-                            .build(data, rawX, surfaceY + 1, rawZ);
-                }
-                else {
-                    if (BlockUtils.isAir(data.getType(rawX, surfaceY + 2, rawZ))) {
-                        PlantBuilder.TALL_GRASS.build(data, rawX, surfaceY + 1, rawZ);
-                    }
-                }
+            if (BlockUtils.isAir(data.getType(rawX, surfaceY + 1, rawZ)) && GenUtils.chance(2, 7)) {
+                GenUtils.weightedRandomSmallItem(random, PlantBuilder.GRASS, 5, BlockUtils.pickFlower(), 1)
+                        .build(data, rawX, surfaceY + 1, rawZ);
             }
         }
     }
@@ -68,7 +58,8 @@ public class SparseJungleHandler extends JungleHandler {
                 if (data.getBiome(sLoc.getX(), sLoc.getZ()) == getBiome()
                     && BlockUtils.isDirtLike(data.getType(sLoc.getX(), sLoc.getY(), sLoc.getZ())))
                 {
-                    new FractalTreeBuilder(FractalTypes.Tree.JUNGLE_BIG).build(tw,
+                    new FractalTreeBuilder(FractalTypes.Tree.JUNGLE_BIG).build(
+                            tw,
                             data,
                             sLoc.getX(),
                             sLoc.getY(),
@@ -86,15 +77,14 @@ public class SparseJungleHandler extends JungleHandler {
             int treeY = GenUtils.getHighestGround(data, sLoc.getX(), sLoc.getZ());
             sLoc = sLoc.getAtY(treeY);
 
-            if (data.getBiome(sLoc.getX(), sLoc.getZ()) == getBiome() && BlockUtils.isDirtLike(data.getType(sLoc.getX(),
+            if (data.getBiome(sLoc.getX(), sLoc.getZ()) == getBiome() && BlockUtils.isDirtLike(data.getType(
+                    sLoc.getX(),
                     sLoc.getY(),
-                    sLoc.getZ())))
+                    sLoc.getZ()
+            )))
             {
                 if (GenUtils.chance(random, 1000 - TConfig.c.BIOME_JUNGLE_STATUE_CHANCE, 1000)) {
                     TreeDB.spawnSmallJungleTree(false, tw, data, sLoc.getX(), sLoc.getY(), sLoc.getZ());
-                }
-                else {
-                    spawnStatue(random, data, sLoc);
                 }
             }
         }
@@ -103,8 +93,7 @@ public class SparseJungleHandler extends JungleHandler {
             for (int z = data.getChunkZ() * 16; z < data.getChunkZ() * 16 + 16; z++) {
                 int y = GenUtils.getHighestGround(data, x, z);
                 //Bushes
-                if (GenUtils.chance(1, 95))
-                {
+                if (GenUtils.chance(1, 95)) {
                     createBush(data, 0, x, y, z);
                 }
 

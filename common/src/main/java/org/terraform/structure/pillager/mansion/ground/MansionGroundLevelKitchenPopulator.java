@@ -12,7 +12,7 @@ import org.terraform.data.SimpleBlock;
 import org.terraform.data.Wall;
 import org.terraform.main.TerraformGeneratorPlugin;
 import org.terraform.schematic.TerraSchematic;
-import org.terraform.small_items.DecorationsBuilder;
+import org.terraform.tree.DecorationsBuilder;
 import org.terraform.structure.pillager.mansion.MansionInternalWallState;
 import org.terraform.structure.pillager.mansion.MansionRoomPopulator;
 import org.terraform.structure.pillager.mansion.MansionRoomSchematicParser;
@@ -43,10 +43,10 @@ public class MansionGroundLevelKitchenPopulator extends MansionRoomPopulator {
     public void decorateRoom(@NotNull PopulatorDataAbstract data, @NotNull Random random) {
         int[] lowerBounds = this.getRoom().getLowerCorner(1);
         BlockFace randomFace = new BlockFace[] {BlockFace.NORTH, BlockFace.SOUTH}[random.nextInt(2)];
-        TerraformGeneratorPlugin.logger.info("Kitchen at "
+/*        TerraformGeneratorPlugin.logger.info("Kitchen at "
                                              + this.getRoom().getSimpleLocation()
                                              + " picking face: "
-                                             + randomFace);
+                                             + randomFace);*/
         try {
             if (randomFace == BlockFace.NORTH) {
                 SimpleBlock target = new SimpleBlock(

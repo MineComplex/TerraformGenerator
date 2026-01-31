@@ -6,7 +6,7 @@ import org.jetbrains.annotations.NotNull;
 import org.terraform.coregen.TerraLootTable;
 import org.terraform.coregen.populatordata.PopulatorDataAbstract;
 import org.terraform.data.SimpleBlock;
-import org.terraform.main.config.TConfig;
+import org.terraform.main.TConfig;
 import org.terraform.schematic.SchematicParser;
 import org.terraform.utils.BlockUtils;
 import org.terraform.utils.GenUtils;

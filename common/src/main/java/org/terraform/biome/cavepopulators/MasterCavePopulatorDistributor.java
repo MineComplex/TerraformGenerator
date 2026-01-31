@@ -8,8 +8,8 @@ import org.terraform.coregen.populatordata.PopulatorDataAbstract;
 import org.terraform.data.CoordPair;
 import org.terraform.data.SimpleBlock;
 import org.terraform.data.TerraformWorld;
+import org.terraform.main.TConfig;
 import org.terraform.main.TerraformGeneratorPlugin;
-import org.terraform.main.config.TConfig;
 import org.terraform.utils.BlockUtils;
 import org.terraform.utils.GenUtils;
 
@@ -24,14 +24,49 @@ public class MasterCavePopulatorDistributor {
 
     private static final HashSet<Class<?>> populatedBefore = new HashSet<>();
 
-    public void populate(@NotNull TerraformWorld tw, @NotNull Random random, @NotNull PopulatorDataAbstract data, boolean generateClusters) {
-        HashMap<CoordPair, CaveClusterRegistry> clusters = generateClusters ?
-           calculateClusterLocations(
+    /**
+     * Uses the ChunkCache's optimised boolean holder
+     */
+    public static @NotNull Collection<CoordPair> getCaveCeilFloors(PopulatorDataAbstract data,
+                                                                   int x,
+                                                                   int z,
+                                                                   int minimumHeight,
+                                                                   ChunkCache cache)
+    {
+        int y = cache.getTransformedHeight(x & 0xF, z & 0xF);
+        final int INVAL = TerraformGeneratorPlugin.injector.getMinY() - 1;
+        int[] pair = {INVAL, INVAL};
+        List<CoordPair> list = new ArrayList<>();
+        // Subtract one as the first cave floor cannot be the surface
+        for (int ny = y - 1; ny > TerraformGeneratorPlugin.injector.getMinY(); ny--) {
+            //Material type = data.getType(x, ny, z); //maybe the rocks are the friends we make along the way
+            if (cache.isSolid(x & 0xf, ny, z & 0xf)) {
+                pair[1] = ny;
+                if (pair[0] - pair[1] >= minimumHeight) {
+                    list.add(new CoordPair(pair[0], pair[1]));
+                }
+                pair[0] = INVAL;
+                pair[1] = INVAL;
+            }
+            else if (pair[0] == INVAL) {
+                pair[0] = ny;
+            }
+        }
+
+        return list;
+    }
+
+    public void populate(@NotNull TerraformWorld tw,
+                         @NotNull Random random,
+                         @NotNull PopulatorDataAbstract data,
+                         boolean generateClusters)
+    {
+        HashMap<CoordPair, CaveClusterRegistry> clusters = generateClusters ? calculateClusterLocations(
                 random,
                 tw,
                 data.getChunkX(),
                 data.getChunkZ()
-           ) : new HashMap<>();
+        ) : new HashMap<>();
         ChunkCache cache = TerraformGenerator.getCache(tw, data.getChunkX(), data.getChunkZ());
 
         for (int x = data.getChunkX() * 16; x < data.getChunkX() * 16 + 16; x++) {
@@ -86,23 +121,24 @@ public class MasterCavePopulatorDistributor {
                          */
                         // If there is no cluster to spawn, then revert to the
                         // basic biome-based cave populator
-                        pop = (clusterPair == 0 && reg != null && TConfig.c.FEATURE_CAVECLUSTERS_ENABLED) ?
-                              reg.getPopulator(random) : bank.getCavePop();
+                        pop = (clusterPair == 0 && reg != null && TConfig.c.FEATURE_CAVECLUSTERS_ENABLED)
+                              ? reg.getPopulator(random)
+                              : bank.getCavePop();
                     }
                     clusterPair--;
 
-                    if(!(pop instanceof AbstractCaveClusterPopulator)
-                        && !TConfig.c.FEATURE_CAVEDECORATORS_ENABLED)
+                    if (!(pop instanceof AbstractCaveClusterPopulator) && !TConfig.c.FEATURE_CAVEDECORATORS_ENABLED) {
                         pop = new EmptyCavePopulator();
+                    }
 
                     pop.populate(tw, random, ceil, floor);
 
                     // Locating and debug print
                     if (populatedBefore.add(pop.getClass())) {
-                        TerraformGeneratorPlugin.logger.info("Spawning "
+/*                        TerraformGeneratorPlugin.logger.info("Spawning "
                                                              + pop.getClass().getSimpleName()
                                                              + " at "
-                                                             + floor);
+                                                             + floor);*/
                     }
                 }
             }
@@ -116,14 +152,13 @@ public class MasterCavePopulatorDistributor {
     {
         HashMap<CoordPair, CaveClusterRegistry> locs = new HashMap<>();
         //Don't waste compute if caves don't exist
-        if(!TConfig.areCavesEnabled()) return locs;
+        if (!TConfig.areCavesEnabled()) {
+            return locs;
+        }
 
         for (CaveClusterRegistry type : CaveClusterRegistry.values()) {
-            CoordPair[] positions = GenUtils.vectorRandomObjectPositions(tw.getHashedRand(
-                            chunkX,
-                            type.getHashSeed(),
-                            chunkZ
-                    ).nextInt(9999999),
+            CoordPair[] positions = GenUtils.vectorRandomObjectPositions(
+                    tw.getHashedRand(chunkX, type.getHashSeed(), chunkZ).nextInt(9999999),
                     chunkX,
                     chunkZ,
                     type.getSeparation(),
@@ -144,37 +179,5 @@ public class MasterCavePopulatorDistributor {
         }
 
         return locs;
-    }
-
-    /**
-     * Uses the ChunkCache's optimised boolean holder
-     */
-    public static @NotNull Collection<CoordPair> getCaveCeilFloors(PopulatorDataAbstract data,
-                                                                   int x,
-                                                                   int z,
-                                                                   int minimumHeight,
-                                                                   ChunkCache cache)
-    {
-        int y = cache.getTransformedHeight(x&0xF, z&0xF);
-        final int INVAL = TerraformGeneratorPlugin.injector.getMinY() - 1;
-        int[] pair = {INVAL, INVAL};
-        List<CoordPair> list = new ArrayList<>();
-        // Subtract one as the first cave floor cannot be the surface
-        for (int ny = y - 1; ny > TerraformGeneratorPlugin.injector.getMinY(); ny--) {
-            //Material type = data.getType(x, ny, z); //maybe the rocks are the friends we make along the way
-            if (cache.isSolid(x&0xf,ny,z&0xf)) {
-                pair[1] = ny;
-                if (pair[0] - pair[1] >= minimumHeight) {
-                    list.add(new CoordPair(pair[0],pair[1]));
-                }
-                pair[0] = INVAL;
-                pair[1] = INVAL;
-            }
-            else if (pair[0] == INVAL) {
-                pair[0] = ny;
-            }
-        }
-
-        return list;
     }
 }

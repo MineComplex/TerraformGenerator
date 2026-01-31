@@ -5,7 +5,7 @@ import org.bukkit.block.BlockFace;
 import org.jetbrains.annotations.NotNull;
 import org.terraform.data.SimpleBlock;
 import org.terraform.data.Wall;
-import org.terraform.main.config.TConfig;
+import org.terraform.main.TConfig;
 
 import java.util.ArrayDeque;
 import java.util.HashSet;
@@ -163,11 +163,23 @@ public class StalactiteBuilder {
                  */
                 double coneEqn = facingUp ?
                                  // Stalagmites. Minus as it grows up
-                                 Math.pow(neighbour.getX() - root.getX(), 2) + Math.pow(neighbour.getZ() - root.getZ(),
-                                         2) - Math.pow((yOffset - height) / (height / baseRadius), 2) :
+                                 Math.pow(neighbour.getX() - root.getX(), 2) + Math.pow(
+                                         neighbour.getZ() - root.getZ(),
+                                         2
+                                 ) - Math.pow(
+                                         (yOffset - height) / (height
+                                                               / baseRadius),
+                                         2
+                                 ) :
                                  // Stalactites. Plus as it grows down
-                                 Math.pow(neighbour.getX() - root.getX(), 2) + Math.pow(neighbour.getZ() - root.getZ(),
-                                         2) - Math.pow((yOffset + height) / (height / baseRadius), 2);
+                                 Math.pow(neighbour.getX() - root.getX(), 2) + Math.pow(
+                                         neighbour.getZ() - root.getZ(),
+                                         2
+                                 ) - Math.pow(
+                                         (yOffset + height) / (height
+                                                               / baseRadius),
+                                         2
+                                 );
                 // Only make cones larger, not smaller. This prevents blobs.
                 // coneEqn -= Math.abs(noise.GetNoise(neighbour.getX(), neighbour.getZ()));
                 if (coneEqn > 0) {

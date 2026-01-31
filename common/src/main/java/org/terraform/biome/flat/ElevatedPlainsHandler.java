@@ -13,11 +13,11 @@ import org.terraform.coregen.populatordata.PopulatorDataAbstract;
 import org.terraform.data.SimpleBlock;
 import org.terraform.data.SimpleLocation;
 import org.terraform.data.TerraformWorld;
-import org.terraform.main.config.TConfig;
-import org.terraform.small_items.PlantBuilder;
+import org.terraform.main.TConfig;
 import org.terraform.tree.FractalLeaves;
 import org.terraform.tree.FractalTreeBuilder;
 import org.terraform.tree.FractalTypes;
+import org.terraform.tree.PlantBuilder;
 import org.terraform.utils.BlockUtils;
 import org.terraform.utils.GenUtils;
 
@@ -73,8 +73,7 @@ public class ElevatedPlainsHandler extends BiomeHandler {
                                    int rawZ,
                                    @NotNull PopulatorDataAbstract data)
     {
-        boolean gradient = HeightMap.getTrueHeightGradient(data, rawX, rawZ, 3)
-                           <= TConfig.c.MISC_TREES_GRADIENT_LIMIT;
+        boolean gradient = HeightMap.getTrueHeightGradient(data, rawX, rawZ, 3) <= TConfig.c.MISC_TREES_GRADIENT_LIMIT;
         if (gradient) {
             data.setType(rawX, surfaceY, rawZ, Material.GRASS_BLOCK);
             if (random.nextBoolean()) {
@@ -82,26 +81,20 @@ public class ElevatedPlainsHandler extends BiomeHandler {
             }
         }
 
-        if (data.getType(rawX, surfaceY, rawZ) == Material.GRASS_BLOCK && !BlockUtils.isWet(new SimpleBlock(data,
+        if (data.getType(rawX, surfaceY, rawZ) == Material.GRASS_BLOCK && !BlockUtils.isWet(new SimpleBlock(
+                data,
                 rawX,
                 surfaceY,
-                rawZ)))
+                rawZ
+        )))
         {
 
             if (GenUtils.chance(random, 1, 10)) { // Grass
                 if (GenUtils.chance(random, 6, 10)) {
                     PlantBuilder.GRASS.build(data, rawX, surfaceY + 1, rawZ);
-                    if (random.nextBoolean()) {
-                        PlantBuilder.TALL_GRASS.build(data, rawX, surfaceY + 1, rawZ);
-                    }
                 }
                 else {
-                    if (GenUtils.chance(random, 7, 10)) {
-                        BlockUtils.pickFlower().build(data, rawX, surfaceY + 1, rawZ);
-                    }
-                    else {
-                        BlockUtils.pickTallFlower().build(data, rawX, surfaceY + 1, rawZ);
-                    }
+                    BlockUtils.pickFlower().build(data, rawX, surfaceY + 1, rawZ);
                 }
             }
         }
@@ -175,7 +168,8 @@ public class ElevatedPlainsHandler extends BiomeHandler {
                                                             .setConeLeaves(true));
 
                 if (builder.build(tw, data, sLoc.getX(), sLoc.getY(), sLoc.getZ())) {
-                    BlockUtils.replaceCircularPatch(random.nextInt(99999),
+                    BlockUtils.replaceCircularPatch(
+                            random.nextInt(99999),
                             2.5f,
                             new SimpleBlock(data, sLoc),
                             Material.PODZOL

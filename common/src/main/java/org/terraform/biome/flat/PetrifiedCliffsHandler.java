@@ -14,9 +14,9 @@ import org.terraform.coregen.populatordata.PopulatorDataAbstract;
 import org.terraform.data.SimpleBlock;
 import org.terraform.data.SimpleLocation;
 import org.terraform.data.TerraformWorld;
-import org.terraform.small_items.PlantBuilder;
 import org.terraform.tree.FractalTreeBuilder;
 import org.terraform.tree.FractalTypes.Tree;
+import org.terraform.tree.PlantBuilder;
 import org.terraform.utils.BlockUtils;
 import org.terraform.utils.GenUtils;
 import org.terraform.utils.noise.FastNoise;
@@ -24,14 +24,13 @@ import org.terraform.utils.noise.NoiseCacheHandler;
 import org.terraform.utils.noise.NoiseCacheHandler.NoiseCacheEntry;
 
 import java.util.EnumSet;
-import java.util.HashSet;
 import java.util.Random;
 
 public class PetrifiedCliffsHandler extends BiomeHandler {
     public static final EnumSet<Material> endWithStones = EnumSet.of(
-        Material.STONE,
-        Material.MOSSY_COBBLESTONE,
-        Material.COBBLESTONE
+            Material.STONE,
+            Material.MOSSY_COBBLESTONE,
+            Material.COBBLESTONE
     );
     static BiomeBlender biomeBlender;
 
@@ -104,17 +103,9 @@ public class PetrifiedCliffsHandler extends BiomeHandler {
             if (GenUtils.chance(random, 1, 10)) { // Grass
                 if (GenUtils.chance(random, 6, 10)) {
                     PlantBuilder.GRASS.build(data, rawX, surfaceY + 1, rawZ);
-                    if (random.nextBoolean()) {
-                        PlantBuilder.TALL_GRASS.build(data, rawX, surfaceY + 1, rawZ);
-                    }
                 }
                 else {
-                    if (GenUtils.chance(random, 7, 10)) {
-                        BlockUtils.pickFlower().build(data, rawX, surfaceY + 1, rawZ);
-                    }
-                    else {
-                        BlockUtils.pickTallFlower().build(data, rawX, surfaceY + 1, rawZ);
-                    }
+                    BlockUtils.pickFlower().build(data, rawX, surfaceY + 1, rawZ);
                 }
             }
         }
@@ -141,21 +132,25 @@ public class PetrifiedCliffsHandler extends BiomeHandler {
                                  int chunkZ)
     {
 
-        FastNoise noise = NoiseCacheHandler.getNoise(tw, NoiseCacheEntry.BIOME_PETRIFIEDCLIFFS_CLIFFNOISE, world -> {
-            FastNoise n = new FastNoise(tw.getHashedRand(123, 2222, 1111).nextInt(99999));
-            n.SetNoiseType(FastNoise.NoiseType.SimplexFractal);
-            n.SetFractalOctaves(3);
-            n.SetFrequency(0.03f);
-            return n;
-        });
+        FastNoise noise = NoiseCacheHandler.getNoise(
+                tw, NoiseCacheEntry.BIOME_PETRIFIEDCLIFFS_CLIFFNOISE, world -> {
+                    FastNoise n = new FastNoise(tw.getHashedRand(123, 2222, 1111).nextInt(99999));
+                    n.SetNoiseType(FastNoise.NoiseType.SimplexFractal);
+                    n.SetFractalOctaves(3);
+                    n.SetFrequency(0.03f);
+                    return n;
+                }
+        );
 
-        FastNoise details = NoiseCacheHandler.getNoise(tw, NoiseCacheEntry.BIOME_PETRIFIEDCLIFFS_INNERNOISE, world -> {
-            FastNoise n = new FastNoise(tw.getHashedRand(111, 102, 1).nextInt(99999));
-            n.SetNoiseType(FastNoise.NoiseType.SimplexFractal);
-            n.SetFractalOctaves(3);
-            n.SetFrequency(0.05f);
-            return n;
-        });
+        FastNoise details = NoiseCacheHandler.getNoise(
+                tw, NoiseCacheEntry.BIOME_PETRIFIEDCLIFFS_INNERNOISE, world -> {
+                    FastNoise n = new FastNoise(tw.getHashedRand(111, 102, 1).nextInt(99999));
+                    n.SetNoiseType(FastNoise.NoiseType.SimplexFractal);
+                    n.SetFractalOctaves(3);
+                    n.SetFrequency(0.05f);
+                    return n;
+                }
+        );
         // Generates -0.8 to 0.8
         int rawX = chunkX * 16 + x;
         int rawZ = chunkZ * 16 + z;
@@ -176,21 +171,27 @@ public class PetrifiedCliffsHandler extends BiomeHandler {
         }
 
         for (int y = 1; y <= (int) Math.round(platformHeight); y++) {
-            double detailsNoiseMultiplier = Math.pow(1.0 - (1.0 / (Math.pow(platformHeight / 2.0, 2))) * Math.pow(
-                    y
-                    - platformHeight
-                      / 2.0,
-                    2
-            ), 2);
+            double detailsNoiseMultiplier = Math.pow(
+                    1.0 - (1.0 / (Math.pow(platformHeight / 2.0, 2))) * Math.pow(
+                            y
+                            -
+                            platformHeight
+                            / 2.0,
+                            2
+                    ), 2
+            );
             double detailsNoise = details.GetNoise(rawX, height + y, rawZ);
 
             if (0.85 + detailsNoise > detailsNoiseMultiplier) {
-                chunk.setBlock(x, height + y, z, GenUtils.randChoice(Material.STONE,
-                        Material.STONE,
-                        Material.STONE,
-                        Material.COBBLESTONE,
-                        Material.MOSSY_COBBLESTONE
-                ));
+                chunk.setBlock(
+                        x, height + y, z, GenUtils.randChoice(
+                                Material.STONE,
+                                Material.STONE,
+                                Material.STONE,
+                                Material.COBBLESTONE,
+                                Material.MOSSY_COBBLESTONE
+                        )
+                );
                 cache.writeTransformedHeight(x, z, (short) Math.max(cache.getTransformedHeight(x, z), height + y));
             }
         }
@@ -208,9 +209,11 @@ public class PetrifiedCliffsHandler extends BiomeHandler {
             if (random.nextBoolean()) {
                 int treeY = GenUtils.getTrueHighestBlock(data, sLoc.getX(), sLoc.getZ());
                 sLoc = sLoc.getAtY(treeY);
-                if (data.getBiome(sLoc.getX(), sLoc.getZ()) == getBiome() && data.getType(sLoc.getX(),
+                if (data.getBiome(sLoc.getX(), sLoc.getZ()) == getBiome() && data.getType(
+                        sLoc.getX(),
                         sLoc.getY(),
-                        sLoc.getZ()).toString().endsWith("STONE"))
+                        sLoc.getZ()
+                ).toString().endsWith("STONE"))
                 {
                     Tree treeType = switch (random.nextInt(3)) {
                         case 0 -> Tree.ANDESITE_PETRIFIED_SMALL;

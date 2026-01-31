@@ -8,7 +8,7 @@ import org.terraform.coregen.populatordata.PopulatorDataAbstract;
 import org.terraform.data.SimpleBlock;
 import org.terraform.data.TerraformWorld;
 import org.terraform.data.Wall;
-import org.terraform.main.config.TConfig;
+import org.terraform.main.TConfig;
 import org.terraform.utils.BlockUtils;
 import org.terraform.utils.GenUtils;
 
@@ -143,14 +143,17 @@ public class TreeDB {
 
         Random rand = tw.getHashedRand(centre.getX(), centre.getY(), centre.getZ(), 178782);
         for (int i = 0; i < 4 + rand.nextInt(8); i++) {
-            SimpleBlock core = centre.getRelative(GenUtils.getSign(rand) * GenUtils.randInt(4, 8),
+            SimpleBlock core = centre.getRelative(
+                                             GenUtils.getSign(rand) * GenUtils.randInt(4, 8),
                                              0,
                                              GenUtils.getSign(rand) * GenUtils.randInt(4, 8)
                                      )
                                      .getGround()
                                      .getUp();
             //Sometimes these spawn on the sides of mountains in an ugly way.
-            if(core.getY() > TerraformGenerator.seaLevel + 2) continue;
+            if (core.getY() > TerraformGenerator.seaLevel + 2) {
+                continue;
+            }
 
             int min = core.getY() < TerraformGenerator.seaLevel ? TerraformGenerator.seaLevel - core.getY() + 1 : 1;
             core.LPillar(min + rand.nextInt(4), type);

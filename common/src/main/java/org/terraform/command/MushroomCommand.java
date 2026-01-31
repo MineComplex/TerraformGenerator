@@ -80,7 +80,8 @@ public class MushroomCommand extends TerraCommand {
         }
 
         if (new Random().nextBoolean()) {
-            new MushroomBuilder(FractalTypes.Mushroom.GIANT_RED_MUSHROOM).build(TerraformWorld.get(p.getWorld()),
+            new MushroomBuilder(FractalTypes.Mushroom.GIANT_RED_MUSHROOM).build(
+                    TerraformWorld.get(p.getWorld()),
                     data,
                     x,
                     y,
@@ -88,7 +89,8 @@ public class MushroomCommand extends TerraCommand {
             );
         }
         else {
-            new MushroomBuilder(FractalTypes.Mushroom.GIANT_BROWN_MUSHROOM).build(TerraformWorld.get(p.getWorld()),
+            new MushroomBuilder(FractalTypes.Mushroom.GIANT_BROWN_MUSHROOM).build(
+                    TerraformWorld.get(p.getWorld()),
                     data,
                     x,
                     y,

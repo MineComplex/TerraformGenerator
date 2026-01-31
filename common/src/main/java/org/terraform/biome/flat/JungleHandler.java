@@ -1,9 +1,7 @@
 package org.terraform.biome.flat;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Biome;
-import org.bukkit.block.data.BlockData;
 import org.jetbrains.annotations.NotNull;
 import org.terraform.biome.BiomeBank;
 import org.terraform.biome.BiomeHandler;
@@ -12,13 +10,10 @@ import org.terraform.coregen.populatordata.PopulatorDataAbstract;
 import org.terraform.data.SimpleBlock;
 import org.terraform.data.SimpleLocation;
 import org.terraform.data.TerraformWorld;
-import org.terraform.main.TerraformGeneratorPlugin;
-import org.terraform.main.config.TConfig;
-import org.terraform.schematic.SchematicParser;
-import org.terraform.schematic.TerraSchematic;
-import org.terraform.small_items.PlantBuilder;
+import org.terraform.main.TConfig;
 import org.terraform.tree.FractalTreeBuilder;
 import org.terraform.tree.FractalTypes;
+import org.terraform.tree.PlantBuilder;
 import org.terraform.tree.TreeDB;
 import org.terraform.utils.BlockUtils;
 import org.terraform.utils.GenUtils;
@@ -27,7 +22,6 @@ import org.terraform.utils.noise.FastNoise.NoiseType;
 import org.terraform.utils.noise.NoiseCacheHandler;
 import org.terraform.utils.noise.NoiseCacheHandler.NoiseCacheEntry;
 
-import java.util.Locale;
 import java.util.Random;
 
 public class JungleHandler extends BiomeHandler {
@@ -95,7 +89,7 @@ public class JungleHandler extends BiomeHandler {
     @Override
     public Material @NotNull [] getSurfaceCrust(@NotNull Random rand) {
         return new Material[] {
-                GenUtils.weightedRandomMaterial(rand, Material.GRASS_BLOCK, 35, Material.PODZOL, 5),
+                GenUtils.weightedRandomMaterial(rand, Material.GRASS_BLOCK, 35, Material.PODZOL, 2),
                 Material.DIRT,
                 Material.DIRT,
                 GenUtils.randChoice(rand, Material.DIRT, Material.DIRT, Material.STONE),
@@ -117,15 +111,8 @@ public class JungleHandler extends BiomeHandler {
         // Generate grass
         if (BlockUtils.isDirtLike(data.getType(rawX, surfaceY, rawZ))) {
             if (BlockUtils.isAir(data.getType(rawX, surfaceY + 1, rawZ)) && GenUtils.chance(2, 3)) {
-                if (random.nextBoolean()) {
-                    GenUtils.weightedRandomSmallItem(random, PlantBuilder.GRASS, 5, BlockUtils.pickFlower(), 1)
-                            .build(data, rawX, surfaceY + 1, rawZ);
-                }
-                else {
-                    if (BlockUtils.isAir(data.getType(rawX, surfaceY + 2, rawZ))) {
-                        PlantBuilder.TALL_GRASS.build(data, rawX, surfaceY + 1, rawZ);
-                    }
-                }
+                GenUtils.weightedRandomSmallItem(random, PlantBuilder.GRASS, 5, BlockUtils.pickFlower(), 1)
+                        .build(data, rawX, surfaceY + 1, rawZ);
             }
         }
     }
@@ -136,17 +123,18 @@ public class JungleHandler extends BiomeHandler {
                                    @NotNull PopulatorDataAbstract data)
     {
 
-        FastNoise groundWoodNoise = NoiseCacheHandler.getNoise(tw, NoiseCacheEntry.BIOME_JUNGLE_GROUNDWOOD, world -> {
-            FastNoise n = new FastNoise((int) (world.getSeed() * 12));
-            n.SetNoiseType(NoiseType.SimplexFractal);
-            n.SetFractalOctaves(3);
-            n.SetFrequency(0.07f);
-            return n;
-        });
+        FastNoise groundWoodNoise = NoiseCacheHandler.getNoise(
+                tw, NoiseCacheEntry.BIOME_JUNGLE_GROUNDWOOD, world -> {
+                    FastNoise n = new FastNoise((int) (world.getSeed() * 12));
+                    n.SetNoiseType(NoiseType.SimplexFractal);
+                    n.SetFractalOctaves(3);
+                    n.SetFrequency(0.07f);
+                    return n;
+                }
+        );
 
-        FastNoise groundLeavesNoise = NoiseCacheHandler.getNoise(tw,
-                NoiseCacheEntry.BIOME_JUNGLE_GROUNDLEAVES,
-                world -> {
+        FastNoise groundLeavesNoise = NoiseCacheHandler.getNoise(
+                tw, NoiseCacheEntry.BIOME_JUNGLE_GROUNDLEAVES, world -> {
                     FastNoise n = new FastNoise((int) (world.getSeed() * 2));
                     n.SetNoiseType(NoiseType.SimplexFractal);
                     n.SetFrequency(0.07f);
@@ -163,7 +151,8 @@ public class JungleHandler extends BiomeHandler {
                 if (data.getBiome(sLoc.getX(), sLoc.getZ()) == getBiome()
                     && BlockUtils.isDirtLike(data.getType(sLoc.getX(), sLoc.getY(), sLoc.getZ())))
                 {
-                    new FractalTreeBuilder(FractalTypes.Tree.JUNGLE_BIG).build(tw,
+                    new FractalTreeBuilder(FractalTypes.Tree.JUNGLE_BIG).build(
+                            tw,
                             data,
                             sLoc.getX(),
                             sLoc.getY(),
@@ -181,15 +170,14 @@ public class JungleHandler extends BiomeHandler {
             int treeY = GenUtils.getHighestGround(data, sLoc.getX(), sLoc.getZ());
             sLoc = sLoc.getAtY(treeY);
 
-            if (data.getBiome(sLoc.getX(), sLoc.getZ()) == getBiome() && BlockUtils.isDirtLike(data.getType(sLoc.getX(),
+            if (data.getBiome(sLoc.getX(), sLoc.getZ()) == getBiome() && BlockUtils.isDirtLike(data.getType(
+                    sLoc.getX(),
                     sLoc.getY(),
-                    sLoc.getZ())))
+                    sLoc.getZ()
+            )))
             {
                 if (GenUtils.chance(random, 1000 - TConfig.c.BIOME_JUNGLE_STATUE_CHANCE, 1000)) {
                     TreeDB.spawnSmallJungleTree(false, tw, data, sLoc.getX(), sLoc.getY(), sLoc.getZ());
-                }
-                else {
-                    spawnStatue(random, data, sLoc);
                 }
             }
         }
@@ -239,55 +227,4 @@ public class JungleHandler extends BiomeHandler {
         }
     }
 
-    protected void spawnStatue(@NotNull Random random,
-                             @NotNull PopulatorDataAbstract data,
-                             @NotNull SimpleLocation sLoc)
-    {
-        if (!TConfig.areStructuresEnabled()) {
-            return;
-        }
-
-        try {
-            TerraSchematic schema = TerraSchematic.load("jungle-statue1",
-                    new SimpleBlock(data, sLoc.getX(), sLoc.getY(), sLoc.getZ())
-            );
-            schema.parser = new JungleStatueSchematicParser();
-            schema.setFace(BlockUtils.getDirectBlockFace(random));
-            schema.apply();
-        }
-        catch (Throwable e) {
-            TerraformGeneratorPlugin.logger.stackTrace(e);
-        }
-
-    }
-
-    protected static class JungleStatueSchematicParser extends SchematicParser {
-
-        public void applyData(@NotNull SimpleBlock block, @NotNull BlockData data) {
-            if (data.getMaterial().toString().contains("COBBLESTONE")) {
-                data = Bukkit.createBlockData(data.getAsString()
-                                                  .replaceAll("cobblestone", GenUtils.randChoice(new Random(),
-                                                          Material.COBBLESTONE,
-                                                          Material.ANDESITE,
-                                                          Material.STONE,
-                                                          Material.MOSSY_COBBLESTONE
-                                                  ).toString().toLowerCase(Locale.ENGLISH)));
-                super.applyData(block, data);
-            }
-            else if (data.getMaterial() == Material.STONE_BRICK_STAIRS) {
-                if (new Random().nextBoolean()) {
-                    data = Bukkit.createBlockData(data.getAsString().replaceAll("stone_brick", "mossy_stone_brick"));
-                }
-                super.applyData(block, data);
-            }
-            else {
-                block.setBlockData(data);
-                super.applyData(block, data);
-            }
-
-            if (data.getMaterial().isBlock() && GenUtils.chance(1, 10)) {
-                BlockUtils.vineUp(block, 3);
-            }
-        }
-    }
 }

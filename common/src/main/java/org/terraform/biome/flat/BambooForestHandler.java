@@ -10,8 +10,8 @@ import org.terraform.biome.BiomeHandler;
 import org.terraform.coregen.populatordata.PopulatorDataAbstract;
 import org.terraform.data.SimpleBlock;
 import org.terraform.data.TerraformWorld;
-import org.terraform.main.config.TConfig;
-import org.terraform.small_items.PlantBuilder;
+import org.terraform.main.TConfig;
+import org.terraform.tree.PlantBuilder;
 import org.terraform.utils.BlockUtils;
 import org.terraform.utils.GenUtils;
 import org.terraform.utils.noise.FastNoise;
@@ -52,13 +52,15 @@ public class BambooForestHandler extends BiomeHandler {
                                    int rawZ,
                                    @NotNull PopulatorDataAbstract data)
     {
-        FastNoise pathNoise = NoiseCacheHandler.getNoise(world, NoiseCacheEntry.BIOME_BAMBOOFOREST_PATHNOISE, tw -> {
-            FastNoise n = new FastNoise((int) (tw.getSeed() * 13));
-            n.SetNoiseType(NoiseType.SimplexFractal);
-            n.SetFractalOctaves(3);
-            n.SetFrequency(0.07f);
-            return n;
-        });
+        FastNoise pathNoise = NoiseCacheHandler.getNoise(
+                world, NoiseCacheEntry.BIOME_BAMBOOFOREST_PATHNOISE, tw -> {
+                    FastNoise n = new FastNoise((int) (tw.getSeed() * 13));
+                    n.SetNoiseType(NoiseType.SimplexFractal);
+                    n.SetFractalOctaves(3);
+                    n.SetFrequency(0.07f);
+                    return n;
+                }
+        );
 
         // Podzol Paths
         if (pathNoise.GetNoise(rawX, rawZ) > 0.27) {
@@ -77,17 +79,9 @@ public class BambooForestHandler extends BiomeHandler {
             if (GenUtils.chance(random, 1, 3)) {
                 if (GenUtils.chance(random, 6, 10)) {
                     PlantBuilder.GRASS.build(data, rawX, surfaceY + 1, rawZ);
-                    if (random.nextBoolean()) {
-                        PlantBuilder.TALL_GRASS.build(data, rawX, surfaceY + 1, rawZ);
-                    }
                 }
                 else {
-                    if (GenUtils.chance(random, 7, 10)) {
-                        PlantBuilder.FERN.build(data, rawX, surfaceY + 1, rawZ);
-                    }
-                    else {
-                        PlantBuilder.LARGE_FERN.build(data, rawX, surfaceY + 1, rawZ);
-                    }
+                    PlantBuilder.FERN.build(data, rawX, surfaceY + 1, rawZ);
                 }
             }
         }
@@ -106,7 +100,8 @@ public class BambooForestHandler extends BiomeHandler {
 
                     // Small grass poffs
                     if (TConfig.arePlantsEnabled() && GenUtils.chance(random, 1, 50)) {
-                        BlockUtils.replaceSphere(random.nextInt(424444),
+                        BlockUtils.replaceSphere(
+                                random.nextInt(424444),
                                 2,
                                 3,
                                 2,

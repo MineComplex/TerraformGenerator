@@ -9,7 +9,7 @@ import org.terraform.data.MegaChunk;
 import org.terraform.data.SimpleBlock;
 import org.terraform.data.TerraformWorld;
 import org.terraform.main.TerraformGeneratorPlugin;
-import org.terraform.main.config.TConfig;
+import org.terraform.main.TConfig;
 import org.terraform.schematic.TerraSchematic;
 import org.terraform.structure.MultiMegaChunkStructurePopulator;
 import org.terraform.utils.BlockUtils;
@@ -84,14 +84,14 @@ public class ShipwreckPopulator extends MultiMegaChunkStructurePopulator {
             shipwreck.setFace(BlockUtils.getDirectBlockFace(random));
             shipwreck.apply();
 
-            TerraformGeneratorPlugin.logger.info("Spawning shipwreck at "
+/*            TerraformGeneratorPlugin.logger.info("Spawning shipwreck at "
                                                  + x
                                                  + ", "
                                                  + y
                                                  + ", "
                                                  + z
                                                  + " with rotation of "
-                                                 + shipwreck.getFace());
+                                                 + shipwreck.getFace());*/
 
             // Generate holes and damage
             for (int i = 0; i < GenUtils.randInt(random, 0, 3); i++) {

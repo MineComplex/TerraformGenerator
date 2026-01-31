@@ -22,15 +22,12 @@ public class TerraformBukkitBlockPopulator extends BlockPopulator {
     private final @NotNull TerraformStructurePopulator structurePopulator;
     private final @NotNull NativeGeneratorPatcherPopulator nativePatcherPopulator;
     private final @NotNull PhysicsUpdaterPopulator physicsUpdaterPopulator;
-    private final @NotNull TerraformAnimalPopulator animalPopulator;
 
     public TerraformBukkitBlockPopulator(TerraformWorld tw) {
         this.tw = tw;
         this.nativePatcherPopulator = new NativeGeneratorPatcherPopulator();
-        this.structurePopulator = new TerraformStructurePopulator(tw);
         this.physicsUpdaterPopulator = new PhysicsUpdaterPopulator();
-        this.animalPopulator = new TerraformAnimalPopulator(tw);
-        // Bukkit.getPluginManager().registerEvents(this,TerraformGeneratorPlugin.get());
+        this.structurePopulator = new TerraformStructurePopulator(tw);
     }
 
     @Override
@@ -41,9 +38,6 @@ public class TerraformBukkitBlockPopulator extends BlockPopulator {
 
         // Populate structures next
         this.structurePopulator.populate(world, random, chunk);
-
-        // Populate animals last
-        this.animalPopulator.populate(world, random, chunk);
     }
 
     @Override
@@ -55,9 +49,4 @@ public class TerraformBukkitBlockPopulator extends BlockPopulator {
     {
         this.structurePopulator.populate(worldInfo, random, chunkX, chunkZ, lr);
     }
-
-    public @NotNull TerraformStructurePopulator getStructurePopulator() {
-        return structurePopulator;
-    }
-
 }

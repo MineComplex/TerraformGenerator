@@ -4,8 +4,8 @@ import org.jetbrains.annotations.NotNull;
 import org.terraform.coregen.ChunkCache;
 import org.terraform.coregen.bukkit.TerraformGenerator;
 import org.terraform.data.TerraformWorld;
+import org.terraform.main.TConfig;
 import org.terraform.main.TerraformGeneratorPlugin;
-import org.terraform.main.config.TConfig;
 import org.terraform.utils.noise.FastNoise;
 import org.terraform.utils.noise.NoiseCacheHandler;
 
@@ -63,12 +63,18 @@ public class NoiseCaveRegistry {
      * @return a value between 0 and 1 inclusive. 1 for all clear,
      * less than 1 to smooth an approach towards a barrier.
      */
-    public float yBarrier(@NotNull TerraformWorld tw, int x, int y, int z, float v, float barrier, float limit, ChunkCache cache) {
+    public float yBarrier(@NotNull TerraformWorld tw,
+                          int x,
+                          int y,
+                          int z,
+                          float v,
+                          float barrier,
+                          float limit,
+                          ChunkCache cache)
+    {
 
         FastNoise boundaryNoise = NoiseCacheHandler.getNoise(
-                tw,
-                NoiseCacheHandler.NoiseCacheEntry.CAVE_YBARRIER_NOISE,
-                world -> {
+                tw, NoiseCacheHandler.NoiseCacheEntry.CAVE_YBARRIER_NOISE, world -> {
                     FastNoise n = new FastNoise((int) tw.getSeed() * 5);
                     n.SetNoiseType(FastNoise.NoiseType.Simplex);
                     n.SetFrequency(0.01f);
@@ -76,7 +82,7 @@ public class NoiseCaveRegistry {
                 }
         );
         float boundaryNoiseVal = cache.getYBarrierNoise(x & 0xF, z & 0xF);
-        if(boundaryNoiseVal == ChunkCache.CHUNKCACHE_INVAL) {
+        if (boundaryNoiseVal == ChunkCache.CHUNKCACHE_INVAL) {
             boundaryNoiseVal = 3 * boundaryNoise.GetNoise(x, z);
             cache.cacheYBarrierNoise(x & 0xF, z & 0xF, boundaryNoiseVal);
         }

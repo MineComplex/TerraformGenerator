@@ -36,10 +36,10 @@ public class MansionSecondFloorPianoRoomPopulator extends MansionRoomPopulator {
     public void decorateRoom(@NotNull PopulatorDataAbstract data, @NotNull Random random) {
         int[] lowerBounds = this.getRoom().getLowerCorner(1);
         BlockFace randomFace = new BlockFace[] {BlockFace.NORTH, BlockFace.SOUTH}[random.nextInt(2)];
-        TerraformGeneratorPlugin.logger.info("Piano at "
+/*        TerraformGeneratorPlugin.logger.info("Piano at "
                                              + this.getRoom().getSimpleLocation()
                                              + " picking face: "
-                                             + randomFace);
+                                             + randomFace);*/
         try {
             if (randomFace == BlockFace.NORTH) {
                 SimpleBlock target = new SimpleBlock(data, lowerBounds[0], this.getRoom().getY(), lowerBounds[1]);

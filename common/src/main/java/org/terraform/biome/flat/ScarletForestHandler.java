@@ -10,10 +10,10 @@ import org.terraform.coregen.populatordata.PopulatorDataAbstract;
 import org.terraform.data.SimpleBlock;
 import org.terraform.data.SimpleLocation;
 import org.terraform.data.TerraformWorld;
-import org.terraform.main.config.TConfig;
-import org.terraform.small_items.PlantBuilder;
+import org.terraform.main.TConfig;
 import org.terraform.tree.FractalTreeBuilder;
 import org.terraform.tree.FractalTypes;
+import org.terraform.tree.PlantBuilder;
 import org.terraform.utils.BlockUtils;
 import org.terraform.utils.GenUtils;
 
@@ -60,9 +60,6 @@ public class ScarletForestHandler extends BiomeHandler {
             if (GenUtils.chance(random, 1, 10)) { // Grass
                 if (GenUtils.chance(random, 6, 10)) {
                     PlantBuilder.GRASS.build(data, rawX, surfaceY + 1, rawZ);
-                    if (random.nextBoolean()) {
-                        PlantBuilder.TALL_GRASS.build(data, rawX, surfaceY + 1, rawZ);
-                    }
                 }
                 else {
                     if (GenUtils.chance(random, 7, 10)) {
@@ -90,7 +87,8 @@ public class ScarletForestHandler extends BiomeHandler {
                 && BlockUtils.isDirtLike(data.getType(sLoc.getX(), sLoc.getY(), sLoc.getZ())))
             {
                 if (TConfig.c.TREES_SCARLET_BIG_ENABLED) {
-                    new FractalTreeBuilder(FractalTypes.Tree.SCARLET_BIG).build(tw,
+                    new FractalTreeBuilder(FractalTypes.Tree.SCARLET_BIG).build(
+                            tw,
                             data,
                             sLoc.getX(),
                             sLoc.getY(),
@@ -98,7 +96,8 @@ public class ScarletForestHandler extends BiomeHandler {
                     );
                 }
                 else {
-                    new FractalTreeBuilder(FractalTypes.Tree.SCARLET_SMALL).build(tw,
+                    new FractalTreeBuilder(FractalTypes.Tree.SCARLET_SMALL).build(
+                            tw,
                             data,
                             sLoc.getX(),
                             sLoc.getY(),
@@ -106,8 +105,13 @@ public class ScarletForestHandler extends BiomeHandler {
                     );
                 }
 
-                BlockUtils.lambdaCircularPatch(random.nextInt(132798),7f, new SimpleBlock(data, sLoc),
-                 (b)->{if(BlockUtils.isDirtLike(b.getType()))b.setType(Material.PODZOL);});
+                BlockUtils.lambdaCircularPatch(
+                        random.nextInt(132798), 7f, new SimpleBlock(data, sLoc), (b) -> {
+                            if (BlockUtils.isDirtLike(b.getType())) {
+                                b.setType(Material.PODZOL);
+                            }
+                        }
+                );
             }
         }
 
@@ -118,9 +122,11 @@ public class ScarletForestHandler extends BiomeHandler {
             int treeY = GenUtils.getHighestGround(data, sLoc.getX(), sLoc.getZ());
             sLoc = sLoc.getAtY(treeY);
 
-            if (data.getBiome(sLoc.getX(), sLoc.getZ()) == getBiome() && BlockUtils.isDirtLike(data.getType(sLoc.getX(),
+            if (data.getBiome(sLoc.getX(), sLoc.getZ()) == getBiome() && BlockUtils.isDirtLike(data.getType(
+                    sLoc.getX(),
                     sLoc.getY(),
-                    sLoc.getZ())))
+                    sLoc.getZ()
+            )))
             {
                 new FractalTreeBuilder(FractalTypes.Tree.SCARLET_SMALL).build(
                         tw,

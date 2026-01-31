@@ -50,11 +50,6 @@ public class BiomeDistribCommand extends TerraCommand {
         for (int nx = -50; nx < 50; nx++) {
             for (int nz = -50; nz < 50; nz++) {
                 BiomeSection sect = BiomeBank.getBiomeSectionFromSectionCoords(tw, nx, nz, true);
-                if (sect.getBiomeBank().getType() == BiomeType.OCEANIC
-                    || sect.getBiomeBank().getType() == BiomeType.DEEP_OCEANIC)
-                {
-                    numOceans++;
-                }
                 if (sect.getBiomeBank().getType() == BiomeType.MOUNTAINOUS
                     || sect.getBiomeBank().getType() == BiomeType.HIGH_MOUNTAINOUS)
                 {
@@ -98,7 +93,8 @@ public class BiomeDistribCommand extends TerraCommand {
                     percent = ChatColor.RED + percent;
                 }
 
-                sender.sendMessage("%-35s(%-10s, %-10s): %-10s%s)".formatted(b.toString(),
+                sender.sendMessage("%-35s(%-10s, %-10s): %-10s%s)".formatted(
+                        b.toString(),
                         b.getClimate().getTemperatureRange(),
                         b.getClimate().getMoistureRange(),
                         count,
@@ -140,7 +136,8 @@ public class BiomeDistribCommand extends TerraCommand {
             float biomesPerPercent = (float) (biomeTypes / (100 * climates.getOrDefault(c, 0)
                                                             / total));// Math.round(100*climates.getOrDefault(c, 0)/total)/((float)biomeTypes);
 
-            sender.sendMessage("%-30s%-10s %-10s (%d registered biomes) (numBiomes/percent: %.2f)".formatted(c.toString(),
+            sender.sendMessage("%-30s%-10s %-10s (%d registered biomes) (numBiomes/percent: %.2f)".formatted(
+                    c.toString(),
                     count,
                     percent + "%)",
                     biomeTypes,

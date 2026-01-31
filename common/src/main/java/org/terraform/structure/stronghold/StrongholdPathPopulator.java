@@ -3,7 +3,6 @@ package org.terraform.structure.stronghold;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
-import org.bukkit.block.data.Bisected;
 import org.bukkit.block.data.Bisected.Half;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.type.Slab;
@@ -261,7 +260,7 @@ public class StrongholdPathPopulator extends PathPopulatorAbstract {
         return true;
     }
 
-    private void decorateCrossroads(@NotNull SimpleBlock core, Bisected.@NotNull Half isCeil) {
+    private void decorateCrossroads(@NotNull SimpleBlock core, @NotNull Half isCeil) {
         // Decorate the floor and ceiling
         core.RSolSetType(Material.CHISELED_STONE_BRICKS);
         for (BlockFace face : BlockUtils.directBlockFaces) {

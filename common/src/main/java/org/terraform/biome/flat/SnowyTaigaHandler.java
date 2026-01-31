@@ -10,9 +10,9 @@ import org.terraform.coregen.populatordata.PopulatorDataAbstract;
 import org.terraform.data.SimpleBlock;
 import org.terraform.data.SimpleLocation;
 import org.terraform.data.TerraformWorld;
-import org.terraform.main.config.TConfig;
-import org.terraform.small_items.PlantBuilder;
+import org.terraform.main.TConfig;
 import org.terraform.tree.FractalTypes;
+import org.terraform.tree.PlantBuilder;
 import org.terraform.utils.BlockUtils;
 import org.terraform.utils.GenUtils;
 import org.terraform.utils.noise.FastNoise;
@@ -135,7 +135,8 @@ public class SnowyTaigaHandler extends BiomeHandler {
                             new SimpleBlock(data, sLoc.getX(), sLoc.getY(), sLoc.getZ()),
                             (b) -> b.getFractalLeaves().setSnowy(true)
                     );
-                    defrostAndReplacePodzol(tw.getHashedRand(sLoc.getX(), sLoc.getY(), sLoc.getZ()).nextInt(9999),
+                    defrostAndReplacePodzol(
+                            tw.getHashedRand(sLoc.getX(), sLoc.getY(), sLoc.getZ()).nextInt(9999),
                             2.5f,
                             new SimpleBlock(data, sLoc.getX(), sLoc.getY() - 1, sLoc.getZ())
                     );
@@ -146,7 +147,8 @@ public class SnowyTaigaHandler extends BiomeHandler {
                             new SimpleBlock(data, sLoc.getX(), sLoc.getY(), sLoc.getZ()),
                             (b) -> b.getFractalLeaves().setSnowy(true)
                     );
-                    defrostAndReplacePodzol(tw.getHashedRand(sLoc.getX(), sLoc.getY(), sLoc.getZ()).nextInt(9999),
+                    defrostAndReplacePodzol(
+                            tw.getHashedRand(sLoc.getX(), sLoc.getY(), sLoc.getZ()).nextInt(9999),
                             1.5f,
                             new SimpleBlock(data, sLoc.getX(), sLoc.getY() - 1, sLoc.getZ())
                     );

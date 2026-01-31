@@ -31,7 +31,8 @@ public class IceSpikesHandler extends BiomeHandler {
         y -= height / 5;
         // Vector one to two;
         Vector base = new Vector(x, y, z);
-        Vector base2 = new Vector(x + GenUtils.randInt(random, (int) (-1.5 * baseRadius), (int) (1.5 * baseRadius)),
+        Vector base2 = new Vector(
+                x + GenUtils.randInt(random, (int) (-1.5 * baseRadius), (int) (1.5 * baseRadius)),
                 y + height,
                 z + GenUtils.randInt(random, (int) (-1.5 * baseRadius), (int) (1.5 * baseRadius))
         );
@@ -120,13 +121,15 @@ public class IceSpikesHandler extends BiomeHandler {
             {
 
                 if (GenUtils.chance(random, 1, 10)) { // big spike
-                    genSpike(tw, random, data, sLoc.getX(), sLoc.getY(), sLoc.getZ(), GenUtils.randInt(3, 7), // radius
+                    genSpike(
+                            tw, random, data, sLoc.getX(), sLoc.getY(), sLoc.getZ(), GenUtils.randInt(3, 7), // radius
                             GenUtils.randInt(40, 55)
                     ); // height
                 }
                 else // Small spike
                 {
-                    genSpike(tw, random, data, sLoc.getX(), sLoc.getY(), sLoc.getZ(), GenUtils.randInt(3, 5), // radius
+                    genSpike(
+                            tw, random, data, sLoc.getX(), sLoc.getY(), sLoc.getZ(), GenUtils.randInt(3, 5), // radius
                             GenUtils.randInt(13, 24)
                     ); // height
                 }

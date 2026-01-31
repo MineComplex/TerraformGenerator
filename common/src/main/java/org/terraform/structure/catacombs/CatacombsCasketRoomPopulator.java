@@ -8,7 +8,7 @@ import org.terraform.coregen.TerraLootTable;
 import org.terraform.coregen.populatordata.PopulatorDataAbstract;
 import org.terraform.data.SimpleBlock;
 import org.terraform.data.Wall;
-import org.terraform.main.config.TConfig;
+import org.terraform.main.TConfig;
 import org.terraform.structure.room.CubeRoom;
 import org.terraform.utils.BlockUtils;
 import org.terraform.utils.blockdata.ChestBuilder;
@@ -78,10 +78,8 @@ public class CatacombsCasketRoomPopulator extends CatacombsStandardPopulator {
                 break;
             default:
                 // spiders
-                if (TConfig.areAnimalsEnabled()) {
-                    target.addEntity(EntityType.CAVE_SPIDER);
-                    target.getFront().addEntity(EntityType.CAVE_SPIDER);
-                }
+                target.addEntity(EntityType.CAVE_SPIDER);
+                target.getFront().addEntity(EntityType.CAVE_SPIDER);
                 break;
         }
     }

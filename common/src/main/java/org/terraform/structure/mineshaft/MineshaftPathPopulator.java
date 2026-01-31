@@ -19,8 +19,8 @@ import org.terraform.coregen.populatordata.IPopulatorDataMinecartSpawner;
 import org.terraform.data.SimpleBlock;
 import org.terraform.data.Wall;
 import org.terraform.main.TerraformGeneratorPlugin;
-import org.terraform.main.config.TConfig;
-import org.terraform.small_items.PlantBuilder;
+import org.terraform.main.TConfig;
+import org.terraform.tree.PlantBuilder;
 import org.terraform.structure.room.PathPopulatorAbstract;
 import org.terraform.structure.room.PathPopulatorData;
 import org.terraform.utils.BlockUtils;
@@ -154,12 +154,12 @@ public class MineshaftPathPopulator extends PathPopulatorAbstract {
             core.getUp().setBlockData(rail);
             // BlockUtils.correctSurroundingRails(core.getUp().get());
             if (GenUtils.chance(rand, 1, 100)) {
-                TerraformGeneratorPlugin.logger.info("Minecart with chest at: "
+/*                TerraformGeneratorPlugin.logger.info("Minecart with chest at: "
                                                      + core.getX()
                                                      + ", "
                                                      + core.getY()
                                                      + ", "
-                                                     + core.getZ());
+                                                     + core.getZ());*/
                 IPopulatorDataMinecartSpawner ms = (IPopulatorDataMinecartSpawner) core.get().getPopData();
                 ms.spawnMinecartWithChest(core.getX(),
                         core.getY() + 1,

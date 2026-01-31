@@ -14,7 +14,7 @@ import org.terraform.data.SimpleBlock;
 import org.terraform.data.TerraformWorld;
 import org.terraform.data.Wall;
 import org.terraform.main.TerraformGeneratorPlugin;
-import org.terraform.main.config.TConfig;
+import org.terraform.main.TConfig;
 import org.terraform.structure.SingleMegaChunkStructurePopulator;
 import org.terraform.structure.room.CubeRoom;
 import org.terraform.structure.room.RoomLayout;
@@ -26,7 +26,6 @@ import org.terraform.utils.noise.FastNoise.NoiseType;
 import org.terraform.utils.noise.NoiseCacheHandler;
 import org.terraform.utils.noise.NoiseCacheHandler.NoiseCacheEntry;
 
-import java.util.ArrayList;
 import java.util.Random;
 import java.util.Set;
 
@@ -80,7 +79,7 @@ public class PyramidPopulator extends SingleMegaChunkStructurePopulator {
                              int z)
     {
         y -= 10;
-        TerraformGeneratorPlugin.logger.info("Spawning Pyramid at: " + x + "," + z);
+        //TerraformGeneratorPlugin.logger.info("Spawning Pyramid at: " + x + "," + z);
         int numRooms = 1000;
         int range = 70;
         if (y >= TerraformGenerator.seaLevel + 3) {

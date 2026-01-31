@@ -14,8 +14,7 @@ import java.util.Random;
 public class CaveFluidClusterPopulator extends AbstractCaveClusterPopulator {
 
     Random rand;
-    @Nullable
-    Material fluid;
+    @Nullable Material fluid;
     int rY;
 
     public CaveFluidClusterPopulator(float radius) {

@@ -4,13 +4,13 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.IRegistry;
 import net.minecraft.core.IRegistryWritable;
 import net.minecraft.core.RegistryMaterials;
-import net.minecraft.tags.TagKey;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.MinecraftKey;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.ReloadableServerRegistries;
 import net.minecraft.server.dedicated.DedicatedServer;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.biome.*;
 import net.minecraft.world.level.biome.BiomeFog.GrassColor;
 import org.bukkit.Bukkit;
@@ -25,7 +25,6 @@ import org.terraform.main.TerraformGeneratorPlugin;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class CustomBiomeHandler {
 
@@ -69,8 +68,8 @@ public class CustomBiomeHandler {
             try {
                 assert forestbiome != null;
                 registerCustomBiomeBase(type, dedicatedserver, registrywritable, forestbiome);
-                TerraformGeneratorPlugin.logger.info("Registered custom biome: " + type.toString()
-                                                                                       .toLowerCase(Locale.ENGLISH));
+                /*TerraformGeneratorPlugin.logger.info("Registered custom biome: " + type.toString()
+                                                                                       .toLowerCase(Locale.ENGLISH));*/
             }
             catch (Throwable e) {
                 TerraformGeneratorPlugin.logger.error("Failed to register custom biome: " + type.getKey());
@@ -82,7 +81,6 @@ public class CustomBiomeHandler {
             Field frozen = RegistryMaterials.class.getDeclaredField("l");
             frozen.setAccessible(true);
             frozen.set(registrywritable, true);
-            TerraformGeneratorPlugin.logger.info("Freezing biome registry");
         }
         catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e1) {
             TerraformGeneratorPlugin.logger.stackTrace(e1);

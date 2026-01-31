@@ -1,6 +1,6 @@
 package org.terraform.data;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.block.Block;
@@ -13,11 +13,12 @@ import org.jetbrains.annotations.Nullable;
  * @author wysohn
  */
 public record SimpleChunkLocation(String world, int x, int z) implements Cloneable {
-    public SimpleChunkLocation(TerraformWorld tw, int x, int z){
-        this(tw.getName(),x,z);
+    public SimpleChunkLocation(TerraformWorld tw, int x, int z) {
+        this(tw.getName(), x, z);
     }
+
     public SimpleChunkLocation(String world, int x, int y, int z) {
-        this(world, x>>4, z>>4);
+        this(world, x >> 4, z >> 4);
     }
 
     public SimpleChunkLocation(@NotNull Chunk chunk) {

@@ -11,7 +11,7 @@ import org.terraform.coregen.ChunkCache;
 import org.terraform.coregen.HeightMap;
 import org.terraform.coregen.populatordata.PopulatorDataAbstract;
 import org.terraform.data.TerraformWorld;
-import org.terraform.main.config.TConfig;
+import org.terraform.main.TConfig;
 import org.terraform.utils.GenUtils;
 import org.terraform.utils.noise.FastNoise;
 import org.terraform.utils.noise.NoiseCacheHandler;
@@ -73,20 +73,24 @@ public class ErodedPlainsHandler extends BiomeHandler {
                                  int chunkZ)
     {
 
-        FastNoise noise = NoiseCacheHandler.getNoise(tw, NoiseCacheEntry.BIOME_ERODEDPLAINS_CLIFFNOISE, world -> {
-            FastNoise n = new FastNoise();
-            n.SetNoiseType(FastNoise.NoiseType.CubicFractal);
-            n.SetFractalOctaves(3);
-            n.SetFrequency(0.02f);
-            return n;
-        });
+        FastNoise noise = NoiseCacheHandler.getNoise(
+                tw, NoiseCacheEntry.BIOME_ERODEDPLAINS_CLIFFNOISE, world -> {
+                    FastNoise n = new FastNoise();
+                    n.SetNoiseType(FastNoise.NoiseType.CubicFractal);
+                    n.SetFractalOctaves(3);
+                    n.SetFrequency(0.02f);
+                    return n;
+                }
+        );
 
-        FastNoise details = NoiseCacheHandler.getNoise(tw, NoiseCacheEntry.BIOME_ERODEDPLAINS_DETAILS, world -> {
-            FastNoise n = new FastNoise();
-            n.SetNoiseType(FastNoise.NoiseType.SimplexFractal);
-            n.SetFrequency(0.03f);
-            return n;
-        });
+        FastNoise details = NoiseCacheHandler.getNoise(
+                tw, NoiseCacheEntry.BIOME_ERODEDPLAINS_DETAILS, world -> {
+                    FastNoise n = new FastNoise();
+                    n.SetNoiseType(FastNoise.NoiseType.SimplexFractal);
+                    n.SetFrequency(0.03f);
+                    return n;
+                }
+        );
 
 
         double threshold = 0.1;
@@ -114,7 +118,8 @@ public class ErodedPlainsHandler extends BiomeHandler {
 
         cache.writeTransformedHeight(x, z, (short) ((int) Math.round(platformHeight) + height));
         for (int y = height + 1; y <= newHeight; y++) {
-            Material material = GenUtils.randChoice(Material.STONE,
+            Material material = GenUtils.randChoice(
+                    Material.STONE,
                     Material.STONE,
                     Material.STONE,
                     Material.STONE,

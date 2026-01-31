@@ -69,13 +69,15 @@ public class ValuesCommand extends TerraCommand {
 
         TerraformWorld tw = TerraformWorld.get("world-1232341234", new Random().nextInt(99999));
 
-        FastNoise carverEntranceStandard = NoiseCacheHandler.getNoise(tw, NoiseCacheEntry.CARVER_STANDARD, world -> {
-            FastNoise n = new FastNoise((int) (world.getSeed() * 111));
-            n.SetNoiseType(NoiseType.SimplexFractal);
-            n.SetFractalOctaves(4);
-            n.SetFrequency(0.07f);
-            return n;
-        });
+        FastNoise carverEntranceStandard = NoiseCacheHandler.getNoise(
+                tw, NoiseCacheEntry.CARVER_STANDARD, world -> {
+                    FastNoise n = new FastNoise((int) (world.getSeed() * 111));
+                    n.SetNoiseType(NoiseType.SimplexFractal);
+                    n.SetFractalOctaves(4);
+                    n.SetFrequency(0.07f);
+                    return n;
+                }
+        );
 
         int period = 4;
         for (int x = 0; x < 9000000; x++) {

@@ -7,11 +7,10 @@ import org.terraform.coregen.bukkit.TerraformGenerator;
 import org.terraform.coregen.populatordata.PopulatorDataAbstract;
 import org.terraform.data.MegaChunk;
 import org.terraform.data.TerraformWorld;
-import org.terraform.main.config.TConfig;
+import org.terraform.main.TConfig;
 import org.terraform.structure.SingleMegaChunkStructurePopulator;
 import org.terraform.structure.villagehouse.animalfarm.AnimalFarmPopulator;
 import org.terraform.structure.villagehouse.farmhouse.FarmhousePopulator;
-import org.terraform.structure.villagehouse.mountainhouse.MountainhousePopulator;
 import org.terraform.utils.GenUtils;
 
 import java.util.Random;
@@ -61,12 +60,6 @@ public class VillageHousePopulator extends SingleMegaChunkStructurePopulator {
                             chunkX,
                             chunkZ);
                 }
-                else if (biome == (BiomeBank.ROCKY_MOUNTAINS)) {
-
-                    return TConfig.c.STRUCTURES_MOUNTAINHOUSE_ENABLED && rollSpawnRatio(tw,
-                            chunkX,
-                            chunkZ);
-                }
             }
         }
         return false;
@@ -102,14 +95,6 @@ public class VillageHousePopulator extends SingleMegaChunkStructurePopulator {
 
             new FarmhousePopulator().populate(tw, data);
         }
-        else if (biome == (BiomeBank.ROCKY_MOUNTAINS)) {
-
-            if (!TConfig.c.STRUCTURES_MOUNTAINHOUSE_ENABLED) {
-                return;
-            }
-
-            new MountainhousePopulator().populate(tw, data);
-        }
         // }
     }
 
@@ -120,10 +105,8 @@ public class VillageHousePopulator extends SingleMegaChunkStructurePopulator {
                                                   || BiomeBank.isBiomeEnabled(BiomeBank.ICE_SPIKES)
                                                   || BiomeBank.isBiomeEnabled(BiomeBank.SNOWY_TAIGA)
                                                   || BiomeBank.isBiomeEnabled(BiomeBank.SNOWY_WASTELAND)
-                                                  || BiomeBank.isBiomeEnabled(BiomeBank.JUNGLE)
-                                                  || BiomeBank.isBiomeEnabled(BiomeBank.ROCKY_MOUNTAINS)) && (
+                                                  || BiomeBank.isBiomeEnabled(BiomeBank.JUNGLE)) && (
                        TConfig.c.STRUCTURES_ANIMALFARM_ENABLED
-                       || TConfig.c.STRUCTURES_FARMHOUSE_ENABLED
-                       || TConfig.c.STRUCTURES_MOUNTAINHOUSE_ENABLED);
+                       || TConfig.c.STRUCTURES_FARMHOUSE_ENABLED);
     }
 }

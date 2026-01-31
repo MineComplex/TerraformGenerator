@@ -10,7 +10,7 @@ import org.terraform.data.SimpleChunkLocation;
 import org.terraform.data.SimpleLocation;
 import org.terraform.data.TerraformWorld;
 import org.terraform.main.TerraformGeneratorPlugin;
-import org.terraform.main.config.TConfig;
+import org.terraform.main.TConfig;
 import org.terraform.structure.JigsawState;
 import org.terraform.structure.JigsawStructurePopulator;
 import org.terraform.structure.room.RoomLayout;
@@ -80,12 +80,12 @@ public class LargeCavePopulator extends JigsawStructurePopulator {
         gen.setGenPaths(false);
         gen.roomCarver = new LargeCaveRoomCarver(GenUtils.randChoice(rand, Material.LAVA, Material.WATER));
         SimpleLocation center = new SimpleLocation(x, y, z);
-        TerraformGeneratorPlugin.logger.info("Large Cave at "
+/*        TerraformGeneratorPlugin.logger.info("Large Cave at "
                                              + center
                                              + " has water level > "
                                              + minY
                                              + " with populator "
-                                             + cavePopulator.getClass().getSimpleName());
+                                             + cavePopulator.getClass().getSimpleName());*/
         HashMap<SimpleChunkLocation, LargeCaveRoomPiece> chunkToRoom = new HashMap<>();
 
         // BFS against center with "edges" as the noise equation
@@ -175,9 +175,6 @@ public class LargeCavePopulator extends JigsawStructurePopulator {
             return false;
         }
 
-        if (biome.getType() == BiomeType.DEEP_OCEANIC) {
-            return false;
-        }
         return rollSpawnRatio(tw, chunkX, chunkZ);
     }
 

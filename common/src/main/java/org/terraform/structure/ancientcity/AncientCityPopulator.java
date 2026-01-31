@@ -8,7 +8,7 @@ import org.terraform.data.SimpleChunkLocation;
 import org.terraform.data.SimpleLocation;
 import org.terraform.data.TerraformWorld;
 import org.terraform.main.TerraformGeneratorPlugin;
-import org.terraform.main.config.TConfig;
+import org.terraform.main.TConfig;
 import org.terraform.structure.EmptyPathWriter;
 import org.terraform.structure.JigsawState;
 import org.terraform.structure.JigsawStructurePopulator;
@@ -39,10 +39,6 @@ public class AncientCityPopulator extends JigsawStructurePopulator {
             return false;
         }
 
-        if (!Version.VERSION.isAtLeast(Version.v1_19_4)) {
-            return false;
-        }
-
         return rollSpawnRatio(tw, chunkX, chunkZ);
     }
 
@@ -64,7 +60,7 @@ public class AncientCityPopulator extends JigsawStructurePopulator {
         int y = GenUtils.randInt(minY, TConfig.c.STRUCTURES_ANCIENTCITY_MAX_Y);
         Random random = tw.getHashedRand(x, y, z, 23412222);
 
-        TerraformGeneratorPlugin.logger.info("Spawning ancient city at: " + x + "," + y + "," + z);
+        //TerraformGeneratorPlugin.logger.info("Spawning ancient city at: " + x + "," + y + "," + z);
 
         //Cave carver
         RoomLayoutGenerator carverGen = new RoomLayoutGenerator(GenUtils.RANDOMIZER, RoomLayout.RANDOM_BRUTEFORCE, 0, x,y,z, RADIUS);

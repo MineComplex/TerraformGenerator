@@ -62,7 +62,7 @@ public class DrownedDungeonPopulator extends SmallDungeonPopulator {
                                  @NotNull Random rand,
                                  @NotNull PopulatorDataAbstract data)
     {
-        TerraformGeneratorPlugin.logger.info("Spawning Drowned Dungeon at " + x + "," + z);
+        //TerraformGeneratorPlugin.logger.info("Spawning Drowned Dungeon at " + x + "," + z);
         int setIndex = rand.nextInt(sets.length);
         Material[] set = sets[setIndex];
         int radius = GenUtils.randInt(rand, 5, 10);

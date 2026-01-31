@@ -15,8 +15,7 @@ import org.terraform.utils.GenUtils;
 import org.terraform.utils.noise.FastNoise;
 import org.terraform.utils.noise.NoiseCacheHandler;
 import org.terraform.utils.noise.NoiseCacheHandler.NoiseCacheEntry;
-import org.terraform.utils.version.V_1_19;
-import org.terraform.utils.version.V_1_21_4;
+import org.terraform.utils.version.V_1_21_5;
 import org.terraform.utils.version.Version;
 
 import java.util.ArrayList;
@@ -78,13 +77,15 @@ public class FractalLeaves implements Cloneable {
         this.oriY = oriY;
         this.maxHeight = maxHeight;
 
-        FastNoise noiseGen = NoiseCacheHandler.getNoise(tw, NoiseCacheEntry.FRACTALTREES_LEAVES_NOISE, world -> {
-            FastNoise n = new FastNoise((int) world.getSeed());
-            n.SetFractalOctaves(5);
-            n.SetNoiseType(FastNoise.NoiseType.SimplexFractal);
+        FastNoise noiseGen = NoiseCacheHandler.getNoise(
+                tw, NoiseCacheEntry.FRACTALTREES_LEAVES_NOISE, world -> {
+                    FastNoise n = new FastNoise((int) world.getSeed());
+                    n.SetFractalOctaves(5);
+                    n.SetNoiseType(FastNoise.NoiseType.SimplexFractal);
 
-            return n;
-        });
+                    return n;
+                }
+        );
         noiseGen.SetFrequency(leafNoiseFrequency);
 
         // Don't place anything if radius is nothing
@@ -147,8 +148,7 @@ public class FractalLeaves implements Cloneable {
                         continue;
                     }
 
-                    double equationResult = Math.pow(x, 2) / Math.pow(radiusX, 2) + Math.pow(effectiveY, 2) / Math.pow(
-                            radiusY,
+                    double equationResult = Math.pow(x, 2) / Math.pow(radiusX, 2) + Math.pow(effectiveY, 2) / Math.pow(radiusY,
                             2
                     ) + Math.pow(z, 2) / Math.pow(radiusZ, 2);
 
@@ -164,12 +164,14 @@ public class FractalLeaves implements Cloneable {
                         // cache this block so that getType and setType aren't called for already processed blocks
                         occupiedLeaves.add(relativeBlock);
 
-                        if (mangrovePropagules && Version.VERSION.isAtLeast(Version.v1_19_4) && !BlockUtils.isWet(relativeBlock.getDown())) {
+                        if (mangrovePropagules && !BlockUtils.isWet(
+                                relativeBlock.getDown()))
+                        {
                             if (GenUtils.chance(1, 50)) {
                                 relativeBlock.getDown()
                                              .rsetBlockData(
                                                      BlockUtils.replacableByTrees,
-                                                     V_1_19.getHangingMangrovePropagule()
+                                                     V_1_21_5.getHangingMangrovePropagule()
                                              );
                             }
                         }
@@ -224,13 +226,10 @@ public class FractalLeaves implements Cloneable {
                                     weepingLeavesLength
                             );
                         }
-                        if (Version.VERSION.isAtLeast(Version.v1_21_4)
-                            && paleVinesChance > 0 && Math.random() < paleVinesChance) {
-                            paleVines(
-                                    relativeBlock,
-                                    Math.round(paleVinesChance * paleVinesLength),
-                                    paleVinesLength
-                            );
+                        if (paleVinesChance > 0
+                            && Math.random() < paleVinesChance)
+                        {
+                            paleVines(relativeBlock, Math.round(paleVinesChance * paleVinesLength), paleVinesLength);
                         }
                     }
                 }
@@ -276,14 +275,18 @@ public class FractalLeaves implements Cloneable {
         int lowest = 0;
         for (int i = 1; i <= GenUtils.randInt(minDist, maxDist); i++) {
             if (BlockUtils.isAir(base.getRelative(0, -i, 0).getType())) {
-                base.getRelative(0, -i, 0).rsetBlockData(BlockUtils.replacableByTrees, V_1_21_4.PALE_HANGING_MOSS);
+                base.getRelative(0, -i, 0).rsetBlockData(BlockUtils.replacableByTrees, V_1_21_5.PALE_HANGING_MOSS);
                 lowest++;
             }
-            else break;
+            else {
+                break;
+            }
         }
-        if(lowest > 0 )
-            base.getDown(lowest).setBlockData(V_1_21_4.PALE_HANGING_MOSS_TIP);
+        if (lowest > 0) {
+            base.getDown(lowest).setBlockData(V_1_21_5.PALE_HANGING_MOSS_TIP);
+        }
     }
+
     private void weepingLeaves(@NotNull SimpleBlock base, int minDist, int maxDist) {
         Material material = this.material[rand.nextInt(this.material.length)];
         BlockData type = Bukkit.createBlockData(material);

@@ -14,7 +14,7 @@ import org.terraform.data.SimpleBlock;
 import org.terraform.data.TerraformWorld;
 import org.terraform.data.Wall;
 import org.terraform.main.TerraformGeneratorPlugin;
-import org.terraform.main.config.TConfig;
+import org.terraform.main.TConfig;
 import org.terraform.schematic.TerraSchematic;
 import org.terraform.structure.SingleMegaChunkStructurePopulator;
 import org.terraform.structure.room.CubeRoom;
@@ -87,7 +87,7 @@ public class OutpostPopulator extends SingleMegaChunkStructurePopulator {
                              int z)
     {
         try {
-            TerraformGeneratorPlugin.logger.info("Spawning outpost at " + x + "," + y + "," + z);
+            //TerraformGeneratorPlugin.logger.info("Spawning outpost at " + x + "," + y + "," + z);
 
             BiomeBank biome = tw.getBiomeBank(x, z);
 

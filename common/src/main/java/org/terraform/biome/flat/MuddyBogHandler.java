@@ -12,10 +12,10 @@ import org.terraform.coregen.populatordata.PopulatorDataAbstract;
 import org.terraform.data.SimpleBlock;
 import org.terraform.data.SimpleLocation;
 import org.terraform.data.TerraformWorld;
-import org.terraform.main.config.TConfig;
-import org.terraform.small_items.PlantBuilder;
+import org.terraform.main.TConfig;
 import org.terraform.tree.FractalTypes;
 import org.terraform.tree.MushroomBuilder;
+import org.terraform.tree.PlantBuilder;
 import org.terraform.utils.BlockUtils;
 import org.terraform.utils.GenUtils;
 import org.terraform.utils.noise.FastNoise;
@@ -82,9 +82,6 @@ public class MuddyBogHandler extends BiomeHandler {
             else if (GenUtils.chance(random, 1, 85)) {
                 PlantBuilder.GRASS.build(block.getUp());
             }
-            else if (GenUtils.chance(random, 1, 85)) {
-                PlantBuilder.TALL_GRASS.build(data, rawX, surfaceY + 1, rawZ);
-            }
             else if (TConfig.areDecorationsEnabled() && GenUtils.chance(random, 1, 300)) {// Dripstone Cluster
                 BlockUtils.replaceCircularPatch(random.nextInt(9999), 2.5f, block, Material.DRIPSTONE_BLOCK);
                 if (GenUtils.chance(random, 1, 7)) {
@@ -92,7 +89,8 @@ public class MuddyBogHandler extends BiomeHandler {
                 }
                 for (BlockFace face : BlockUtils.xzPlaneBlockFaces) {
                     if (GenUtils.chance(random, 1, 7)) {
-                        BlockUtils.upLPointedDripstone(GenUtils.randInt(random, 2, 4),
+                        BlockUtils.upLPointedDripstone(
+                                GenUtils.randInt(random, 2, 4),
                                 block.getRelative(face).getGround().getUp()
                         );
                     }
@@ -113,14 +111,21 @@ public class MuddyBogHandler extends BiomeHandler {
         for (SimpleLocation sLoc : shrooms) {
             int treeY = GenUtils.getHighestGround(data, sLoc.getX(), sLoc.getZ());
             sLoc = sLoc.getAtY(treeY);
-            if (isRightBiome(tw.getBiomeBank(sLoc.getX(), sLoc.getZ())) && !BlockUtils.isWet(new SimpleBlock(data,
+            if (isRightBiome(tw.getBiomeBank(sLoc.getX(), sLoc.getZ())) && !BlockUtils.isWet(new SimpleBlock(
+                    data,
                     sLoc.getX(),
                     sLoc.getY() + 1,
-                    sLoc.getZ())) && BlockUtils.isDirtLike(data.getType(sLoc.getX(), sLoc.getY(), sLoc.getZ())))
+                    sLoc.getZ()
+            )) && BlockUtils.isDirtLike(data.getType(
+                    sLoc.getX(),
+                    sLoc.getY(),
+                    sLoc.getZ()
+            )))
             {
                 if (data.getType(sLoc.getX(), sLoc.getY() + 1, sLoc.getZ()) == Material.AIR) {
                     if (random.nextBoolean()) {
-                        new MushroomBuilder(FractalTypes.Mushroom.SMALL_BROWN_MUSHROOM).build(tw,
+                        new MushroomBuilder(FractalTypes.Mushroom.SMALL_BROWN_MUSHROOM).build(
+                                tw,
                                 data,
                                 sLoc.getX(),
                                 sLoc.getY() + 1,
@@ -128,7 +133,8 @@ public class MuddyBogHandler extends BiomeHandler {
                         );
                     }
                     else {
-                        new MushroomBuilder(FractalTypes.Mushroom.TINY_BROWN_MUSHROOM).build(tw,
+                        new MushroomBuilder(FractalTypes.Mushroom.TINY_BROWN_MUSHROOM).build(
+                                tw,
                                 data,
                                 sLoc.getX(),
                                 sLoc.getY() + 1,
@@ -149,13 +155,15 @@ public class MuddyBogHandler extends BiomeHandler {
 
         double height = super.calculateHeight(tw, x, z) - 5;
 
-        FastNoise sinkin = NoiseCacheHandler.getNoise(tw, NoiseCacheEntry.BIOME_MUDDYBOG_HEIGHTMAP, world -> {
-            FastNoise n = new FastNoise((int) world.getSeed());
-            n.SetNoiseType(NoiseType.SimplexFractal);
-            n.SetFractalOctaves(4);
-            n.SetFrequency(0.08f);
-            return n;
-        });
+        FastNoise sinkin = NoiseCacheHandler.getNoise(
+                tw, NoiseCacheEntry.BIOME_MUDDYBOG_HEIGHTMAP, world -> {
+                    FastNoise n = new FastNoise((int) world.getSeed());
+                    n.SetNoiseType(NoiseType.SimplexFractal);
+                    n.SetFractalOctaves(4);
+                    n.SetFrequency(0.08f);
+                    return n;
+                }
+        );
 
         if (sinkin.GetNoise(x, z) < -0.15) {
             if (height > TerraformGenerator.seaLevel) {

@@ -9,21 +9,19 @@ import org.terraform.biome.BiomeBank;
 import org.terraform.biome.BiomeBlender;
 import org.terraform.biome.BiomeHandler;
 import org.terraform.biome.beach.OasisBeach;
-import org.terraform.biome.mountainous.BadlandsCanyonHandler;
 import org.terraform.coregen.ChunkCache;
 import org.terraform.coregen.HeightMap;
 import org.terraform.coregen.bukkit.TerraformGenerator;
 import org.terraform.coregen.populatordata.PopulatorDataAbstract;
 import org.terraform.data.SimpleBlock;
 import org.terraform.data.TerraformWorld;
-import org.terraform.main.config.TConfig;
-import org.terraform.small_items.PlantBuilder;
+import org.terraform.main.TConfig;
+import org.terraform.tree.PlantBuilder;
 import org.terraform.utils.BlockUtils;
 import org.terraform.utils.GenUtils;
 import org.terraform.utils.noise.FastNoise;
 import org.terraform.utils.noise.NoiseCacheHandler;
 import org.terraform.utils.noise.NoiseCacheHandler.NoiseCacheEntry;
-import org.terraform.utils.version.V_1_21_5;
 import org.terraform.utils.version.Version;
 
 import java.util.ArrayList;
@@ -54,13 +52,15 @@ public class BadlandsHandler extends BiomeHandler {
     }
 
     public static @NotNull FastNoise getPlateauNoise(TerraformWorld tw) {
-        return NoiseCacheHandler.getNoise(tw, NoiseCacheEntry.BIOME_BADLANDS_PLATEAUNOISE, world -> {
-            FastNoise n = new FastNoise((int) (world.getSeed() * 7509));
-            n.SetNoiseType(FastNoise.NoiseType.CubicFractal);
-            n.SetFractalOctaves(2);
-            n.SetFrequency(plateauFrequency);
-            return n;
-        });
+        return NoiseCacheHandler.getNoise(
+                tw, NoiseCacheEntry.BIOME_BADLANDS_PLATEAUNOISE, world -> {
+                    FastNoise n = new FastNoise((int) (world.getSeed() * 7509));
+                    n.SetNoiseType(FastNoise.NoiseType.CubicFractal);
+                    n.SetFractalOctaves(2);
+                    n.SetFrequency(plateauFrequency);
+                    return n;
+                }
+        );
     }
 
     // This is for optimizing sand, ew
@@ -71,10 +71,12 @@ public class BadlandsHandler extends BiomeHandler {
                 / plateauThreshold) * 0.1));
 
         double graduated = noiseValue / plateauThreshold;
-        double platformHeight = (int) graduated * plateauHeight + (10 * Math.pow(graduated
-                                                                                 - (int) graduated
-                                                                                 - 0.5
-                                                                                 - 0.1, 7) * plateauHeight);
+        double platformHeight = (int) graduated * plateauHeight + (10 * Math.pow(
+                graduated
+                - (int) graduated
+                - 0.5
+                - 0.1, 7
+        ) * plateauHeight);
 
         return (int) Math.round(platformHeight);
     }
@@ -123,11 +125,6 @@ public class BadlandsHandler extends BiomeHandler {
 
         OasisBeach.generateOasisBeach(world, random, data, rawX, rawZ, BiomeBank.BADLANDS);
 
-        if (HeightMap.getNoiseGradient(world, rawX, rawZ, 3) >= 1.5 && GenUtils.chance(random, 49, 50)) {
-            BadlandsCanyonHandler.oneUnit(random, data, rawX, rawZ, true);
-            return;
-        }
-
         Material base = data.getType(rawX, surfaceY, rawZ);
         if (base == Material.SAND || base == Material.RED_SAND) {
             if (GenUtils.chance(random, 1, 200)) {
@@ -144,18 +141,24 @@ public class BadlandsHandler extends BiomeHandler {
                 if (GenUtils.chance(1, 50)) {
                     spawnDeadTree(data, rawX, surfaceY, rawZ);
                 }
-                else if(GenUtils.chance(1, 30))
-                    PlantBuilder.FIREFLY_BUSH.build(data, rawX, surfaceY+1, rawZ);
+                else if (GenUtils.chance(1, 30)) {
+                    PlantBuilder.FIREFLY_BUSH.build(data, rawX, surfaceY + 1, rawZ);
+                }
                 else {
                     int cactusHeight = PlantBuilder.CACTUS.build(random, data, rawX, surfaceY + 1, rawZ, 2, 5);
-                    if(Version.VERSION.isAtLeast(Version.v1_21_5)
-                        && GenUtils.chance(random, 1, 10))
-                        data.setType(rawX, surfaceY+1+cactusHeight, rawZ, V_1_21_5.CACTUS_FLOWER);
+                    if (GenUtils.chance(random, 1, 10)) {
+                        data.setType(rawX, surfaceY + 1 + cactusHeight, rawZ, Material.CACTUS_FLOWER);
+                    }
                 }
             }
             else if (GenUtils.chance(random, 1, 80) && surfaceY > TerraformGenerator.seaLevel) {
-                PlantBuilder.build(new SimpleBlock(data,rawX, surfaceY + 1,rawZ),
-                        PlantBuilder.DEAD_BUSH, PlantBuilder.SHORT_DRY_GRASS, PlantBuilder.TALL_DRY_GRASS);            }
+                PlantBuilder.build(
+                        new SimpleBlock(data, rawX, surfaceY + 1, rawZ),
+                        PlantBuilder.DEAD_BUSH,
+                        PlantBuilder.SHORT_DRY_GRASS,
+                        PlantBuilder.TALL_DRY_GRASS
+                );
+            }
         }
     }
 
@@ -181,13 +184,15 @@ public class BadlandsHandler extends BiomeHandler {
 
         BiomeBlender blender = getRiversBlender(tw);
 
-        FastNoise wallNoise = NoiseCacheHandler.getNoise(tw, NoiseCacheEntry.BIOME_BADLANDS_WALLNOISE, world -> {
-            FastNoise n = new FastNoise((int) (tw.getWorld().getSeed() * 2));
-            n.SetNoiseType(FastNoise.NoiseType.SimplexFractal);
-            n.SetFrequency(0.07f);
-            n.SetFractalOctaves(2);
-            return n;
-        });
+        FastNoise wallNoise = NoiseCacheHandler.getNoise(
+                tw, NoiseCacheEntry.BIOME_BADLANDS_WALLNOISE, world -> {
+                    FastNoise n = new FastNoise((int) (tw.getWorld().getSeed() * 2));
+                    n.SetNoiseType(FastNoise.NoiseType.SimplexFractal);
+                    n.SetFrequency(0.07f);
+                    n.SetFractalOctaves(2);
+                    return n;
+                }
+        );
 
         int rawX = chunkX * 16 + x;
         int rawZ = chunkZ * 16 + z;
@@ -255,12 +260,14 @@ public class BadlandsHandler extends BiomeHandler {
                           int rawZ,
                           @NotNull PopulatorDataAbstract data)
     {
-        FastNoise detailsNoise = NoiseCacheHandler.getNoise(tw, NoiseCacheEntry.BIOME_BADLANDS_WALLNOISE, world -> {
-            FastNoise n = new FastNoise((int) (tw.getSeed() * 7509));
-            n.SetNoiseType(FastNoise.NoiseType.SimplexFractal);
-            n.SetFrequency(0.08f);
-            return n;
-        });
+        FastNoise detailsNoise = NoiseCacheHandler.getNoise(
+                tw, NoiseCacheEntry.BIOME_BADLANDS_WALLNOISE, world -> {
+                    FastNoise n = new FastNoise((int) (tw.getSeed() * 7509));
+                    n.SetNoiseType(FastNoise.NoiseType.SimplexFractal);
+                    n.SetFrequency(0.08f);
+                    return n;
+                }
+        );
 
         // Calculate plateau height
         double rawValue = Math.max(0, getPlateauNoise(tw).GetNoise(rawX, rawZ) + plateauCommonness);
@@ -270,10 +277,12 @@ public class BadlandsHandler extends BiomeHandler {
                 / plateauThreshold) * 0.05));
 
         double graduated = noiseValue / plateauThreshold;
-        double platformHeight = (int) graduated * plateauHeight + (10 * Math.pow(graduated
-                                                                                 - (int) graduated
-                                                                                 - 0.5
-                                                                                 - 0.1, 7) * plateauHeight);
+        double platformHeight = (int) graduated * plateauHeight + (10 * Math.pow(
+                graduated
+                - (int) graduated
+                - 0.5
+                - 0.1, 7
+        ) * plateauHeight);
 
         boolean placeSand = false;
         for (int y = 1; y <= (int) Math.round(platformHeight); y++) {
@@ -283,13 +292,15 @@ public class BadlandsHandler extends BiomeHandler {
                 material = Material.RED_SAND;
             }
             else if ((int) graduated * plateauHeight == y + 1) {
-                material = GenUtils.randChoice(Material.RED_SAND,
+                material = GenUtils.randChoice(
+                        Material.RED_SAND,
                         Material.RED_SAND,
                         BlockUtils.getTerracotta(surfaceY + y)
                 );
             }
             else if ((int) graduated * plateauHeight == y + 2) {
-                material = GenUtils.randChoice(Material.RED_SAND,
+                material = GenUtils.randChoice(
+                        Material.RED_SAND,
                         BlockUtils.getTerracotta(surfaceY + y),
                         BlockUtils.getTerracotta(surfaceY + y)
                 );
@@ -392,14 +403,8 @@ public class BadlandsHandler extends BiomeHandler {
 
                 BiomeBank currentBiome = tw.getBiomeBank(x, z);
                 if (currentBiome != BiomeBank.BADLANDS
-                    && currentBiome != BiomeBank.BADLANDS_BEACH
-                    && currentBiome != BiomeBank.BADLANDS_CANYON)
+                    && currentBiome != BiomeBank.BADLANDS_BEACH)
                 {
-                    continue;
-                }
-
-                if (HeightMap.getNoiseGradient(tw, x, z, 3) >= 1.5 && GenUtils.chance(random, 49, 50)) {
-                    BadlandsCanyonHandler.oneUnit(random, data, x, z, true);
                     continue;
                 }
 

@@ -86,7 +86,7 @@ public class LocateCommand extends TerraCommand implements Listener {
         // Stronghold Special Case
         if (spop instanceof StrongholdPopulator) {
             final TerraformWorld tw = TerraformWorld.get(p.getWorld());
-            int[] coords = ((StrongholdPopulator) spop).getNearestFeature(tw,
+            StructureLocator.StructureLocation coords = ((StrongholdPopulator) spop).getNearestFeature(tw,
                     p.getLocation().getBlockX(),
                     p.getLocation().getBlockZ()
             );
@@ -116,7 +116,7 @@ public class LocateCommand extends TerraCommand implements Listener {
 
         BukkitRunnable runnable = new BukkitRunnable() {
             public void run() {
-                int[] loc = StructureLocator.locateMultiMegaChunkStructure(tw, center, populator, -1);
+                StructureLocator.StructureLocation loc = StructureLocator.locateMultiMegaChunkStructure(tw, center, populator, -1);
                 long timeTaken = System.currentTimeMillis() - startTime;
 
                 syncSendMessage(uuid, LangOpt.COMMAND_LOCATE_COMPLETED_TASK.parse("%time%", timeTaken + ""));
@@ -142,7 +142,7 @@ public class LocateCommand extends TerraCommand implements Listener {
 
         BukkitRunnable runnable = new BukkitRunnable() {
             public void run() {
-                int[] loc = StructureLocator.locateSingleMegaChunkStructure(tw, center, populator, -1);
+                StructureLocator.StructureLocation loc = StructureLocator.locateSingleMegaChunkStructure(tw, center, populator, -1);
                 long timeTaken = System.currentTimeMillis() - startTime;
 
                 syncSendMessage(uuid, LangOpt.COMMAND_LOCATE_COMPLETED_TASK.parse("%time%", timeTaken + ""));
@@ -156,7 +156,7 @@ public class LocateCommand extends TerraCommand implements Listener {
         super.syncSendMessage(uuid, "Locate", msg);
     }
 
-    private void syncSendMessage(@NotNull Player p, @NotNull StructurePopulator populator, @Nullable int[] loc) {
+    private void syncSendMessage(@NotNull Player p, @NotNull StructurePopulator populator, @Nullable StructureLocator.StructureLocation loc) {
         final UUID uuid = p.getUniqueId();
 
         if (loc == null) {
@@ -170,10 +170,10 @@ public class LocateCommand extends TerraCommand implements Listener {
                 + "["
                 + populator.getClass().getSimpleName()
                 + "] "
-                + LangOpt.COMMAND_LOCATE_LOCATE_COORDS.parse("%x%", loc[0] + "", "%z%", loc[1] + ""),
-                loc[0],
-                getHighestY(TerraformWorld.get(p.getWorld()), loc[0], loc[1]),
-                loc[1]
+                + LangOpt.COMMAND_LOCATE_LOCATE_COORDS.parse("%x%", loc.x() + "", "%z%", loc.z() + ""),
+                loc.x(),
+                getHighestY(TerraformWorld.get(p.getWorld()), loc.x(), loc.z()),
+                loc.z()
         );
     }
 

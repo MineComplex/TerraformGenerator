@@ -6,7 +6,7 @@ import org.terraform.coregen.bukkit.TerraformGenerator;
 import org.terraform.coregen.populatordata.PopulatorDataAbstract;
 import org.terraform.data.CoordPair;
 import org.terraform.data.TerraformWorld;
-import org.terraform.main.config.TConfig;
+import org.terraform.main.TConfig;
 import org.terraform.utils.GenUtils;
 import org.terraform.utils.datastructs.ConcurrentLRUCache;
 import org.terraform.utils.noise.FastNoise;
@@ -23,25 +23,30 @@ public enum HeightMap {
     RIVER {
         @Override
         public double getHeight(TerraformWorld tw, int x, int z) {
-            FastNoise noise = NoiseCacheHandler.getNoise(tw, NoiseCacheEntry.HEIGHTMAP_RIVER, world -> {
-                FastNoise n = new FastNoise((int) world.getSeed());
-                n.SetNoiseType(NoiseType.PerlinFractal);
-                n.SetFrequency(TConfig.c.HEIGHT_MAP_RIVER_FREQUENCY);
-                n.SetFractalOctaves(5);
-                return n;
-            });
+            FastNoise noise = NoiseCacheHandler.getNoise(
+                    tw, NoiseCacheEntry.HEIGHTMAP_RIVER, world -> {
+                        FastNoise n = new FastNoise((int) world.getSeed());
+                        n.SetNoiseType(NoiseType.PerlinFractal);
+                        n.SetFrequency(TConfig.c.HEIGHT_MAP_RIVER_FREQUENCY);
+                        n.SetFractalOctaves(5);
+                        return n;
+                    }
+            );
             return 15 - 200 * Math.abs(noise.GetNoise(x, z));
         }
-    }, CORE {
+    },
+    CORE {
         @Override
         public double getHeight(TerraformWorld tw, int x, int z) {
-            FastNoise noise = NoiseCacheHandler.getNoise(tw, NoiseCacheEntry.HEIGHTMAP_CORE, world -> {
-                FastNoise n = new FastNoise((int) world.getSeed());
-                n.SetNoiseType(NoiseType.SimplexFractal);
-                n.SetFractalOctaves(2); // Poor detail after blurs. Rely on Attrition for detail
-                n.SetFrequency(TConfig.c.HEIGHT_MAP_CORE_FREQUENCY);
-                return n;
-            });
+            FastNoise noise = NoiseCacheHandler.getNoise(
+                    tw, NoiseCacheEntry.HEIGHTMAP_CORE, world -> {
+                        FastNoise n = new FastNoise((int) world.getSeed());
+                        n.SetNoiseType(NoiseType.SimplexFractal);
+                        n.SetFractalOctaves(2); // Poor detail after blurs. Rely on Attrition for detail
+                        n.SetFrequency(TConfig.c.HEIGHT_MAP_CORE_FREQUENCY);
+                        return n;
+                    }
+            );
 
             // 7 blocks elevated from the sea level
             double height = 10 * noise.GetNoise(x, z) + 7 + TerraformGenerator.seaLevel;
@@ -55,38 +60,41 @@ public enum HeightMap {
 
             return height;
         }
-    }, ATTRITION {
+    },
+    ATTRITION {
         @Override
         public double getHeight(TerraformWorld tw, int x, int z) {
-            FastNoise perlin = NoiseCacheHandler.getNoise(tw, NoiseCacheEntry.HEIGHTMAP_ATTRITION, world -> {
-                FastNoise n = new FastNoise((int) world.getSeed() + 113);
-                n.SetNoiseType(NoiseType.PerlinFractal);
-                n.SetFractalOctaves(4);
-                n.SetFrequency(0.02f);
-                return n;
-            });
+            FastNoise perlin = NoiseCacheHandler.getNoise(
+                    tw, NoiseCacheEntry.HEIGHTMAP_ATTRITION, world -> {
+                        FastNoise n = new FastNoise((int) world.getSeed() + 113);
+                        n.SetNoiseType(NoiseType.PerlinFractal);
+                        n.SetFractalOctaves(4);
+                        n.SetFrequency(0.02f);
+                        return n;
+                    }
+            );
 
             double height = perlin.GetNoise(x, z) * 2 * 7;
             return Math.max(0, height);
         }
     };
 
-    public static final int defaultSeaLevel = 62;
     public static final float heightAmplifier = TConfig.c.HEIGHT_MAP_LAND_HEIGHT_AMPLIFIER;
     public static final int MASK_RADIUS = 5;
     public static final int MASK_DIAMETER = (MASK_RADIUS * 2) + 1;
-    public static final int MASK_VOLUME = MASK_DIAMETER*MASK_DIAMETER;
+    public static final int MASK_VOLUME = MASK_DIAMETER * MASK_DIAMETER;
     private static final int upscaleSize = 3;
     public static int spawnFlatRadiusSquared = -324534;
-    private static final ConcurrentLRUCache<BiomeSection, SectionBlurCache> BLUR_CACHE = new ConcurrentLRUCache<>(
-        "BLUR_CACHE",64, (sect)->{
-            SectionBlurCache newCache = new SectionBlurCache(
-                    sect,
-                    new float[BiomeSection.sectionWidth+MASK_DIAMETER][BiomeSection.sectionWidth+MASK_DIAMETER],
-                    new float[BiomeSection.sectionWidth+MASK_DIAMETER][BiomeSection.sectionWidth+MASK_DIAMETER]);
-            newCache.fillCache();
-            return newCache;
-        }
+    public static final ConcurrentLRUCache<BiomeSection, SectionBlurCache> BLUR_CACHE = new ConcurrentLRUCache<>(
+            "BLUR_CACHE", 64, (sect) -> {
+        SectionBlurCache newCache = new SectionBlurCache(
+                sect,
+                new float[BiomeSection.sectionWidth + MASK_DIAMETER][BiomeSection.sectionWidth + MASK_DIAMETER],
+                new float[BiomeSection.sectionWidth + MASK_DIAMETER][BiomeSection.sectionWidth + MASK_DIAMETER]
+        );
+        newCache.fillCache();
+        return newCache;
+    }
     );
 
     /**
@@ -148,7 +156,7 @@ public enum HeightMap {
     }
 
     public static double getPreciseHeight(TerraformWorld tw, int x, int z) {
-        ChunkCache cache = TerraformGenerator.getCache(tw, x>>4, z>>4);
+        ChunkCache cache = TerraformGenerator.getCache(tw, x >> 4, z >> 4);
 
         double cachedValue = cache.getHeightMapHeight(x, z);
         if (cachedValue != ChunkCache.CHUNKCACHE_INVAL) {
@@ -185,13 +193,15 @@ public enum HeightMap {
      * variable, as it happened to be called in one place.
      * <br><br>
      * Do not call this anywhere else.
-     * @param x raw x coordinate
-     * @param z raw z coordinate
+     *
+     * @param x                    raw x coordinate
+     * @param z                    raw z coordinate
      * @param dominantBiomeHeights This is a cache value for local caching.
      * @return The dominant biome's height calculation. Must be blurred to be coherent with other biomes.
      */
-    static float getDominantBiomeHeight(TerraformWorld tw, int x, int z, HashMap<CoordPair, Float> dominantBiomeHeights) {
-        CoordPair key = new CoordPair(x,z);
+    static float getDominantBiomeHeight(TerraformWorld tw, int x, int z, HashMap<CoordPair, Float> dominantBiomeHeights)
+    {
+        CoordPair key = new CoordPair(x, z);
         Float h = dominantBiomeHeights.get(key);
         if (h == null) {
             // Upscale the biome
@@ -218,14 +228,13 @@ public enum HeightMap {
      * @return Near-final world height without rivers accounted for
      */
     public static double getRiverlessHeight(TerraformWorld tw, int x, int z) {
-
         // int maskDiameterSquared = maskDiameter*maskDiameter;
         double coreHeight;
 
         BiomeSection sect = BiomeBank.getBiomeSectionFromBlockCoords(tw, x, z);
 
         // This will calculate a blur height
-        coreHeight = BLUR_CACHE.get(sect).getBlurredHeight(x,z);
+        coreHeight = BLUR_CACHE.get(sect).getBlurredHeight(x, z);
 
         coreHeight += HeightMap.ATTRITION.getHeight(tw, x, z);
 

@@ -24,7 +24,6 @@ import org.terraform.utils.WoodUtils;
 import org.terraform.utils.WoodUtils.WoodType;
 import org.terraform.utils.noise.FastNoise;
 import org.terraform.utils.noise.FastNoise.NoiseType;
-import org.terraform.utils.version.V_1_20;
 import org.terraform.utils.version.Version;
 
 import java.util.HashMap;
@@ -62,14 +61,14 @@ public class AnimalFarmPopulator extends VillageHousePopulator {
             animalFarm.setFace(dir);
             animalFarm.apply();
 
-            TerraformGeneratorPlugin.logger.info("Spawning animal farm at "
+/*            TerraformGeneratorPlugin.logger.info("Spawning animal farm at "
                                                  + x
                                                  + ","
                                                  + y
                                                  + ","
                                                  + z
                                                  + " with rotation of "
-                                                 + animalFarm.getFace());
+                                                 + animalFarm.getFace());*/
 
             data.addEntity(x, y + 1, z, EntityType.VILLAGER); // Two villagers
             data.addEntity(x, y + 1, z, EntityType.VILLAGER);
@@ -259,8 +258,8 @@ public class AnimalFarmPopulator extends VillageHousePopulator {
 
             int animalCount = GenUtils.randInt(3, 7);
             EntityType animal = farmAnimals[random.nextInt(farmAnimals.length)];
-            if (Version.VERSION.isAtLeast(Version.v1_20) && pens == 0 && biome.getClimate() == BiomeClimate.HOT_BARREN) {
-                animal = V_1_20.CAMEL;
+            if (pens == 0 && biome.getClimate() == BiomeClimate.HOT_BARREN) {
+                animal = EntityType.CAMEL;
                 animalCount = 2;
             }
             // Spawn animals

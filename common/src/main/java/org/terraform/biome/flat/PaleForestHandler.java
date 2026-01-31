@@ -9,14 +9,14 @@ import org.terraform.coregen.populatordata.PopulatorDataAbstract;
 import org.terraform.data.SimpleBlock;
 import org.terraform.data.SimpleLocation;
 import org.terraform.data.TerraformWorld;
+import org.terraform.main.TConfig;
 import org.terraform.main.TerraformGeneratorPlugin;
-import org.terraform.main.config.TConfig;
-import org.terraform.small_items.PlantBuilder;
 import org.terraform.tree.FractalTypes;
 import org.terraform.tree.NewFractalTreeBuilder;
+import org.terraform.tree.PlantBuilder;
 import org.terraform.utils.BlockUtils;
 import org.terraform.utils.GenUtils;
-import org.terraform.utils.version.V_1_21_4;
+import org.terraform.utils.version.V_1_21_5;
 
 import java.util.Random;
 
@@ -29,7 +29,7 @@ public class PaleForestHandler extends BiomeHandler {
 
     @Override
     public @NotNull Biome getBiome() {
-        return V_1_21_4.PALE_GARDEN;
+        return Biome.PALE_GARDEN;
     }
 
     @Override
@@ -58,11 +58,10 @@ public class PaleForestHandler extends BiomeHandler {
                 }
                 // Only grass and eye blossoms
                 PlantBuilder.GRASS.build(data, rawX, surfaceY + 1, rawZ);
-                if (random.nextInt(3) != 0) {
-                    PlantBuilder.TALL_GRASS.build(data, rawX, surfaceY + 1, rawZ);
-                }
-                else if (random.nextInt(2) != 0) { //Make these slightly rarer
+                if (random.nextInt(3) == 0) {
+                    if (random.nextInt(2) != 0) { //Make these slightly rarer
                         PlantBuilder.CLOSED_EYEBLOSSOM.build(data, rawX, surfaceY + 1, rawZ);
+                    }
                 }
             }
         }
@@ -70,34 +69,33 @@ public class PaleForestHandler extends BiomeHandler {
 
     public NewFractalTreeBuilder paleTreeMutator(NewFractalTreeBuilder b)
     {
-        b.getFractalLeaves().setMaterial(V_1_21_4.PALE_OAK_LEAVES);
-        b.getFractalLeaves().setPaleMossVines(0.2f,3);
-        b.setBranchMaterial(V_1_21_4.PALE_OAK_LOG);
-        b.setRootMaterial(V_1_21_4.PALE_OAK_WOOD);
+        b.getFractalLeaves().setMaterial(Material.PALE_OAK_LEAVES);
+        b.getFractalLeaves().setPaleMossVines(0.2f, 3);
+        b.setBranchMaterial(Material.PALE_OAK_LOG);
+        b.setRootMaterial(Material.PALE_OAK_WOOD);
         return b;
     }
 
     /**
      * Places a heart and surrounds it with pale oak logs
      */
-    private void placeHeart(PopulatorDataAbstract data, int x, int y, int z){
-        data.setBlockData(x,y,z,V_1_21_4.CREAKING_HEART);
-        data.setType(x+1,y,z,V_1_21_4.PALE_OAK_LOG);
-        data.setType(x-1,y,z,V_1_21_4.PALE_OAK_LOG);
-        data.setType(x,y,z+1,V_1_21_4.PALE_OAK_LOG);
-        data.setType(x,y,z-1,V_1_21_4.PALE_OAK_LOG);
-        data.setType(x,y-1,z,V_1_21_4.PALE_OAK_LOG);
-        data.setType(x,y+1,z,V_1_21_4.PALE_OAK_LOG);
-        TerraformGeneratorPlugin.logger.info("Spawning Creaking Heart at " + x + "," + y + "," + z);
+    private void placeHeart(PopulatorDataAbstract data, int x, int y, int z) {
+        data.setBlockData(x, y, z, V_1_21_5.CREAKING_HEART);
+        data.setType(x + 1, y, z, Material.PALE_OAK_LOG);
+        data.setType(x - 1, y, z, Material.PALE_OAK_LOG);
+        data.setType(x, y, z + 1, Material.PALE_OAK_LOG);
+        data.setType(x, y, z - 1, Material.PALE_OAK_LOG);
+        data.setType(x, y - 1, z, Material.PALE_OAK_LOG);
+        data.setType(x, y + 1, z, Material.PALE_OAK_LOG);
+        //TerraformGeneratorPlugin.logger.info("Spawning Creaking Heart at " + x + "," + y + "," + z);
     }
 
     private void treeMossCircle(SimpleBlock core)
     {
-        Random random = core.getPopData().getTerraformWorld().getHashedRand(core.getX(),core.getZ(),1);
-        core.setType(V_1_21_4.PALE_MOSS);
-        if(random.nextInt(4) == 0)
-        {
-            core.getUp().lsetType(V_1_21_4.PALE_MOSS_CARPET);
+        Random random = core.getPopData().getTerraformWorld().getHashedRand(core.getX(), core.getZ(), 1);
+        core.setType(Material.PALE_MOSS_BLOCK);
+        if (random.nextInt(4) == 0) {
+            core.getUp().lsetType(Material.PALE_MOSS_CARPET);
         }
     }
 
@@ -113,20 +111,22 @@ public class PaleForestHandler extends BiomeHandler {
         for (SimpleLocation sLoc : bigTrees) {
             int treeY = GenUtils.getHighestGround(data, sLoc.getX(), sLoc.getZ());
             sLoc = sLoc.getAtY(treeY);
-            if (data.getBiome(sLoc.getX(), sLoc.getZ()) == getBiome() && BlockUtils.isDirtLike(data.getType(sLoc.getX(),
+            if (data.getBiome(sLoc.getX(), sLoc.getZ()) == getBiome() && BlockUtils.isDirtLike(data.getType(
+                    sLoc.getX(),
                     sLoc.getY(),
-                    sLoc.getZ())))
+                    sLoc.getZ()
+            )))
             {
                 if (TConfig.c.TREES_PALE_FOREST_BIG_ENABLED) {
-                    BlockUtils.lambdaCircularPatch(tw.getHashedRand(sLoc.getX(), sLoc.getY(), sLoc.getZ()).nextInt(9999),
+                    BlockUtils.lambdaCircularPatch(
+                            tw.getHashedRand(sLoc.getX(), sLoc.getY(), sLoc.getZ()).nextInt(9999),
                             7,
-                            new SimpleBlock(data,sLoc),
-                            this::treeMossCircle);
-                    if(FractalTypes.Tree.DARK_OAK_BIG_TOP.build(
-                            tw,
                             new SimpleBlock(data, sLoc),
-                            this::paleTreeMutator)
-                       && random.nextDouble() <= TConfig.c.BIOME_PALE_FOREST_CREAKING_CHANCE){
+                            this::treeMossCircle
+                    );
+                    if (FractalTypes.Tree.DARK_OAK_BIG_TOP.build(tw, new SimpleBlock(data, sLoc), this::paleTreeMutator)
+                        && random.nextDouble() <= TConfig.c.BIOME_PALE_FOREST_CREAKING_CHANCE)
+                    {
                         placeHeart(data, sLoc.getX(), treeY + GenUtils.randInt(random, 2, 5), sLoc.getZ());
                     }
                 }
@@ -137,19 +137,21 @@ public class PaleForestHandler extends BiomeHandler {
         for (SimpleLocation sLoc : trees) {
             int treeY = GenUtils.getHighestGround(data, sLoc.getX(), sLoc.getZ());
             sLoc = sLoc.getAtY(treeY);
-            if (data.getBiome(sLoc.getX(), sLoc.getZ()) == getBiome() && BlockUtils.isDirtLike(data.getType(sLoc.getX(),
+            if (data.getBiome(sLoc.getX(), sLoc.getZ()) == getBiome() && BlockUtils.isDirtLike(data.getType(
+                    sLoc.getX(),
                     sLoc.getY(),
-                    sLoc.getZ())))
+                    sLoc.getZ()
+            )))
             {
-                BlockUtils.lambdaCircularPatch(tw.getHashedRand(sLoc.getX(), sLoc.getY(), sLoc.getZ()).nextInt(9999),
+                BlockUtils.lambdaCircularPatch(
+                        tw.getHashedRand(sLoc.getX(), sLoc.getY(), sLoc.getZ()).nextInt(9999),
                         4,
-                        new SimpleBlock(data,sLoc),
-                        this::treeMossCircle);
-                if(FractalTypes.Tree.DARK_OAK_SMALL.build(
-                        tw,
                         new SimpleBlock(data, sLoc),
-                        this::paleTreeMutator)
-                   && random.nextDouble() <= TConfig.c.BIOME_PALE_FOREST_CREAKING_CHANCE){
+                        this::treeMossCircle
+                );
+                if (FractalTypes.Tree.DARK_OAK_SMALL.build(tw, new SimpleBlock(data, sLoc), this::paleTreeMutator)
+                    && random.nextDouble() <= TConfig.c.BIOME_PALE_FOREST_CREAKING_CHANCE)
+                {
                     placeHeart(data, sLoc.getX(), treeY + GenUtils.randInt(random, 1, 3), sLoc.getZ());
                 }
             }

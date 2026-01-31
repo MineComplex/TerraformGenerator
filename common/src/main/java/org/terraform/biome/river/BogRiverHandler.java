@@ -13,7 +13,7 @@ import org.terraform.coregen.bukkit.TerraformGenerator;
 import org.terraform.coregen.populatordata.PopulatorDataAbstract;
 import org.terraform.data.SimpleBlock;
 import org.terraform.data.TerraformWorld;
-import org.terraform.main.config.TConfig;
+import org.terraform.main.TConfig;
 import org.terraform.utils.BlockUtils;
 import org.terraform.utils.GenUtils;
 import org.terraform.utils.noise.FastNoise;
@@ -70,13 +70,15 @@ public class BogRiverHandler extends BiomeHandler {
         int rawX = chunkX * 16 + x;
         int rawZ = chunkZ * 16 + z;
 
-        FastNoise sinkin = NoiseCacheHandler.getNoise(tw, NoiseCacheEntry.BIOME_MUDDYBOG_HEIGHTMAP, world -> {
-            FastNoise n = new FastNoise((int) tw.getSeed());
-            n.SetNoiseType(NoiseType.SimplexFractal);
-            n.SetFractalOctaves(4);
-            n.SetFrequency(0.005f);
-            return n;
-        });
+        FastNoise sinkin = NoiseCacheHandler.getNoise(
+                tw, NoiseCacheEntry.BIOME_MUDDYBOG_HEIGHTMAP, world -> {
+                    FastNoise n = new FastNoise((int) tw.getSeed());
+                    n.SetNoiseType(NoiseType.SimplexFractal);
+                    n.SetFractalOctaves(4);
+                    n.SetFrequency(0.005f);
+                    return n;
+                }
+        );
 
         double noise = sinkin.GetNoise(rawX, rawZ);
         if (noise > -0.2) {

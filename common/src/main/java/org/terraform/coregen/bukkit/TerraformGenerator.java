@@ -16,8 +16,8 @@ import org.terraform.data.DudChunkData;
 import org.terraform.data.SimpleChunkLocation;
 import org.terraform.data.TWCoordPair;
 import org.terraform.data.TerraformWorld;
+import org.terraform.main.TConfig;
 import org.terraform.main.TerraformGeneratorPlugin;
-import org.terraform.main.config.TConfig;
 import org.terraform.utils.GenUtils;
 import org.terraform.utils.blockdata.CommonMat;
 import org.terraform.utils.datastructs.ConcurrentLRUCache;
@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.Random;
 
 public class TerraformGenerator extends ChunkGenerator {
-    public static final List<SimpleChunkLocation> preWorldInitGen = new ArrayList<>();
+
     // Explode if a read is attempted. Transform Handlers are not supposed to read.
     private static final DudChunkData DUD = new DudChunkData();
     //This cache is NOT fucking used correctly.
@@ -48,7 +48,7 @@ public class TerraformGenerator extends ChunkGenerator {
         // Note how it DOES NOT initInternalCache here
         // Cos this is the damn key
         // Don't fucking run calculations here
-        return CHUNK_CACHE.get(new TWCoordPair(tw, x,z));
+        return CHUNK_CACHE.get(new TWCoordPair(tw, x, z));
     }
 
     // This method ONLY fills transformedHeight with meaningful values,
@@ -115,6 +115,7 @@ public class TerraformGenerator extends ChunkGenerator {
      * then flush it into the CHUNK_CACHE after generation, which is
      * dumb. That's dumb.
      */
+    @Override
     public void generateNoise(@NotNull WorldInfo worldInfo,
                               @NotNull Random dontCareRandom,
                               int chunkX,
@@ -131,8 +132,8 @@ public class TerraformGenerator extends ChunkGenerator {
 
         for (int x = 0; x < 16; x++) {
             for (int z = 0; z < 16; z++) {
-                int rawX = (chunkX<<4) + x;
-                int rawZ = (chunkZ<<4) + z;
+                int rawX = (chunkX << 4) + x;
+                int rawZ = (chunkZ << 4) + z;
 
                 double height = HeightMap.getPreciseHeight(
                         tw,
@@ -142,23 +143,36 @@ public class TerraformGenerator extends ChunkGenerator {
                 cache.writeTransformedHeight(x, z, (short) height);
 
                 // Fill stone up to the world height. Differentiate between deepslate or not.
-                chunkData.setRegion(x,3,z,x+1, (int) height+1,z+1, CommonMat.STONE);
-                chunkData.setRegion(x,TerraformGeneratorPlugin.injector.getMinY(),z,
-                        x+1, 0,z+1, CommonMat.DEEPSLATE);
+                chunkData.setRegion(x, 3, z, x + 1, (int) height + 1, z + 1, CommonMat.STONE);
+                chunkData.setRegion(
+                        x,
+                        TerraformGeneratorPlugin.injector.getMinY(),
+                        z,
+                        x + 1,
+                        0,
+                        z + 1,
+                        CommonMat.DEEPSLATE
+                );
 
                 //Iterate the remaining area to carve out caves
                 for (int y = (int) height; y >= TerraformGeneratorPlugin.injector.getMinY(); y--) {
-                   if (y >= 0 && y <= 2) {
-                       chunkData.setBlock(x, y, z, GenUtils.randChoice(
-                               dontCareRandom,CommonMat.DEEPSLATE, CommonMat.STONE));
+                    if (y >= 0 && y <= 2) {
+                        chunkData.setBlock(
+                                x,
+                                y,
+                                z,
+                                GenUtils.randChoice(dontCareRandom, CommonMat.DEEPSLATE, CommonMat.STONE)
+                        );
                     }
 
                     // Set cave air if a cave CAN be carved here
                     if (tw.noiseCaveRegistry.canNoiseCarve(rawX, y, rawZ, height, cache)) {
                         chunkData.setBlock(x, y, z, CommonMat.CAVE_AIR);
-                        cache.cacheNonSolid(x,y,z);
+                        cache.cacheNonSolid(x, y, z);
                     }
-                    else cache.cacheSolid(x,y,z);
+                    else {
+                        cache.cacheSolid(x, y, z);
+                    }
 
                 }
 
@@ -171,16 +185,19 @@ public class TerraformGenerator extends ChunkGenerator {
                     index++;
                 }
                 // Water for below certain heights
-                chunkData.setRegion(x, (int) (height + 1),z,x+1,seaLevel+1,z+1, CommonMat.WATER);
+                chunkData.setRegion(x, (int) (height + 1), z, x + 1, seaLevel + 1, z + 1, CommonMat.WATER);
 
                 // Carve caves HERE.
                 boolean mustUpdateHeight = true;
                 for (int y = (int) height; y > TerraformGeneratorPlugin.injector.getMinY(); y--) {
-                    if (tw.noiseCaveRegistry.canGenerateCarve(rawX, y, rawZ, height, cache)
-                        || !chunkData.getType(x, y, z).isSolid())
+                    if (tw.noiseCaveRegistry.canGenerateCarve(rawX, y, rawZ, height, cache) || !chunkData.getType(
+                            x,
+                            y,
+                            z
+                    ).isSolid())
                     {
                         chunkData.setBlock(x, y, z, CommonMat.CAVE_AIR);
-                        cache.cacheNonSolid(x,y,z);
+                        cache.cacheNonSolid(x, y, z);
                         if (mustUpdateHeight) {
                             cache.writeTransformedHeight(x, z, (short) (y - 1));
                         }
@@ -202,44 +219,49 @@ public class TerraformGenerator extends ChunkGenerator {
                     if (GenUtils.chance(dontCareRandom, TConfig.c.HEIGHT_MAP_BEDROCK_DENSITY, 100)) {
                         chunkData.setBlock(x, TerraformGeneratorPlugin.injector.getMinY() + i, z, CommonMat.BEDROCK);
                     }
-                    else
+                    else {
                         break;
+                    }
                 }
             }
         }
         // After this whole song and dance, place bedrock in one operation
-        chunkData.setRegion(0,TerraformGeneratorPlugin.injector.getMinY(), 0,
-                16,TerraformGeneratorPlugin.injector.getMinY()+1, 16, CommonMat.BEDROCK);
+        chunkData.setRegion(
+                0,
+                TerraformGeneratorPlugin.injector.getMinY(),
+                0,
+                16,
+                TerraformGeneratorPlugin.injector.getMinY() + 1,
+                16,
+                CommonMat.BEDROCK
+        );
     }
 
     /**
      * Responsible for setting surface biome blocks and biomeTransforms
      */
+    @Override
     public void generateSurface(@NotNull WorldInfo worldInfo,
                                 @NotNull Random dontCareRandom,
                                 int chunkX,
                                 int chunkZ,
-                                @NotNull ChunkData chunkData)
-    {
-
+                                @NotNull ChunkData chunkData) {
     }
 
+    @Override
     public void generateBedrock(@NotNull WorldInfo worldInfo,
                                 @NotNull Random random,
                                 int chunkX,
                                 int chunkZ,
-                                @NotNull ChunkData chunkData)
-    {
-
+                                @NotNull ChunkData chunkData) {
     }
 
+    @Override
     public void generateCaves(@NotNull WorldInfo worldInfo,
                               @NotNull Random random,
                               int chunkX,
                               int chunkZ,
-                              @NotNull ChunkData chunkData)
-    {
-
+                              @NotNull ChunkData chunkData) {
     }
 
     @Override
@@ -254,31 +276,38 @@ public class TerraformGenerator extends ChunkGenerator {
     }
 
     // Do exactly 0 of this, TFG now handles ALL of it.
+    @Override
     public boolean shouldGenerateNoise() {
         return false;
     }
 
+    @Override
     public boolean shouldGenerateSurface() {
         return false;
     }
 
+    @Override
     public boolean shouldGenerateBedrock() {
         return false;
     }
 
+    @Override
     public boolean shouldGenerateCaves() {
         return false;
     }
 
+    @Override
     public boolean shouldGenerateDecorations() {
         return false;
     }
 
+    @Override
     public boolean shouldGenerateMobs() {
         return false;
     }
 
     // This is true as StructureManager is now being overridden.
+    @Override
     public boolean shouldGenerateStructures() {
         return true;
     }

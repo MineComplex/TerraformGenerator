@@ -6,12 +6,11 @@ import org.terraform.utils.noise.FastNoise;
 import org.terraform.utils.noise.NoiseCacheHandler;
 
 public class CheeseCave extends NoiseCaveAbstract {
+
     @Override
     public boolean canCarve(@NotNull TerraformWorld tw, int rawX, int y, int rawZ, double height, float surfaceFilter) {
         FastNoise cheeseNoise = NoiseCacheHandler.getNoise(
-                tw,
-                NoiseCacheHandler.NoiseCacheEntry.CAVE_CHEESE_NOISE,
-                world -> {
+                tw, NoiseCacheHandler.NoiseCacheEntry.CAVE_CHEESE_NOISE, world -> {
                     FastNoise n = new FastNoise((int) (tw.getSeed() + 723891));
                     n.SetNoiseType(FastNoise.NoiseType.SimplexFractal);
                     n.SetFrequency(0.03f);

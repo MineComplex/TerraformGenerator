@@ -6,7 +6,7 @@ import org.jetbrains.annotations.NotNull;
 import org.terraform.coregen.populatordata.PopulatorDataAbstract;
 import org.terraform.data.SimpleBlock;
 import org.terraform.data.TerraformWorld;
-import org.terraform.main.config.TConfig;
+import org.terraform.main.TConfig;
 import org.terraform.utils.BlockUtils;
 import org.terraform.utils.GenUtils;
 import org.terraform.utils.blockdata.DirectionalBuilder;
@@ -99,7 +99,8 @@ public class AmethystGeodePopulator {
                 upperHeightRange = minDepth;
             }
 
-            upperHeightRange = Math.min(world.getBiomeBank(x, z).getHandler().getMaxHeightForCaves(world, x, z),
+            upperHeightRange = Math.min(
+                    world.getBiomeBank(x, z).getHandler().getMaxHeightForCaves(world, x, z),
                     upperHeightRange
             );
 

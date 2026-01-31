@@ -10,7 +10,7 @@ import org.terraform.coregen.TerraLootTable;
 import org.terraform.coregen.populatordata.PopulatorDataAbstract;
 import org.terraform.data.SimpleBlock;
 import org.terraform.data.Wall;
-import org.terraform.main.config.TConfig;
+import org.terraform.main.TConfig;
 import org.terraform.utils.GenUtils;
 
 import java.util.Random;
@@ -45,7 +45,9 @@ public class ChestBuilder {
 
     public @NotNull ChestBuilder apply(@NotNull SimpleBlock block) {
         //Don't place chests if decorations are off
-        if(!TConfig.areDecorationsEnabled()) return this;
+        if (!TConfig.areDecorationsEnabled()) {
+            return this;
+        }
         block.setBlockData(blockData);
         if (lootTable != null) {
             block.getPopData().lootTableChest(block.getX(), block.getY(), block.getZ(), lootTable);

@@ -335,9 +335,9 @@ public class MansionJigsawBuilder extends JigsawBuilder {
         for (JigsawStructurePiece piece : secondFloorHandler.secondFloorPieces.values()) {
             ((MansionStandardRoomPiece) piece).spawnGuards(random, core.getPopData());
         }
-        TerraformGeneratorPlugin.logger.info("Mansion spawned "
+/*        TerraformGeneratorPlugin.logger.info("Mansion spawned "
                                              + MansionStandardRoomPiece.spawnedGuards
-                                             + " vindicators and evokers");
+                                             + " vindicators and evokers");*/
     }
 
     /**

@@ -11,10 +11,10 @@ import org.terraform.coregen.populatordata.PopulatorDataAbstract;
 import org.terraform.data.SimpleBlock;
 import org.terraform.data.SimpleLocation;
 import org.terraform.data.TerraformWorld;
-import org.terraform.main.config.TConfig;
-import org.terraform.small_items.PlantBuilder;
+import org.terraform.main.TConfig;
 import org.terraform.tree.FractalTypes;
 import org.terraform.tree.MushroomBuilder;
+import org.terraform.tree.PlantBuilder;
 import org.terraform.utils.BlockUtils;
 import org.terraform.utils.GenUtils;
 
@@ -48,7 +48,8 @@ public class DarkForestHandler extends BiomeHandler {
             int Ty = coords[1];
             int Tz = coords[2];
             if (!data.getType(Tx, Ty, Tz).isSolid() || data.getType(Tx, Ty, Tz).toString().contains("LEAVES")) {
-                BlockUtils.setDownUntilSolid(Tx,
+                BlockUtils.setDownUntilSolid(
+                        Tx,
                         Ty,
                         Tz,
                         data,
@@ -93,11 +94,7 @@ public class DarkForestHandler extends BiomeHandler {
                                    int rawZ,
                                    @NotNull PopulatorDataAbstract data)
     {
-        boolean spawnHeads = TConfig.c.BIOME_DARK_FOREST_SPAWN_HEADS && GenUtils.chance(
-                random,
-                1,
-                100
-        );
+        boolean spawnHeads = TConfig.c.BIOME_DARK_FOREST_SPAWN_HEADS && GenUtils.chance(random, 1, 100);
 
         if (data.getType(rawX, surfaceY, rawZ) == Material.GRASS_BLOCK) {
             if (GenUtils.chance(random, 1, 10)) {
@@ -106,10 +103,7 @@ public class DarkForestHandler extends BiomeHandler {
                 }
                 // Only grass and mushrooms
                 PlantBuilder.GRASS.build(data, rawX, surfaceY + 1, rawZ);
-                if (random.nextInt(3) != 0) {
-                    PlantBuilder.TALL_GRASS.build(data, rawX, surfaceY + 1, rawZ);
-                }
-                else {
+                if (random.nextInt(3) == 0) {
                     if (random.nextBoolean()) {
                         PlantBuilder.BROWN_MUSHROOM.build(data, rawX, surfaceY + 1, rawZ);
                     }
@@ -144,9 +138,11 @@ public class DarkForestHandler extends BiomeHandler {
         for (SimpleLocation sLoc : bigTrees) {
             int treeY = GenUtils.getHighestGround(data, sLoc.getX(), sLoc.getZ());
             sLoc = sLoc.getAtY(treeY);
-            if (data.getBiome(sLoc.getX(), sLoc.getZ()) == getBiome() && BlockUtils.isDirtLike(data.getType(sLoc.getX(),
+            if (data.getBiome(sLoc.getX(), sLoc.getZ()) == getBiome() && BlockUtils.isDirtLike(data.getType(
+                    sLoc.getX(),
                     sLoc.getY(),
-                    sLoc.getZ())))
+                    sLoc.getZ()
+            )))
             {
                 if (GenUtils.chance(random, 2, 10)) {
                     int choice = random.nextInt(3);
@@ -167,9 +163,11 @@ public class DarkForestHandler extends BiomeHandler {
         for (SimpleLocation sLoc : trees) {
             int treeY = GenUtils.getHighestGround(data, sLoc.getX(), sLoc.getZ());
             sLoc = sLoc.getAtY(treeY);
-            if (data.getBiome(sLoc.getX(), sLoc.getZ()) == getBiome() && BlockUtils.isDirtLike(data.getType(sLoc.getX(),
+            if (data.getBiome(sLoc.getX(), sLoc.getZ()) == getBiome() && BlockUtils.isDirtLike(data.getType(
+                    sLoc.getX(),
                     sLoc.getY(),
-                    sLoc.getZ())))
+                    sLoc.getZ()
+            )))
             {
                 // new FractalTreeBuilder(FractalTypes.Tree.DARK_OAK_SMALL)
                 FractalTypes.Tree.DARK_OAK_SMALL.build(tw, new SimpleBlock(data, sLoc));
@@ -180,9 +178,11 @@ public class DarkForestHandler extends BiomeHandler {
         for (SimpleLocation sLoc : smallDecorations) {
             int treeY = GenUtils.getHighestGround(data, sLoc.getX(), sLoc.getZ());
             sLoc = sLoc.getAtY(treeY);
-            if (data.getBiome(sLoc.getX(), sLoc.getZ()) == getBiome() && BlockUtils.isDirtLike(data.getType(sLoc.getX(),
+            if (data.getBiome(sLoc.getX(), sLoc.getZ()) == getBiome() && BlockUtils.isDirtLike(data.getType(
+                    sLoc.getX(),
                     sLoc.getY(),
-                    sLoc.getZ())))
+                    sLoc.getZ()
+            )))
             {
                 int choice = random.nextInt(5);
                 switch (choice) {

@@ -14,8 +14,8 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 import org.terraform.data.SimpleChunkLocation;
 import org.terraform.data.SimpleLocation;
+import org.terraform.main.TConfig;
 import org.terraform.main.TerraformGeneratorPlugin;
-import org.terraform.main.config.TConfig;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -25,7 +25,6 @@ public class PhysicsUpdaterPopulator extends BlockPopulator implements Listener 
     // SimpleChunkLocation to a collection of simplelocations
     public static final @NotNull Map<SimpleChunkLocation, Collection<SimpleLocation>> cache = new ConcurrentHashMap<>();
     private static boolean flushIsQueued = false;
-    // private final TerraformWorld tw;
 
     public PhysicsUpdaterPopulator() {
         // this.tw = tw;
@@ -33,7 +32,6 @@ public class PhysicsUpdaterPopulator extends BlockPopulator implements Listener 
     }
 
     public static void pushChange(String world, @NotNull SimpleLocation loc) {
-
         if (!flushIsQueued && cache.size() > TConfig.c.DEVSTUFF_FLUSH_PATCHER_CACHE_FREQUENCY) {
             flushIsQueued = true;
             new BukkitRunnable() {
@@ -63,9 +61,9 @@ public class PhysicsUpdaterPopulator extends BlockPopulator implements Listener 
         ArrayList<SimpleChunkLocation> locs = new ArrayList<>(cache.keySet());
         for (SimpleChunkLocation scl : locs) {
             World w = Bukkit.getWorld(scl.getWorld());
-            if (w == null) {
+            if (w == null)
                 continue;
-            }
+
             if (w.isChunkLoaded(scl.getX(), scl.getZ())) {
                 Collection<SimpleLocation> changes = cache.remove(scl);
                 if (changes != null) {
@@ -79,8 +77,7 @@ public class PhysicsUpdaterPopulator extends BlockPopulator implements Listener 
                         target.setBlockData(old, true);
                     }
                 }
-            }
-            else {
+            } else {
                 // Let the event handler do it
                 w.loadChunk(scl.getX(), scl.getZ());
             }
@@ -118,6 +115,7 @@ public class PhysicsUpdaterPopulator extends BlockPopulator implements Listener 
             if (!scl.getWorld().equals(event.getWorld().getName())) {
                 continue;
             }
+
             Collection<SimpleLocation> changes = cache.remove(scl);
             if (changes != null) {
                 // TerraformGeneratorPlugin.logger.info("[PhysicsUpdaterPopulator] Detected anomalous generation by NMS on " + scl + ". Running repairs on " + changes.size() + " blocks");

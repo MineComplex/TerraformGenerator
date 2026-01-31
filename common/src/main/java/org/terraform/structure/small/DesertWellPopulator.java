@@ -1,6 +1,6 @@
 package org.terraform.structure.small;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.data.BlockData;
@@ -15,12 +15,11 @@ import org.terraform.data.SimpleBlock;
 import org.terraform.data.TerraformWorld;
 import org.terraform.data.Wall;
 import org.terraform.main.TerraformGeneratorPlugin;
-import org.terraform.main.config.TConfig;
+import org.terraform.main.TConfig;
 import org.terraform.schematic.SchematicParser;
 import org.terraform.schematic.TerraSchematic;
 import org.terraform.structure.MultiMegaChunkStructurePopulator;
 import org.terraform.utils.GenUtils;
-import org.terraform.utils.version.V_1_20;
 import org.terraform.utils.version.Version;
 
 import java.io.FileNotFoundException;
@@ -59,7 +58,7 @@ public class DesertWellPopulator extends MultiMegaChunkStructurePopulator {
     {
 
         SimpleBlock core = new SimpleBlock(data, x, y, z);
-        TerraformGeneratorPlugin.logger.info("Spawning Desert Well at " + core.getCoords());
+        //TerraformGeneratorPlugin.logger.info("Spawning Desert Well at " + core.getCoords());
         try {
             TerraSchematic desertWell = TerraSchematic.load("desert_well", core);
             desertWell.parser = new DesertWellSchematicParser(random, badlandsWell, y);
@@ -243,8 +242,8 @@ public class DesertWellPopulator extends MultiMegaChunkStructurePopulator {
                         super.applyData(block, data);
                         return;
                     }
-                    else if (Version.VERSION.isAtLeast(Version.v1_20) && block.getY() == baseY && GenUtils.chance(rand, 1, 20)) {
-                        data = Bukkit.createBlockData(V_1_20.SUSPICIOUS_SAND);
+                    else if (block.getY() == baseY && GenUtils.chance(rand, 1, 20)) {
+                        data = Bukkit.createBlockData(Material.SUSPICIOUS_SAND);
                         super.applyData(block, data);
                         block.getPopData()
                              .lootTableChest(

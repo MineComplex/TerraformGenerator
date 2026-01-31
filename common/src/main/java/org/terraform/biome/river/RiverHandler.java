@@ -7,8 +7,8 @@ import org.terraform.biome.BiomeHandler;
 import org.terraform.coregen.bukkit.TerraformGenerator;
 import org.terraform.coregen.populatordata.PopulatorDataAbstract;
 import org.terraform.data.TerraformWorld;
-import org.terraform.main.config.TConfig;
-import org.terraform.small_items.PlantBuilder;
+import org.terraform.main.TConfig;
+import org.terraform.tree.PlantBuilder;
 import org.terraform.utils.BlockUtils;
 import org.terraform.utils.GenUtils;
 
@@ -44,8 +44,7 @@ public class RiverHandler extends BiomeHandler {
     }
 
     public static void generateTallSeagrass(int x, int y, int z, @NotNull PopulatorDataAbstract data) {
-        if (data.getType(x, y, z) != Material.WATER
-            || data.getType(x, y+1, z) != Material.WATER) {
+        if (data.getType(x, y, z) != Material.WATER || data.getType(x, y + 1, z) != Material.WATER) {
             return;
         }
         PlantBuilder.TALL_SEAGRASS.build(data, x, y, z);

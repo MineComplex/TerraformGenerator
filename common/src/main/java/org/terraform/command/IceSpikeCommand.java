@@ -43,7 +43,8 @@ public class IceSpikeCommand extends TerraCommand {
         int y = p.getLocation().getBlockY();
         int z = p.getLocation().getBlockZ();
         TerraformWorld tw = TerraformWorld.get(p.getWorld());
-        IceSpikesHandler.genSpike(tw, new Random(), data, x, y, z, GenUtils.randInt(3, 10), // radius
+        IceSpikesHandler.genSpike(
+                tw, new Random(), data, x, y, z, GenUtils.randInt(3, 10), // radius
                 GenUtils.randInt(10, 50)
         ); // height
     }

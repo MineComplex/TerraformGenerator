@@ -2,7 +2,6 @@ package org.terraform.structure.pillager.mansion;
 
 import org.bukkit.block.BlockFace;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.terraform.coregen.populatordata.PopulatorDataAbstract;
 import org.terraform.data.Wall;
 import org.terraform.main.TerraformGeneratorPlugin;

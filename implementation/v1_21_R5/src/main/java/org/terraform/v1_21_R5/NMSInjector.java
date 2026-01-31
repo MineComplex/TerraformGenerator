@@ -33,8 +33,6 @@ import java.lang.reflect.Method;
 
 public class NMSInjector extends NMSInjectorAbstract {
 
-    // private boolean heightInjectSuccess = true;
-
     private static @Nullable Method getTileEntity = null;
 
     @Override

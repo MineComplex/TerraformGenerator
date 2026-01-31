@@ -12,28 +12,23 @@ import org.bukkit.generator.BlockPopulator;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 import org.terraform.data.SimpleChunkLocation;
+import org.terraform.main.TConfig;
 import org.terraform.main.TerraformGeneratorPlugin;
-import org.terraform.main.config.TConfig;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class NativeGeneratorPatcherPopulator extends BlockPopulator implements Listener {
 
     // SimpleChunkLocation to a collection of location:blockdata entries marked for repair.
-    private static final @NotNull Map<SimpleChunkLocation, Collection<Object[]>> cache = new ConcurrentHashMap<>();
+    private static final @NotNull Map<SimpleChunkLocation, Collection<ChunkBlockData>> cache = new ConcurrentHashMap<>();
     private static boolean flushIsQueued = false;
 
     public NativeGeneratorPatcherPopulator() {
-        // this.tw = tw;
         Bukkit.getPluginManager().registerEvents(this, TerraformGeneratorPlugin.get());
     }
 
     public static void pushChange(String world, int x, int y, int z, BlockData data) {
-
         if (!flushIsQueued && cache.size() > TConfig.c.DEVSTUFF_FLUSH_PATCHER_CACHE_FREQUENCY) {
             flushIsQueued = true;
             new BukkitRunnable() {
@@ -46,18 +41,15 @@ public class NativeGeneratorPatcherPopulator extends BlockPopulator implements L
         }
 
         SimpleChunkLocation scl = new SimpleChunkLocation(world, x, y, z);
-        Collection<Object[]> cached = cache.getOrDefault(scl,new ArrayList<>());
-        //        cacheContents.put(data.getMaterial(), cacheContents.getOrDefault(data.getMaterial(),0)+1);
-        cached.add(new Object[] {
-                new int[] {x, y, z}, data
-        });
+        Collection<ChunkBlockData> cached = cache.getOrDefault(scl, new ArrayList<>());
+        cached.add(new ChunkBlockData(x, y, z, data));
         cache.put(scl, cached);
     }
 
     public static void flushChanges() {
-        if (cache.isEmpty()) {
+        if (cache.isEmpty())
             return;
-        }
+
         TerraformGeneratorPlugin.logger.info("[NativeGeneratorPatcher] Flushing repairs ("
                                              + cache.size()
                                              + " chunks), pushed by cache size");
@@ -68,17 +60,8 @@ public class NativeGeneratorPatcherPopulator extends BlockPopulator implements L
                 continue;
             }
             if (w.isChunkLoaded(scl.getX(), scl.getZ())) {
-                // TerraformGeneratorPlugin.logger.info("[NativeGeneratorPatcher]   - Flushing changes to loaded chunk...");
-                Collection<Object[]> changes = cache.remove(scl);
-                if (changes != null) {
-                    for (Object[] entry : changes) {
-                        int[] loc = (int[]) entry[0];
-                        BlockData data = (BlockData) entry[1];
-                        w.getBlockAt(loc[0], loc[1], loc[2]).setBlockData(data, false);
-                    }
-                }
-            }
-            else {
+                repairChunk(w, scl);
+            } else {
                 // Let the event handler do it
                 // TerraformGeneratorPlugin.logger.info("[NativeGeneratorPatcher]   - Loading a chunk to flush changes...");
                 w.loadChunk(scl.getX(), scl.getZ());
@@ -88,28 +71,20 @@ public class NativeGeneratorPatcherPopulator extends BlockPopulator implements L
 
     @Override
     public void populate(@NotNull World world, @NotNull Random random, @NotNull Chunk chunk) {
-        SimpleChunkLocation scl = new SimpleChunkLocation(chunk);
-        Collection<Object[]> changes = cache.remove(scl);
-        if (changes != null) {
-            // TerraformGeneratorPlugin.logger.info("[NativeGeneratorPatcher] Flushing repairs (" + cache.size() + " chunks), pushed by BlockPopulator");
-            for (Object[] entry : changes) {
-                int[] loc = (int[]) entry[0];
-                BlockData data = (BlockData) entry[1];
-                world.getBlockAt(loc[0], loc[1], loc[2]).setBlockData(data, false);
-            }
-        }
+        repairChunk(world, new SimpleChunkLocation(chunk));
     }
 
     @EventHandler
     public void onChunkLoad(@NotNull ChunkLoadEvent event) {
-        SimpleChunkLocation scl = new SimpleChunkLocation(event.getChunk());
-        Collection<Object[]> changes = cache.remove(scl);
+        repairChunk(event.getChunk().getWorld(), new SimpleChunkLocation(event.getChunk()));
+    }
+
+    private static void repairChunk(World world, SimpleChunkLocation scl) {
+        Collection<ChunkBlockData> changes = cache.remove(scl);
         if (changes != null) {
             // TerraformGeneratorPlugin.logger.info("[NativeGeneratorPatcher] Flushing repairs for 1 chunk (" + scl.getX() + "," + scl.getZ() + "), pushed by chunkloadevent");
-            for (Object[] entry : changes) {
-                int[] loc = (int[]) entry[0];
-                BlockData data = (BlockData) entry[1];
-                event.getChunk().getWorld().getBlockAt(loc[0], loc[1], loc[2]).setBlockData(data, false);
+            for (ChunkBlockData entry : changes) {
+                world.getBlockAt(entry.x, entry.y, entry.z).setBlockData(entry.data, false);
             }
         }
     }
@@ -123,17 +98,16 @@ public class NativeGeneratorPatcherPopulator extends BlockPopulator implements L
                                              + cache.size()
                                              + " chunks in cache), triggered by world unload");
 
-        int processed = 0;
-        for (SimpleChunkLocation scl : cache.keySet()) {
+        int processed = 0, size = cache.size();
+        for (SimpleChunkLocation scl : Set.copyOf(cache.keySet())) {
             if (!scl.getWorld().equals(event.getWorld().getName())) {
                 continue;
             }
-            Collection<Object[]> changes = cache.get(scl);
+
+            Collection<ChunkBlockData> changes = cache.remove(scl);
             if (changes != null) {
-                for (Object[] entry : changes) {
-                    int[] loc = (int[]) entry[0];
-                    BlockData data = (BlockData) entry[1];
-                    event.getWorld().getBlockAt(loc[0], loc[1], loc[2]).setBlockData(data, false);
+                for (ChunkBlockData entry : changes) {
+                    event.getWorld().getBlockAt(entry.x, entry.y, entry.z).setBlockData(entry.data, false);
                 }
             }
 
@@ -142,10 +116,13 @@ public class NativeGeneratorPatcherPopulator extends BlockPopulator implements L
                 TerraformGeneratorPlugin.logger.info("[NativeGeneratorPatcher] Processed "
                                                      + processed
                                                      + "/"
-                                                     + cache.size()
+                                                     + size
                                                      + " chunks");
             }
         }
+    }
+
+    public record ChunkBlockData(int x, int y, int z, BlockData data) {
     }
 
 }

@@ -9,10 +9,10 @@ import org.terraform.data.SimpleBlock;
 import org.terraform.data.SimpleLocation;
 import org.terraform.data.TerraformWorld;
 import org.terraform.data.Wall;
-import org.terraform.main.config.TConfig;
-import org.terraform.small_items.PlantBuilder;
+import org.terraform.main.TConfig;
 import org.terraform.tree.FractalTreeBuilder;
 import org.terraform.tree.FractalTypes;
+import org.terraform.tree.PlantBuilder;
 import org.terraform.utils.BlockUtils;
 import org.terraform.utils.GenUtils;
 import org.terraform.utils.blockdata.OrientableBuilder;
@@ -51,24 +51,17 @@ public class PlainsHandler extends BiomeHandler {
                                    @NotNull PopulatorDataAbstract data)
     {
         if (data.getType(rawX, surfaceY, rawZ) == Material.GRASS_BLOCK
-            && data.getType(rawX, surfaceY+1, rawZ) == Material.AIR
-            && !BlockUtils.isWet(new SimpleBlock(data,
-                rawX,
-                surfaceY,
-                rawZ)))
+            && data.getType(rawX, surfaceY + 1, rawZ) == Material.AIR
+            && !BlockUtils.isWet(new SimpleBlock(data, rawX, surfaceY, rawZ)))
         {
 
             if (GenUtils.chance(random, 1, 10)) { // Grass
                 if (GenUtils.chance(random, 6, 10)) {
                     PlantBuilder.GRASS.build(data, rawX, surfaceY + 1, rawZ);
-                    if (random.nextBoolean()) {
-                        PlantBuilder.TALL_GRASS.build(data, rawX, surfaceY + 1, rawZ);
-                    }
                 }
                 else {
-                    switch (GenUtils.randInt(random, 1, 10)) {
+                    switch (GenUtils.randInt(random, 1, 9)) {
                         case 0, 1 -> PlantBuilder.BUSH.build(data, rawX, surfaceY + 1, rawZ);
-                        case 2 -> BlockUtils.pickTallFlower().build(data, rawX, surfaceY + 1, rawZ);
                         default -> BlockUtils.pickFlower().build(data, rawX, surfaceY + 1, rawZ);
                     }
                 }
@@ -120,7 +113,12 @@ public class PlainsHandler extends BiomeHandler {
         }
 
         // Small trees or grass poffs
-        SimpleLocation[] trees = GenUtils.randomObjectPositions(tw, data.getChunkX(), data.getChunkZ(), TConfig.c.BIOME_PLAINS_TREE_INTERVAL);
+        SimpleLocation[] trees = GenUtils.randomObjectPositions(
+                tw,
+                data.getChunkX(),
+                data.getChunkZ(),
+                TConfig.c.BIOME_PLAINS_TREE_INTERVAL
+        );
 
         for (SimpleLocation sLoc : trees) {
             int highestY = GenUtils.getHighestGround(data, sLoc.getX(), sLoc.getZ());
@@ -129,8 +127,8 @@ public class PlainsHandler extends BiomeHandler {
             }
 
             sLoc = sLoc.getAtY(highestY);
-            switch(random.nextInt(5)){
-                case 0,1 -> {
+            switch (random.nextInt(5)) {
+                case 0, 1 -> {
                     if (data.getBiome(sLoc.getX(), sLoc.getZ()) == getBiome()
                         && BlockUtils.isDirtLike(data.getType(sLoc.getX(), sLoc.getY(), sLoc.getZ())))
                     {
@@ -143,12 +141,13 @@ public class PlainsHandler extends BiomeHandler {
                         );
                     }
                 }
-                case 2,3 ->{
+                case 2, 3 -> {
                     if (TConfig.arePlantsEnabled()
                         && data.getBiome(sLoc.getX(), sLoc.getZ()) == getBiome()
                         && BlockUtils.isDirtLike(data.getType(sLoc.getX(), sLoc.getY(), sLoc.getZ())))
                     {
-                        BlockUtils.replaceSphere(random.nextInt(424444),
+                        BlockUtils.replaceSphere(
+                                random.nextInt(424444),
                                 2,
                                 2,
                                 2,
@@ -161,12 +160,14 @@ public class PlainsHandler extends BiomeHandler {
                 //Fallen tree
                 case 4 -> {
                     Wall w = new Wall(data, sLoc.getUp(), BlockUtils.getDirectBlockFace(random));
-                    int length = GenUtils.randInt(1,3);
-                    for(int i = -length; i <= length; i++){
-                        if(!w.getFront(i).isAir()
-                           || !w.getFront(i).getDown().isSolid()) break;
-                        w.getFront(i).setBlockData(new OrientableBuilder(Material.OAK_LOG)
-                                .setAxis(BlockUtils.getAxisFromBlockFace(w.getDirection())).get());
+                    int length = GenUtils.randInt(1, 3);
+                    for (int i = -length; i <= length; i++) {
+                        if (!w.getFront(i).isAir() || !w.getFront(i).getDown().isSolid()) {
+                            break;
+                        }
+                        w.getFront(i)
+                         .setBlockData(new OrientableBuilder(Material.OAK_LOG).setAxis(BlockUtils.getAxisFromBlockFace(w.getDirection()))
+                                                                              .get());
                     }
                 }
             }

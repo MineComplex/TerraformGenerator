@@ -213,7 +213,8 @@ public class SimpleBlock {
     }
 
     public @NotNull SimpleBlock getRelative(@NotNull Vector v) {
-        return new SimpleBlock(popData,
+        return new SimpleBlock(
+                popData,
                 (int) Math.round(x + v.getX()),
                 (int) Math.round(y + v.getY()),
                 (int) Math.round(z + v.getZ())

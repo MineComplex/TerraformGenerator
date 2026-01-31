@@ -13,10 +13,8 @@ import org.terraform.coregen.bukkit.TerraformGenerator;
 import org.terraform.coregen.populatordata.PopulatorDataPostGen;
 import org.terraform.data.SimpleBlock;
 import org.terraform.data.TerraformWorld;
-import org.terraform.main.config.TConfig;
+import org.terraform.main.TConfig;
 import org.terraform.utils.GenUtils;
-import org.terraform.utils.version.V_1_20;
-import org.terraform.utils.version.V_1_21_4;
 
 import java.util.List;
 
@@ -61,13 +59,12 @@ public class SaplingOverrider implements Listener {
                 break;
             case OAK_LEAVES:
                 FractalTypes.Tree.NORMAL_SMALL.build(
-                        tw,
-                        new SimpleBlock(data, x, y, z),
-                        (nt -> {
+                        tw, new SimpleBlock(data, x, y, z), (nt -> {
                             nt.setCheckGradient(false);
                             //Let grown trees spawn beehives
-                            if(GenUtils.RANDOMIZER.nextInt(5) == 0)
+                            if (GenUtils.RANDOMIZER.nextInt(5) == 0) {
                                 nt.setSpawnBees(true);
+                            }
                         })
                 );
                 break;
@@ -76,10 +73,12 @@ public class SaplingOverrider implements Listener {
                 break;
             case JUNGLE_LEAVES:
 
-                if(isLarge){
+                if (isLarge) {
                     if (TConfig.c.MISC_SAPLING_CUSTOM_TREES_BIGTREES_JUNGLE) {
-                        new FractalTreeBuilder(FractalTypes.Tree.JUNGLE_BIG).skipGradientCheck().build(tw, data, x, y, z);
-                    } else {
+                        new FractalTreeBuilder(FractalTypes.Tree.JUNGLE_BIG).skipGradientCheck()
+                                                                            .build(tw, data, x, y, z);
+                    }
+                    else {
                         event.setCancelled(wasCancelled);
                         return;
                     }
@@ -97,8 +96,9 @@ public class SaplingOverrider implements Listener {
                 break;
             case SPRUCE_LEAVES:
                 if (isLarge) {
-                    if(TConfig.c.MISC_SAPLING_CUSTOM_TREES_BIGTREES_SPRUCE){
-                        FractalTypes.Tree.TAIGA_BIG.build(tw,
+                    if (TConfig.c.MISC_SAPLING_CUSTOM_TREES_BIGTREES_SPRUCE) {
+                        FractalTypes.Tree.TAIGA_BIG.build(
+                                tw,
                                 new SimpleBlock(data, x, y, z),
                                 (nt -> nt.setCheckGradient(false))
                         );
@@ -107,33 +107,32 @@ public class SaplingOverrider implements Listener {
                              .stream()
                              .filter((b) -> b.getType() == Material.PODZOL)
                              .forEach((b) -> data.setType(b.getX(), b.getY(), b.getZ(), b.getType()));
-                    }else {
+                    }
+                    else {
                         event.setCancelled(wasCancelled);
                         return;
                     }
                 }
                 else {
-                    FractalTypes.Tree.TAIGA_SMALL.build(tw,
+                    FractalTypes.Tree.TAIGA_SMALL.build(
+                            tw,
                             new SimpleBlock(data, x, y, z),
                             (nt -> nt.setCheckGradient(false))
                     );
                 }
                 break;
             default:
-                if (baseBlock.getType() == V_1_20.CHERRY_LEAVES) {
+                if (baseBlock.getType() == Material.CHERRY_LEAVES) {
                     new FractalTreeBuilder(FractalTypes.Tree.CHERRY_SMALL).skipGradientCheck().build(tw, data, x, y, z);
                     return;
                 }
-                if ( baseBlock.getType() == V_1_21_4.PALE_OAK_LEAVES) {
-                    FractalTypes.Tree.DARK_OAK_SMALL
-                            .build(
-                                tw,
-                                new SimpleBlock(data, x, y, z),
-                                (nt -> {
-                                    nt.setCheckGradient(false);
-                                    new PaleForestHandler().paleTreeMutator(nt);
-                                })
-                            );
+                if (baseBlock.getType() == Material.PALE_OAK_LEAVES) {
+                    FractalTypes.Tree.DARK_OAK_SMALL.build(
+                            tw, new SimpleBlock(data, x, y, z), (nt -> {
+                                nt.setCheckGradient(false);
+                                new PaleForestHandler().paleTreeMutator(nt);
+                            })
+                    );
                     return;
                 }
                 // Not handled by TG

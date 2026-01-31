@@ -11,8 +11,8 @@ import org.terraform.coregen.bukkit.TerraformGenerator;
 import org.terraform.data.SimpleBlock;
 import org.terraform.data.TerraformWorld;
 import org.terraform.data.Wall;
-import org.terraform.main.config.TConfig;
-import org.terraform.small_items.PlantBuilder;
+import org.terraform.main.TConfig;
+import org.terraform.tree.PlantBuilder;
 import org.terraform.structure.room.CubeRoom;
 import org.terraform.structure.room.PathPopulatorAbstract;
 import org.terraform.structure.room.PathPopulatorData;
@@ -115,9 +115,6 @@ public class PlainsVillagePathPopulator extends PathPopulatorAbstract {
                 {
                     if (GenUtils.chance(2, 5)) { // Leaves
                         PlantBuilder.OAK_LEAVES.build(target.getUp());
-                    }
-                    else if (GenUtils.chance(1, 5)) { // Flowers
-                        BlockUtils.pickTallFlower().build(target);
                     }
                     else if (GenUtils.chance(1, 10)) { // Small cobble walls with lanterns
                         target.getUp().setType(Material.COBBLESTONE_WALL, Material.MOSSY_COBBLESTONE_WALL);

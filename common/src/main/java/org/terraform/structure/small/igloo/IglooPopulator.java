@@ -17,7 +17,7 @@ import org.terraform.data.SimpleBlock;
 import org.terraform.data.TerraformWorld;
 import org.terraform.data.Wall;
 import org.terraform.main.TerraformGeneratorPlugin;
-import org.terraform.main.config.TConfig;
+import org.terraform.main.TConfig;
 import org.terraform.structure.MultiMegaChunkStructurePopulator;
 import org.terraform.utils.*;
 import org.terraform.utils.SphereBuilder.SphereType;
@@ -58,7 +58,7 @@ public class IglooPopulator extends MultiMegaChunkStructurePopulator {
         Wall core = new Wall(data, x, y, z, BlockUtils.getDirectBlockFace(random));
 
         int size = GenUtils.randInt(random, 4, 7);
-        TerraformGeneratorPlugin.logger.info("Placing igloo of size " + size);
+        //TerraformGeneratorPlugin.logger.info("Placing igloo of size " + size);
         new CylinderBuilder(random, core.getDown(), Material.SPRUCE_PLANKS).setHardReplace(false)
                                                                            .setRX(size * 1.5f)
                                                                            .setRY(0.5f)

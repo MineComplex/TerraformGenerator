@@ -16,9 +16,8 @@ import org.terraform.data.MegaChunk;
 import org.terraform.data.SimpleBlock;
 import org.terraform.data.TerraformWorld;
 import org.terraform.data.Wall;
-import org.terraform.event.TerraformStructureSpawnEvent;
 import org.terraform.main.TerraformGeneratorPlugin;
-import org.terraform.main.config.TConfig;
+import org.terraform.main.TConfig;
 import org.terraform.structure.JigsawState;
 import org.terraform.structure.JigsawStructurePopulator;
 import org.terraform.structure.SingleMegaChunkStructurePopulator;
@@ -155,10 +154,10 @@ public class TerraformStructurePopulator extends BlockPopulator {
                 biome
         ))
         {
-            TerraformGeneratorPlugin.logger.info("Generating Stronghold at chunk: "
+/*            TerraformGeneratorPlugin.logger.info("Generating Stronghold at chunk: "
                                                  + data.getChunkX()
                                                  + ","
-                                                 + data.getChunkZ());
+                                                 + data.getChunkZ());*/
             new StrongholdPopulator().populate(tw, data);
         }
 
@@ -166,8 +165,6 @@ public class TerraformStructurePopulator extends BlockPopulator {
         int[] chunkCoords = mc.getCenterBiomeSectionChunkCoords();
         // TerraformGeneratorPlugin.logger.info("[v] MC(" + mc.getX() + "," + mc.getZ() + ") - " + data.getChunkX() + "," + data.getChunkZ() + " - Center: " + chunkCoords[0] + "," + chunkCoords[1]);
         if (chunkCoords[0] == data.getChunkX() && chunkCoords[1] == data.getChunkZ()) {
-            int[] blockCoords = mc.getCenterBiomeSectionBlockCoords();
-
             // TerraformGeneratorPlugin.logger.info("[!] MC(" + mc.getX() + "," + mc.getZ() + ") - " + data.getChunkX() + "," + data.getChunkZ() + " - Center: " + chunkCoords[0] + "," + chunkCoords[1]);
             for (SingleMegaChunkStructurePopulator spop : StructureRegistry.getLargeStructureForMegaChunk(tw, mc)) {
                 if (spop == null) {
@@ -186,17 +183,12 @@ public class TerraformStructurePopulator extends BlockPopulator {
                         biome
                 ))
                 {
-                    TerraformGeneratorPlugin.logger.info("Generating "
+/*                    TerraformGeneratorPlugin.logger.info("Generating "
                                                          + spop.getClass().getName()
                                                          + " at chunk: "
                                                          + data.getChunkX()
                                                          + ","
-                                                         + data.getChunkZ());
-                    Bukkit.getPluginManager()
-                          .callEvent(new TerraformStructureSpawnEvent(blockCoords[0],
-                                  blockCoords[1],
-                                  spop.getClass().getName()
-                          ));
+                                                         + data.getChunkZ());*/
                     spop.populate(tw, data);
                     break;
                 }

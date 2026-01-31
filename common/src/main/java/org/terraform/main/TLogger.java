@@ -3,7 +3,6 @@ package org.terraform.main;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.jetbrains.annotations.NotNull;
-import org.terraform.main.config.TConfig;
 
 import java.io.File;
 import java.io.IOException;
@@ -24,11 +23,13 @@ public class TLogger {
             try {
                 // Creating consoleHandler and fileHandler
                 consoleHandler = new ConsoleHandler();
-                fileHandler = new FileHandler("plugins"
+                fileHandler = new FileHandler(
+                        "plugins"
                                               + File.separator
                                               + "TerraformGenerator"
                                               + File.separator
-                                              + "terraform.log", true);
+                                              + "terraform.log", true
+                );
 
                 // Follow bukkit format
                 fileHandler.setFormatter(new SimpleFormatter() {
@@ -99,18 +100,6 @@ public class TLogger {
         else {
             Bukkit.getConsoleSender()
                   .sendMessage("[TerraformGenerator] " + ChatColor.translateAlternateColorCodes('&', message));
-        }
-    }
-
-    public void debug(@NotNull String message) {
-        if (TConfig.c.DEVSTUFF_DEBUG_MODE) {
-            if (suppressConsoleLogs) {
-                LOGGER.log(Level.INFO, "[v] " + message);
-            }
-            else {
-                Bukkit.getConsoleSender()
-                      .sendMessage("[TerraformGenerator][v] " + ChatColor.translateAlternateColorCodes('&', message));
-            }
         }
     }
 

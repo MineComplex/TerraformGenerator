@@ -7,8 +7,8 @@ import org.terraform.coregen.HeightMap;
 import org.terraform.coregen.bukkit.TerraformGenerator;
 import org.terraform.coregen.populatordata.PopulatorDataAbstract;
 import org.terraform.data.TerraformWorld;
-import org.terraform.main.config.TConfig;
-import org.terraform.small_items.PlantBuilder;
+import org.terraform.main.TConfig;
+import org.terraform.tree.PlantBuilder;
 import org.terraform.tree.TreeDB;
 import org.terraform.utils.GenUtils;
 import org.terraform.utils.noise.FastNoise;
@@ -24,9 +24,8 @@ public class OasisBeach {
     private static final float oasisFrequency = TConfig.c.BIOME_OASIS_FREQUENCY;
 
     public static float getOasisNoise(TerraformWorld world, int x, int z) {
-        FastNoise lushRiversNoise = NoiseCacheHandler.getNoise(world,
-                NoiseCacheHandler.NoiseCacheEntry.BIOME_DESERT_LUSH_RIVER,
-                w -> {
+        FastNoise lushRiversNoise = NoiseCacheHandler.getNoise(
+                world, NoiseCacheHandler.NoiseCacheEntry.BIOME_DESERT_LUSH_RIVER, w -> {
                     FastNoise n = new FastNoise((int) (w.getSeed() * 0.4));
                     n.SetNoiseType(FastNoise.NoiseType.Cubic);
                     n.SetFrequency(oasisFrequency);
@@ -85,7 +84,8 @@ public class OasisBeach {
                 TreeDB.spawnCoconutTree(tw, data, x, y, z);
             }
             else if (random.nextInt(5) == 0) {
-                createBush(random,
+                createBush(
+                        random,
                         data,
                         x,
                         y,

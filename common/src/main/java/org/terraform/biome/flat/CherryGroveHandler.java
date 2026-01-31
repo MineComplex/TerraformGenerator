@@ -11,14 +11,14 @@ import org.terraform.data.SimpleBlock;
 import org.terraform.data.SimpleLocation;
 import org.terraform.data.TerraformWorld;
 import org.terraform.data.Wall;
-import org.terraform.main.config.TConfig;
-import org.terraform.small_items.PlantBuilder;
+import org.terraform.main.TConfig;
 import org.terraform.tree.FractalTreeBuilder;
 import org.terraform.tree.FractalTypes;
+import org.terraform.tree.PlantBuilder;
 import org.terraform.utils.BlockUtils;
 import org.terraform.utils.GenUtils;
 import org.terraform.utils.SphereBuilder;
-import org.terraform.utils.version.V_1_20;
+import org.terraform.utils.version.V_1_21_5;
 import org.terraform.utils.version.Version;
 
 import java.util.Random;
@@ -65,13 +65,10 @@ public class CherryGroveHandler extends BiomeHandler {
             if (GenUtils.chance(random, 2, 10)) { // Grass
                 if (GenUtils.chance(random, 8, 10)) {
                     // Pink petals. No longer generate tall grass.
-                    if (Version.VERSION.isAtLeast(Version.v1_20) && TConfig.arePlantsEnabled() && GenUtils.chance(random, 6, 10)) {
-                        data.setBlockData(
-                                rawX,
-                                surfaceY + 1,
-                                rawZ,
-                                V_1_20.getPinkPetalData(GenUtils.randInt(1, 4))
-                        );
+                    if (TConfig.arePlantsEnabled()
+                        && GenUtils.chance(random, 6, 10))
+                    {
+                        data.setBlockData(rawX, surfaceY + 1, rawZ, V_1_21_5.getPinkPetalData(GenUtils.randInt(1, 4)));
                     }
                     else {
                         PlantBuilder.GRASS.build(data, rawX, surfaceY + 1, rawZ);
@@ -109,7 +106,8 @@ public class CherryGroveHandler extends BiomeHandler {
                 switch (random.nextInt(20)) // 0 to 19 inclusive
                 {
                     case 19, 18, 17, 16, 15 -> // Rock (5/20)
-                            new SphereBuilder(random,
+                            new SphereBuilder(
+                                    random,
                                     new SimpleBlock(data, sLoc),
                                     Material.COBBLESTONE,
                                     Material.STONE,
@@ -120,7 +118,8 @@ public class CherryGroveHandler extends BiomeHandler {
                     default -> { // Tree (15/20)
                         if (random.nextBoolean())  // small trees
                         {
-                            new FractalTreeBuilder(FractalTypes.Tree.CHERRY_SMALL).build(tw,
+                            new FractalTreeBuilder(FractalTypes.Tree.CHERRY_SMALL).build(
+                                    tw,
                                     data,
                                     sLoc.getX(),
                                     sLoc.getY(),
@@ -128,25 +127,13 @@ public class CherryGroveHandler extends BiomeHandler {
                             );
                         }
                         else {
-                            new FractalTreeBuilder(FractalTypes.Tree.CHERRY_THICK).build(tw,
+                            new FractalTreeBuilder(FractalTypes.Tree.CHERRY_THICK).build(
+                                    tw,
                                     data,
                                     sLoc.getX(),
                                     sLoc.getY(),
                                     sLoc.getZ()
                             );
-                        }
-                        // No spore blossoms on 1.20 as the new cherry trees already drop petals
-                        if (!Version.VERSION.isAtLeast(Version.v1_20)) {
-                            for (int rX = sLoc.getX() - 6; rX <= sLoc.getX() + 6; rX++) {
-                                for (int rZ = sLoc.getZ() - 6; rZ <= sLoc.getZ() + 6; rZ++) {
-                                    Wall ceil = new Wall(new SimpleBlock(data, rX, sLoc.getY(), rZ)).findCeiling(15);
-                                    if (ceil != null && GenUtils.chance(random, 1, 30)) {
-                                        if (ceil.getType() == Material.DARK_OAK_LEAVES) {
-                                            PlantBuilder.SPORE_BLOSSOM.build(ceil.getDown());
-                                        }
-                                    }
-                                }
-                            }
                         }
                     }
                 }

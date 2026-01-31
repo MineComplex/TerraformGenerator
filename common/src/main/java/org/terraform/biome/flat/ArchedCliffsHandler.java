@@ -16,11 +16,11 @@ import org.terraform.data.DudChunkData;
 import org.terraform.data.SimpleBlock;
 import org.terraform.data.SimpleLocation;
 import org.terraform.data.TerraformWorld;
-import org.terraform.main.config.TConfig;
-import org.terraform.small_items.PlantBuilder;
+import org.terraform.main.TConfig;
 import org.terraform.tree.FractalTreeBuilder;
 import org.terraform.tree.FractalTypes;
 import org.terraform.tree.MushroomBuilder;
+import org.terraform.tree.PlantBuilder;
 import org.terraform.utils.BlockUtils;
 import org.terraform.utils.GenUtils;
 import org.terraform.utils.noise.FastNoise;
@@ -89,17 +89,9 @@ public class ArchedCliffsHandler extends BiomeHandler {
         if (GenUtils.chance(random, 1, 10)) { // Grass
             if (GenUtils.chance(random, 6, 10)) {
                 PlantBuilder.GRASS.build(target.getUp());
-                if (random.nextBoolean()) {
-                    PlantBuilder.TALL_GRASS.build(target.getUp());
-                }
             }
             else {
-                if (GenUtils.chance(random, 7, 10)) {
-                    BlockUtils.pickFlower().build(target.getUp());
-                }
-                else {
-                    BlockUtils.pickTallFlower().build(target.getUp());
-                }
+                BlockUtils.pickFlower().build(target.getUp());
             }
         }
 
@@ -149,9 +141,11 @@ public class ArchedCliffsHandler extends BiomeHandler {
             }
 
             sLoc = sLoc.getAtY(highestY);
-            if (data.getBiome(sLoc.getX(), sLoc.getZ()) == getBiome() && BlockUtils.isDirtLike(data.getType(sLoc.getX(),
+            if (data.getBiome(sLoc.getX(), sLoc.getZ()) == getBiome() && BlockUtils.isDirtLike(data.getType(
+                    sLoc.getX(),
                     sLoc.getY(),
-                    sLoc.getZ())))
+                    sLoc.getZ()
+            )))
             {
                 new FractalTreeBuilder(FractalTypes.Tree.NORMAL_SMALL).build(
                         tw,
@@ -209,9 +203,8 @@ public class ArchedCliffsHandler extends BiomeHandler {
                                  int chunkZ)
     {
 
-        FastNoise platformNoise = NoiseCacheHandler.getNoise(tw,
-                NoiseCacheEntry.BIOME_ARCHEDCLIFFS_PLATFORMNOISE,
-                world -> {
+        FastNoise platformNoise = NoiseCacheHandler.getNoise(
+                tw, NoiseCacheEntry.BIOME_ARCHEDCLIFFS_PLATFORMNOISE, world -> {
                     FastNoise n = new FastNoise(tw.getRand(12115222).nextInt());
                     n.SetNoiseType(FastNoise.NoiseType.SimplexFractal);
                     n.SetFractalOctaves(3);
@@ -220,9 +213,8 @@ public class ArchedCliffsHandler extends BiomeHandler {
                 }
         );
 
-        FastNoise pillarNoise = NoiseCacheHandler.getNoise(tw,
-                NoiseCacheEntry.BIOME_ARCHEDCLIFFS_PILLARNOISE,
-                world -> {
+        FastNoise pillarNoise = NoiseCacheHandler.getNoise(
+                tw, NoiseCacheEntry.BIOME_ARCHEDCLIFFS_PILLARNOISE, world -> {
                     FastNoise n = new FastNoise(tw.getRand(12544422).nextInt());
                     n.SetNoiseType(FastNoise.NoiseType.SimplexFractal);
                     n.SetFractalOctaves(4);
@@ -238,13 +230,15 @@ public class ArchedCliffsHandler extends BiomeHandler {
         int height = (int) preciseHeight;
 
         // Round to force a 0 if the value is too low. Makes blending better.
-        double platformNoiseVal = Math.round(Math.max(platformNoise.GetNoise(rawX, rawZ)
-                                                      * 70
-                                                      * getBiomeBlender(tw).getEdgeFactor(
-                BiomeBank.ARCHED_CLIFFS,
-                rawX,
-                rawZ
-        ), 0));
+        double platformNoiseVal = Math.round(Math.max(
+                platformNoise.GetNoise(rawX, rawZ)
+                * 70
+                * getBiomeBlender(tw).getEdgeFactor(
+                        BiomeBank.ARCHED_CLIFFS,
+                        rawX,
+                        rawZ
+                ), 0
+        ));
 
         if (platformNoiseVal >= 1) {
             int platformHeight = (int) (HeightMap.CORE.getHeight(tw, rawX, rawZ) - HeightMap.ATTRITION.getHeight(

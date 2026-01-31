@@ -15,7 +15,7 @@ import org.terraform.coregen.populatordata.PopulatorDataAbstract;
 import org.terraform.data.SimpleBlock;
 import org.terraform.data.SimpleLocation;
 import org.terraform.data.TerraformWorld;
-import org.terraform.main.config.TConfig;
+import org.terraform.main.TConfig;
 import org.terraform.utils.BlockUtils;
 import org.terraform.utils.GenUtils;
 import org.terraform.utils.noise.FastNoise;
@@ -127,20 +127,24 @@ public class GorgeHandler extends BiomeHandler {
                                  int chunkZ)
     {
 
-        FastNoise cliffNoise = NoiseCacheHandler.getNoise(tw, NoiseCacheEntry.BIOME_GORGE_CLIFFNOISE, world -> {
-            FastNoise n = new FastNoise();
-            n.SetNoiseType(FastNoise.NoiseType.CubicFractal);
-            n.SetFractalOctaves(3);
-            n.SetFrequency(0.04f);
-            return n;
-        });
+        FastNoise cliffNoise = NoiseCacheHandler.getNoise(
+                tw, NoiseCacheEntry.BIOME_GORGE_CLIFFNOISE, world -> {
+                    FastNoise n = new FastNoise();
+                    n.SetNoiseType(FastNoise.NoiseType.CubicFractal);
+                    n.SetFractalOctaves(3);
+                    n.SetFrequency(0.04f);
+                    return n;
+                }
+        );
 
-        FastNoise detailsNoise = NoiseCacheHandler.getNoise(tw, NoiseCacheEntry.BIOME_GORGE_DETAILS, world -> {
-            FastNoise n = new FastNoise();
-            n.SetNoiseType(FastNoise.NoiseType.SimplexFractal);
-            n.SetFrequency(0.03f);
-            return n;
-        });
+        FastNoise detailsNoise = NoiseCacheHandler.getNoise(
+                tw, NoiseCacheEntry.BIOME_GORGE_DETAILS, world -> {
+                    FastNoise n = new FastNoise();
+                    n.SetNoiseType(FastNoise.NoiseType.SimplexFractal);
+                    n.SetFrequency(0.03f);
+                    return n;
+                }
+        );
 
 
         double threshold = 0.1;
@@ -167,7 +171,8 @@ public class GorgeHandler extends BiomeHandler {
                 cache.writeTransformedHeight(x, z, (short) (Math.round(platformHeight) + height));
             }
             for (int y = 1; y <= (int) Math.round(platformHeight); y++) {
-                Material material = GenUtils.randChoice(Material.STONE,
+                Material material = GenUtils.randChoice(
+                        Material.STONE,
                         Material.STONE,
                         Material.STONE,
                         Material.STONE,
@@ -246,7 +251,8 @@ public class GorgeHandler extends BiomeHandler {
                     continue;
                 }
 
-                BlockUtils.replaceSphere(random.nextInt(91822),
+                BlockUtils.replaceSphere(
+                        random.nextInt(91822),
                         (float) GenUtils.randDouble(random, 3, 6),
                         (float) GenUtils.randDouble(random, 4, 7),
                         (float) GenUtils.randDouble(random, 3, 6),

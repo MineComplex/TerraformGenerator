@@ -1,24 +1,19 @@
 package org.terraform.watchdog;
 
 import org.jetbrains.annotations.Nullable;
+import org.terraform.main.TConfig;
 import org.terraform.main.TerraformGeneratorPlugin;
-import org.terraform.main.config.TConfig;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 public class TfgWatchdogSuppressant {
-    @Nullable
-    Field instanceField = null;
-    @Nullable
-    Field lastTickField = null;
-    @Nullable
-    Class<?> watchdogThreadClass = null;
-    @Nullable
-    Method tickMethod = null;
-    @Nullable
-    Object watchdogThreadInstance = null;
+    @Nullable Field instanceField = null;
+    @Nullable Field lastTickField = null;
+    @Nullable Class<?> watchdogThreadClass = null;
+    @Nullable Method tickMethod = null;
+    @Nullable Object watchdogThreadInstance = null;
 
     public TfgWatchdogSuppressant() {
         if (TConfig.c.DEVSTUFF_SUPPRESS_WATCHDOG) {

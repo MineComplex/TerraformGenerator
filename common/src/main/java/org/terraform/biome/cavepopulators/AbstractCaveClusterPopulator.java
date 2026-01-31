@@ -38,13 +38,15 @@ public abstract class AbstractCaveClusterPopulator extends AbstractCavePopulator
         ArrayList<SimpleBlock[]> ceilFloorPairs = new ArrayList<>();
         ArrayList<Boolean> boundaries = new ArrayList<>();
 
-        FastNoise circleNoise = NoiseCacheHandler.getNoise(tw, NoiseCacheEntry.BIOME_CAVECLUSTER_CIRCLENOISE, world -> {
-            FastNoise n = new FastNoise((int) (world.getSeed() * 11));
-            n.SetNoiseType(FastNoise.NoiseType.Simplex);
-            n.SetFrequency(0.09f);
+        FastNoise circleNoise = NoiseCacheHandler.getNoise(
+                tw, NoiseCacheEntry.BIOME_CAVECLUSTER_CIRCLENOISE, world -> {
+                    FastNoise n = new FastNoise((int) (world.getSeed() * 11));
+                    n.SetNoiseType(FastNoise.NoiseType.Simplex);
+                    n.SetFrequency(0.09f);
 
-            return n;
-        });
+                    return n;
+                }
+        );
 
         center = new SimpleBlock(ceil.getPopData(), ceil.getX(), (ceil.getY() + floor.getY()) / 2, ceil.getZ());
         int lowest = center.getY();

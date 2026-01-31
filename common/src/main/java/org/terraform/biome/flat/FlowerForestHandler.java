@@ -3,15 +3,14 @@ package org.terraform.biome.flat;
 import org.bukkit.Material;
 import org.bukkit.block.Biome;
 import org.jetbrains.annotations.NotNull;
-import org.terraform.biome.BiomeHandler;
 import org.terraform.coregen.populatordata.PopulatorDataAbstract;
 import org.terraform.data.SimpleBlock;
 import org.terraform.data.SimpleLocation;
 import org.terraform.data.TerraformWorld;
 import org.terraform.data.Wall;
-import org.terraform.main.config.TConfig;
-import org.terraform.small_items.PlantBuilder;
+import org.terraform.main.TConfig;
 import org.terraform.tree.FractalTypes;
+import org.terraform.tree.PlantBuilder;
 import org.terraform.utils.BlockUtils;
 import org.terraform.utils.GenUtils;
 import org.terraform.utils.blockdata.OrientableBuilder;
@@ -20,7 +19,6 @@ import org.terraform.utils.noise.FastNoise.NoiseType;
 import org.terraform.utils.noise.NoiseCacheHandler;
 import org.terraform.utils.noise.NoiseCacheHandler.NoiseCacheEntry;
 
-import java.util.ArrayList;
 import java.util.Random;
 
 public class FlowerForestHandler extends ForestHandler {
@@ -38,13 +36,15 @@ public class FlowerForestHandler extends ForestHandler {
                                    int rawZ,
                                    @NotNull PopulatorDataAbstract data)
     {
-        FastNoise pathNoise = NoiseCacheHandler.getNoise(tw, NoiseCacheEntry.BIOME_FOREST_PATHNOISE, world -> {
-            FastNoise n = new FastNoise((int) (world.getSeed() * 12));
-            n.SetNoiseType(NoiseType.SimplexFractal);
-            n.SetFractalOctaves(3);
-            n.SetFrequency(0.07f);
-            return n;
-        });
+        FastNoise pathNoise = NoiseCacheHandler.getNoise(
+                tw, NoiseCacheEntry.BIOME_FOREST_PATHNOISE, world -> {
+                    FastNoise n = new FastNoise((int) (world.getSeed() * 12));
+                    n.SetNoiseType(NoiseType.SimplexFractal);
+                    n.SetFractalOctaves(3);
+                    n.SetFrequency(0.07f);
+                    return n;
+                }
+        );
 
         if (pathNoise.GetNoise(rawX, rawZ) > 0.3) {
             if (GenUtils.chance(random, 99, 100) && data.getBiome(rawX, rawZ) == getBiome() && BlockUtils.isDirtLike(
@@ -57,10 +57,9 @@ public class FlowerForestHandler extends ForestHandler {
             if (GenUtils.chance(random, 1, 10)) {
                 //Air check skipped, as PlantBuilder will check
                 // Grass & Flowers
-                switch(random.nextInt(12)){
+                switch (random.nextInt(9)) {
                     case 0 -> PlantBuilder.GRASS.build(data, rawX, surfaceY + 1, rawZ);
                     case 1 -> PlantBuilder.BUSH.build(data, rawX, surfaceY + 1, rawZ);
-                    case 2,3,4 -> BlockUtils.pickTallFlower().build(data, rawX, surfaceY + 1, rawZ);
                     //Much higher chance for flowers
                     default -> BlockUtils.pickFlower().build(data, rawX, surfaceY + 1, rawZ);
                 }
@@ -92,28 +91,38 @@ public class FlowerForestHandler extends ForestHandler {
         for (SimpleLocation sLoc : trees) {
             int treeY = GenUtils.getHighestGround(data, sLoc.getX(), sLoc.getZ());
             sLoc = sLoc.getAtY(treeY);
-            if (data.getBiome(sLoc.getX(), sLoc.getZ()) == getBiome() && BlockUtils.isDirtLike(data.getType(sLoc.getX(),
+            if (data.getBiome(sLoc.getX(), sLoc.getZ()) == getBiome() && BlockUtils.isDirtLike(data.getType(
+                    sLoc.getX(),
                     sLoc.getY(),
-                    sLoc.getZ())))
+                    sLoc.getZ()
+            )))
             {
-                if(random.nextInt(7) == 0)
-                {
+                if (random.nextInt(7) == 0) {
                     //Fallen trees
                     Wall w = new Wall(data, sLoc.getUp(), BlockUtils.getDirectBlockFace(random));
-                    int length = GenUtils.randInt(2,3);
-                    for(int i = -length; i <= length; i++) {
-                        if(!w.getFront(i).isAir()
-                           || !w.getFront(i).getDown().isSolid()) break;
+                    int length = GenUtils.randInt(2, 3);
+                    for (int i = -length; i <= length; i++) {
+                        if (!w.getFront(i).isAir() || !w.getFront(i).getDown().isSolid()) {
+                            break;
+                        }
                         w.getFront(i)
-                         .setBlockData(new OrientableBuilder(Material.OAK_LOG)
-                                 .setAxis(BlockUtils.getAxisFromBlockFace(w.getDirection())).get());
-                        if(w.getFront(i).getUp().isAir()
-                           && random.nextInt(5) == 0)
-                            PlantBuilder.build(w.getFront(i).getUp(), PlantBuilder.RED_MUSHROOM, PlantBuilder.BROWN_MUSHROOM);
+                         .setBlockData(new OrientableBuilder(Material.OAK_LOG).setAxis(BlockUtils.getAxisFromBlockFace(w.getDirection()))
+                                                                              .get());
+                        if (w.getFront(i).getUp().isAir() && random.nextInt(5) == 0) {
+                            PlantBuilder.build(
+                                    w.getFront(i).getUp(),
+                                    PlantBuilder.RED_MUSHROOM,
+                                    PlantBuilder.BROWN_MUSHROOM
+                            );
+                        }
                     }
                 }
-                else
-                    FractalTypes.Tree.NORMAL_SMALL.build(tw, new SimpleBlock(data, sLoc.getX(), sLoc.getY(), sLoc.getZ()));
+                else {
+                    FractalTypes.Tree.NORMAL_SMALL.build(
+                            tw,
+                            new SimpleBlock(data, sLoc.getX(), sLoc.getY(), sLoc.getZ())
+                    );
+                }
             }
         }
 

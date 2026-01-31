@@ -7,7 +7,7 @@ import org.terraform.biome.BiomeType;
 import org.terraform.coregen.HeightMap;
 import org.terraform.data.MegaChunk;
 import org.terraform.data.TerraformWorld;
-import org.terraform.main.config.TConfig;
+import org.terraform.main.TConfig;
 import org.terraform.structure.JigsawState;
 import org.terraform.structure.JigsawStructurePopulator;
 import org.terraform.structure.room.CubeRoom;
@@ -30,16 +30,6 @@ public class CatacombsPopulator extends JigsawStructurePopulator {
 
         MegaChunk mc = new MegaChunk(chunkX, chunkZ);
         int[] coords = mc.getCenterBiomeSectionBlockCoords();
-
-        // Do not spawn catacombs under deep oceans, there's no space.
-        if (biome.getType() == BiomeType.DEEP_OCEANIC) {
-            return false;
-        }
-
-        // Don't compete with badlandsmine for space
-        if (biome == BiomeBank.BADLANDS_CANYON) {
-            return false;
-        }
 
         // Don't compete with villages for space. In future, this may be changed
         // to allow multiple structures per megachunk

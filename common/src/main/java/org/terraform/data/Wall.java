@@ -16,6 +16,7 @@ public class Wall extends SimpleBlock {
         super(block.getPopData(), block.getX(), block.getY(), block.getZ());
         this.direction = dir;
     }
+
     public Wall(@NotNull PopulatorDataAbstract data, @NotNull SimpleLocation loc, BlockFace dir) {
         super(data, loc.getX(), loc.getY(), loc.getZ());
         this.direction = dir;
@@ -203,9 +204,10 @@ public class Wall extends SimpleBlock {
         return new Wall(super.getRelative(direction.getOppositeFace()), direction);
     }
 
-    public @NotNull Wall flip(){
+    public @NotNull Wall flip() {
         return new Wall(this, direction.getOppositeFace());
     }
+
     public Wall getRear(int it) {
         if (it < 0) {
             return getFront(-it);

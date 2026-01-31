@@ -7,8 +7,8 @@ import org.jetbrains.annotations.NotNull;
 import org.terraform.coregen.populatordata.PopulatorDataAbstract;
 import org.terraform.data.SimpleBlock;
 import org.terraform.data.Wall;
-import org.terraform.main.config.TConfig;
-import org.terraform.small_items.PlantBuilder;
+import org.terraform.main.TConfig;
+import org.terraform.tree.PlantBuilder;
 import org.terraform.structure.room.CubeRoom;
 import org.terraform.utils.BlockUtils;
 import org.terraform.utils.GenUtils;
@@ -119,11 +119,6 @@ public class PlainsVillageAnimalPenPopulator extends PlainsVillageAbstractRoomPo
                             z,
                             GenUtils.randChoice(Material.PODZOL, Material.COARSE_DIRT, Material.GRASS_BLOCK)
                     );
-                }
-                else if (rand.nextBoolean()) {
-                    if (!data.getType(x, highest + 1, z).isSolid()) {
-                        PlantBuilder.TALL_GRASS.build(data, x, highest + 1, z);
-                    }
                 }
             }
         }

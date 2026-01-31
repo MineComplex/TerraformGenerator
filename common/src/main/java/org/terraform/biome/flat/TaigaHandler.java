@@ -10,9 +10,9 @@ import org.terraform.coregen.populatordata.PopulatorDataAbstract;
 import org.terraform.data.SimpleBlock;
 import org.terraform.data.SimpleLocation;
 import org.terraform.data.TerraformWorld;
-import org.terraform.main.config.TConfig;
-import org.terraform.small_items.PlantBuilder;
+import org.terraform.main.TConfig;
 import org.terraform.tree.FractalTypes;
+import org.terraform.tree.PlantBuilder;
 import org.terraform.utils.BlockUtils;
 import org.terraform.utils.GenUtils;
 import org.terraform.utils.noise.FastNoise;
@@ -52,9 +52,8 @@ public class TaigaHandler extends BiomeHandler {
                                    @NotNull PopulatorDataAbstract data)
     {
         // Use noise to group sweet berry bushes
-        FastNoise sweetBerriesNoise = NoiseCacheHandler.getNoise(tw,
-                NoiseCacheHandler.NoiseCacheEntry.BIOME_TAIGA_BERRY_BUSHNOISE,
-                w -> {
+        FastNoise sweetBerriesNoise = NoiseCacheHandler.getNoise(
+                tw, NoiseCacheHandler.NoiseCacheEntry.BIOME_TAIGA_BERRY_BUSHNOISE, w -> {
                     FastNoise n = new FastNoise((int) (w.getSeed() * 2));
                     n.SetNoiseType(NoiseType.SimplexFractal);
                     n.SetFrequency(0.04f);
@@ -64,7 +63,8 @@ public class TaigaHandler extends BiomeHandler {
         );
 
         if (BlockUtils.isDirtLike(data.getType(rawX, surfaceY, rawZ))
-            && data.getType(rawX, surfaceY+1,rawZ) == Material.AIR) {
+            && data.getType(rawX, surfaceY + 1, rawZ) == Material.AIR)
+        {
 
             // Generate sweet berry bushes
             if (TConfig.arePlantsEnabled()
@@ -79,17 +79,9 @@ public class TaigaHandler extends BiomeHandler {
 
             // Generate grass and flowers
             if (GenUtils.chance(random, 1, 16)) {
-                int i = random.nextInt(4);
+                int i = random.nextInt(2);
 
-                if (i >= 2) {
-                    if (random.nextBoolean()) {
-                        PlantBuilder.TALL_GRASS.build(data, rawX, surfaceY + 1, rawZ);
-                    }
-                    else {
-                        PlantBuilder.LARGE_FERN.build(data, rawX, surfaceY + 1, rawZ);
-                    }
-                }
-                else if (i == 1) {
+                if (i == 1) {
                     if (random.nextBoolean()) {
                         PlantBuilder.GRASS.build(data, rawX, surfaceY + 1, rawZ);
                     }
@@ -117,12 +109,11 @@ public class TaigaHandler extends BiomeHandler {
                 sLoc = sLoc.getAtY(treeY);
                 // Rarely spawn huge taiga trees
                 if (TConfig.c.TREES_TAIGA_BIG_ENABLED && GenUtils.chance(random, 1, 20)) {
-                    FractalTypes.Tree.TAIGA_BIG.build(tw,
-                            new SimpleBlock(data, sLoc.getX(), sLoc.getY(), sLoc.getZ())
-                    );
+                    FractalTypes.Tree.TAIGA_BIG.build(tw, new SimpleBlock(data, sLoc.getX(), sLoc.getY(), sLoc.getZ()));
                 }
                 else { // Normal trees
-                    FractalTypes.Tree.TAIGA_SMALL.build(tw,
+                    FractalTypes.Tree.TAIGA_SMALL.build(
+                            tw,
                             new SimpleBlock(data, sLoc.getX(), sLoc.getY(), sLoc.getZ())
                     );
                 }

@@ -87,7 +87,6 @@ public class JigsawBuilder {
             if (map.get(piece.getRoom().getSimpleLocation()) >= 4) {
                 // 4 wall thing spotted. That's bad. Try to replace it.
                 problemCells.add(piece.getRoom().getSimpleLocation());
-                TerraformGeneratorPlugin.logger.info("Found problem piece. Attempting to replace with room.");
             }
         }
         if (!problemCells.isEmpty()) {
@@ -109,7 +108,6 @@ public class JigsawBuilder {
                 toAdd.setPopulated(BlockFace.EAST);
                 toAdd.setPopulated(BlockFace.WEST);
                 pieces.put(loc, toAdd);
-                TerraformGeneratorPlugin.logger.info("Patched problem piece with new room.");
             }
         }
     }

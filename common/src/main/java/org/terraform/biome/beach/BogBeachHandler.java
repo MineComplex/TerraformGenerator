@@ -10,7 +10,7 @@ import org.terraform.biome.flat.MuddyBogHandler;
 import org.terraform.coregen.populatordata.PopulatorDataAbstract;
 import org.terraform.data.SimpleBlock;
 import org.terraform.data.TerraformWorld;
-import org.terraform.small_items.PlantBuilder;
+import org.terraform.tree.PlantBuilder;
 import org.terraform.utils.BlockUtils;
 import org.terraform.utils.GenUtils;
 
@@ -62,9 +62,6 @@ public class BogBeachHandler extends BiomeHandler {
             }
             else if (GenUtils.chance(random, 1, 85)) {
                 PlantBuilder.GRASS.build(block.getUp());
-            }
-            else if (GenUtils.chance(random, 1, 85)) {
-                PlantBuilder.TALL_GRASS.build(block.getUp());
             }
             else { // Possible Sugarcane
                 for (BlockFace face : BlockUtils.directBlockFaces) {

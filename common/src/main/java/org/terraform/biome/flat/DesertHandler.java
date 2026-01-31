@@ -13,12 +13,10 @@ import org.terraform.data.SimpleBlock;
 import org.terraform.data.SimpleLocation;
 import org.terraform.data.TerraformWorld;
 import org.terraform.data.Wall;
-import org.terraform.main.config.TConfig;
-import org.terraform.small_items.PlantBuilder;
+import org.terraform.tree.PlantBuilder;
 import org.terraform.utils.BlockUtils;
 import org.terraform.utils.GenUtils;
 import org.terraform.utils.blockdata.OrientableBuilder;
-import org.terraform.utils.version.V_1_21_5;
 import org.terraform.utils.version.Version;
 
 import java.util.Random;
@@ -83,21 +81,24 @@ public class DesertHandler extends BiomeHandler {
         if (base == Material.SAND) {
 
             //Checks for cactus
-            if (GenUtils.chance(random, 1, 100)
-                || (GenUtils.chance(random, 1, 20) && cactusGathering)) {
+            if (GenUtils.chance(random, 1, 100) || (GenUtils.chance(random, 1, 20) && cactusGathering)) {
                 for (BlockFace face : BlockUtils.directBlockFaces) {
                     if (data.getType(rawX + face.getModX(), surfaceY + 1, rawZ + face.getModZ()) != Material.AIR) {
                         return;
                     }
                 }
                 int cactusHeight = PlantBuilder.CACTUS.build(random, data, rawX, surfaceY + 1, rawZ, 3, 5);
-                if(Version.VERSION.isAtLeast(Version.v1_21_5)
-                   && GenUtils.chance(random, 1, 10))
-                    data.setType(rawX, surfaceY+1+cactusHeight, rawZ, V_1_21_5.CACTUS_FLOWER);
+                if (GenUtils.chance(random, 1, 10)) {
+                    data.setType(rawX, surfaceY + 1 + cactusHeight, rawZ, Material.CACTUS_FLOWER);
+                }
             }
             else if (GenUtils.chance(random, 1, 80)) {
-                PlantBuilder.build(new SimpleBlock(data,rawX, surfaceY+1,rawZ),
-                        PlantBuilder.DEAD_BUSH, PlantBuilder.SHORT_DRY_GRASS, PlantBuilder.TALL_DRY_GRASS);
+                PlantBuilder.build(
+                        new SimpleBlock(data, rawX, surfaceY + 1, rawZ),
+                        PlantBuilder.DEAD_BUSH,
+                        PlantBuilder.SHORT_DRY_GRASS,
+                        PlantBuilder.TALL_DRY_GRASS
+                );
             }
         }
     }
@@ -123,10 +124,6 @@ public class DesertHandler extends BiomeHandler {
     }
 
     public void spawnRibCage(@NotNull Random random, @NotNull SimpleBlock target) {
-        if (!TConfig.areStructuresEnabled()) {
-            return;
-        }
-
         BlockFace direction = BlockUtils.getDirectBlockFace(random);
         int spineLength = GenUtils.randInt(random, 10, 14);
         float ribWidthRadius = GenUtils.randInt(random, 1, 2) + (float) spineLength / 2;
@@ -162,9 +159,10 @@ public class DesertHandler extends BiomeHandler {
                         int ny = (int) Math.round(ribHeightRadius * ribSizeMultiplier + (multiplier
                                                                                          * ribHeightRadius
                                                                                          * ribSizeMultiplier
-                                                                                         * Math.sqrt(1 - Math.pow((nHor)
-                                                                                                                  / (ribWidthRadius
-                                                                                                                     * ribSizeMultiplier),
+                                                                                         * Math.sqrt(1 - Math.pow(
+                                (nHor)
+                                / (ribWidthRadius
+                                   * ribSizeMultiplier),
                                 2
                         ))));
 

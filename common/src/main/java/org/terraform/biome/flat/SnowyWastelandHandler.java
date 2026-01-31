@@ -10,7 +10,7 @@ import org.terraform.coregen.populatordata.PopulatorDataAbstract;
 import org.terraform.data.SimpleBlock;
 import org.terraform.data.SimpleLocation;
 import org.terraform.data.TerraformWorld;
-import org.terraform.main.config.TConfig;
+import org.terraform.main.TConfig;
 import org.terraform.tree.FractalTreeBuilder;
 import org.terraform.tree.FractalTypes;
 import org.terraform.utils.BlockUtils;
@@ -93,7 +93,8 @@ public class SnowyWastelandHandler extends BiomeHandler {
 
             if (GenUtils.chance(1, 3)) {
                 new FractalTreeBuilder(FractalTypes.Tree.FROZEN_TREE_SMALL).setSnowyLeaves(true)
-                                                                           .build(world,
+                                                                           .build(
+                                                                                   world,
                                                                                    data,
                                                                                    sLoc.getX(),
                                                                                    sLoc.getY() + 1,
@@ -102,7 +103,8 @@ public class SnowyWastelandHandler extends BiomeHandler {
             }
 
             if (GenUtils.chance(1, 30)) {
-                new FractalTreeBuilder(FractalTypes.Tree.FROZEN_TREE_BIG).build(world,
+                new FractalTreeBuilder(FractalTypes.Tree.FROZEN_TREE_BIG).build(
+                        world,
                         data,
                         sLoc.getX(),
                         sLoc.getY(),

@@ -13,10 +13,9 @@ import java.util.Arrays;
  * war crime
  */
 public class ChunkCache {
+    public static final float CHUNKCACHE_INVAL = TerraformGeneratorPlugin.injector.getMinY() - 1;
     public final TerraformWorld tw;
     public final int chunkX, chunkZ;
-    public static final float CHUNKCACHE_INVAL = TerraformGeneratorPlugin.injector.getMinY() - 1;
-
     /**
      * heightCache caches the FINAL height of the terrain (the one applied to the
      * world).
@@ -66,15 +65,17 @@ public class ChunkCache {
 
     public void cacheSolid(int interChunkX, int interChunkY, int interChunkZ)
     {
-        solids.set(interChunkX,interChunkY,interChunkZ);
+        solids.set(interChunkX, interChunkY, interChunkZ);
     }
+
     public void cacheNonSolid(int interChunkX, int interChunkY, int interChunkZ)
     {
-        solids.unSet(interChunkX,interChunkY,interChunkZ);
+        solids.unSet(interChunkX, interChunkY, interChunkZ);
     }
+
     public boolean isSolid(int interChunkX, int interChunkY, int interChunkZ)
     {
-        return solids.isSet(interChunkX,interChunkY,interChunkZ);
+        return solids.isSet(interChunkX, interChunkY, interChunkZ);
     }
 
     public double getHeightMapHeight(int rawX, int rawZ) {
@@ -101,6 +102,7 @@ public class ChunkCache {
 
     /**
      * As usual, the solution to any pain point is caching it like an idiot
+     *
      * @return the noise calculated in NoiseCaveRegistry.YBarrier. Only the noise.
      */
     public float getYBarrierNoise(int chunkSubX, int chunkSubZ) {
@@ -161,7 +163,7 @@ public class ChunkCache {
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         return tw.getName() + ":" + chunkX + "," + chunkZ;
     }
 }

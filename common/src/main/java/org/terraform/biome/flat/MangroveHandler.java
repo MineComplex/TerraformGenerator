@@ -12,9 +12,9 @@ import org.terraform.coregen.bukkit.TerraformGenerator;
 import org.terraform.coregen.populatordata.PopulatorDataAbstract;
 import org.terraform.data.SimpleBlock;
 import org.terraform.data.TerraformWorld;
-import org.terraform.main.config.TConfig;
-import org.terraform.small_items.PlantBuilder;
+import org.terraform.main.TConfig;
 import org.terraform.tree.FractalTypes;
+import org.terraform.tree.PlantBuilder;
 import org.terraform.tree.TreeDB;
 import org.terraform.utils.BlockUtils;
 import org.terraform.utils.CoralGenerator;
@@ -23,7 +23,6 @@ import org.terraform.utils.noise.FastNoise;
 import org.terraform.utils.noise.FastNoise.NoiseType;
 import org.terraform.utils.noise.NoiseCacheHandler;
 import org.terraform.utils.noise.NoiseCacheHandler.NoiseCacheEntry;
-import org.terraform.utils.version.V_1_19;
 
 import java.util.Random;
 
@@ -41,13 +40,13 @@ public class MangroveHandler extends BiomeHandler {
 
     @Override
     public @NotNull Biome getBiome() {
-        return V_1_19.MANGROVE_SWAMP;
+        return Biome.MANGROVE_SWAMP;
     }
 
     @Override
     public Material @NotNull [] getSurfaceCrust(@NotNull Random rand) {
         return new Material[] {
-                GenUtils.randChoice(rand, Material.GRASS_BLOCK, Material.PODZOL, Material.PODZOL),
+                GenUtils.randChoice(rand, Material.GRASS_BLOCK, Material.PODZOL, Material.GRASS_BLOCK),
                 GenUtils.randChoice(rand, Material.DIRT),
                 GenUtils.randChoice(rand, Material.DIRT, Material.DIRT, Material.STONE),
                 GenUtils.randChoice(rand, Material.DIRT, Material.STONE),
@@ -74,14 +73,16 @@ public class MangroveHandler extends BiomeHandler {
         if (surfaceY < TerraformGenerator.seaLevel) {
             int rawX = chunkX * 16 + x;
             int rawZ = chunkZ * 16 + z;
-            FastNoise mudNoise = NoiseCacheHandler.getNoise(tw, NoiseCacheEntry.BIOME_SWAMP_MUDNOISE, world -> {
-                FastNoise n = new FastNoise((int) (world.getSeed() * 4));
-                n.SetNoiseType(NoiseType.SimplexFractal);
-                n.SetFrequency(0.05f);
-                n.SetFractalOctaves(4);
+            FastNoise mudNoise = NoiseCacheHandler.getNoise(
+                    tw, NoiseCacheEntry.BIOME_SWAMP_MUDNOISE, world -> {
+                        FastNoise n = new FastNoise((int) (world.getSeed() * 4));
+                        n.SetNoiseType(NoiseType.SimplexFractal);
+                        n.SetFrequency(0.05f);
+                        n.SetFractalOctaves(4);
 
-                return n;
-            });
+                        return n;
+                    }
+            );
 
             double noise = mudNoise.GetNoise(rawX, rawZ);
 
@@ -126,7 +127,7 @@ public class MangroveHandler extends BiomeHandler {
                 }
             }
         }
-        else if(GenUtils.chance(random, 1, 30)){
+        else if (GenUtils.chance(random, 1, 30)) {
             PlantBuilder.FIREFLY_BUSH.build(data, rawX, surfaceY + 1, rawZ);
         }
 
@@ -141,10 +142,11 @@ public class MangroveHandler extends BiomeHandler {
             BlockUtils.generateClayDeposit(rawX, surfaceY, rawZ, data, random);
         }
         if (GenUtils.chance(random, 5, 1000)) {
-            BlockUtils.replaceCircularPatch(random.nextInt(9999),
+            BlockUtils.replaceCircularPatch(
+                    random.nextInt(9999),
                     3.5f,
                     new SimpleBlock(data, rawX, surfaceY, rawZ),
-                    V_1_19.MUD
+                    Material.MUD
             );
         }
     }
@@ -166,11 +168,7 @@ public class MangroveHandler extends BiomeHandler {
                 if (treeY > TerraformGenerator.seaLevel - 6) {
                     // Don't do gradient checks for swamp trees, the mud is uneven.
                     // just make sure it's submerged
-                    TreeDB.spawnBreathingRoots(
-                            tw,
-                            new SimpleBlock(data, treeX, treeY, treeZ),
-                            V_1_19.MANGROVE_ROOTS
-                    );
+                    TreeDB.spawnBreathingRoots(tw, new SimpleBlock(data, treeX, treeY, treeZ), Material.MANGROVE_ROOTS);
                     FractalTypes.Tree.SWAMP_TOP.build(
                             tw,
                             new SimpleBlock(data, treeX, treeY, treeZ),

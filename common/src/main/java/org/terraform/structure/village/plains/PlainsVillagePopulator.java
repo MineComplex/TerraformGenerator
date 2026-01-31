@@ -3,7 +3,6 @@ package org.terraform.structure.village.plains;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.terraform.biome.BiomeBank;
 import org.terraform.coregen.populatordata.PopulatorDataAbstract;
 import org.terraform.data.MegaChunk;
@@ -108,7 +107,7 @@ public class PlainsVillagePopulator extends VillagePopulator {
 
 
         BlockFace pathStart = BlockUtils.getDirectBlockFace(random);
-        TerraformGeneratorPlugin.logger.info("Spawning plains village at " + x + "," + y + "," + z);
+        //TerraformGeneratorPlugin.logger.info("Spawning plains village at " + x + "," + y + "," + z);
         DirectionalCubeRoom townHall = new DirectionalCubeRoom(pathStart, 24, 24, 24, x, y, z);
         PlainsVillageTownhallPopulator townHallPop = new PlainsVillageTownhallPopulator(tw, random, false, false);
         townHall.setRoomPopulator(townHallPop);

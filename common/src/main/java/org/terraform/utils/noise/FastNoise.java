@@ -1327,111 +1327,113 @@ public class FastNoise {
         float ys = y - (float) y1;
         float zs = z - (float) z1;
 
-        return CubicLerp(CubicLerp(CubicLerp(
-                        ValCoord3D(seed, x0, y0, z0),
-                        ValCoord3D(seed, x1, y0, z0),
-                        ValCoord3D(seed, x2, y0, z0),
-                        ValCoord3D(seed, x3, y0, z0),
-                        xs
-                ),
-                CubicLerp(ValCoord3D(seed, x0, y1, z0),
-                        ValCoord3D(seed, x1, y1, z0),
-                        ValCoord3D(seed, x2, y1, z0),
-                        ValCoord3D(seed, x3, y1, z0),
-                        xs
-                ),
-                CubicLerp(ValCoord3D(seed, x0, y2, z0),
-                        ValCoord3D(seed, x1, y2, z0),
-                        ValCoord3D(seed, x2, y2, z0),
-                        ValCoord3D(seed, x3, y2, z0),
-                        xs
-                ),
-                CubicLerp(ValCoord3D(seed, x0, y3, z0),
-                        ValCoord3D(seed, x1, y3, z0),
-                        ValCoord3D(seed, x2, y3, z0),
-                        ValCoord3D(seed, x3, y3, z0),
-                        xs
-                ),
-                ys
-        ), CubicLerp(CubicLerp(
-                        ValCoord3D(seed, x0, y0, z1),
-                        ValCoord3D(seed, x1, y0, z1),
-                        ValCoord3D(seed, x2, y0, z1),
-                        ValCoord3D(seed, x3, y0, z1),
-                        xs
-                ),
-                CubicLerp(ValCoord3D(seed, x0, y1, z1),
-                        ValCoord3D(seed, x1, y1, z1),
-                        ValCoord3D(seed, x2, y1, z1),
-                        ValCoord3D(seed, x3, y1, z1),
-                        xs
-                ),
-                CubicLerp(ValCoord3D(seed, x0, y2, z1),
-                        ValCoord3D(seed, x1, y2, z1),
-                        ValCoord3D(seed, x2, y2, z1),
-                        ValCoord3D(seed, x3, y2, z1),
-                        xs
-                ),
-                CubicLerp(ValCoord3D(seed, x0, y3, z1),
-                        ValCoord3D(seed, x1, y3, z1),
-                        ValCoord3D(seed, x2, y3, z1),
-                        ValCoord3D(seed, x3, y3, z1),
-                        xs
-                ),
-                ys
-        ), CubicLerp(CubicLerp(
-                        ValCoord3D(seed, x0, y0, z2),
-                        ValCoord3D(seed, x1, y0, z2),
-                        ValCoord3D(seed, x2, y0, z2),
-                        ValCoord3D(seed, x3, y0, z2),
-                        xs
-                ),
-                CubicLerp(ValCoord3D(seed, x0, y1, z2),
-                        ValCoord3D(seed, x1, y1, z2),
-                        ValCoord3D(seed, x2, y1, z2),
-                        ValCoord3D(seed, x3, y1, z2),
-                        xs
-                ),
-                CubicLerp(ValCoord3D(seed, x0, y2, z2),
-                        ValCoord3D(seed, x1, y2, z2),
-                        ValCoord3D(seed, x2, y2, z2),
-                        ValCoord3D(seed, x3, y2, z2),
-                        xs
-                ),
-                CubicLerp(ValCoord3D(seed, x0, y3, z2),
-                        ValCoord3D(seed, x1, y3, z2),
-                        ValCoord3D(seed, x2, y3, z2),
-                        ValCoord3D(seed, x3, y3, z2),
-                        xs
-                ),
-                ys
-        ), CubicLerp(CubicLerp(
-                        ValCoord3D(seed, x0, y0, z3),
-                        ValCoord3D(seed, x1, y0, z3),
-                        ValCoord3D(seed, x2, y0, z3),
-                        ValCoord3D(seed, x3, y0, z3),
-                        xs
-                ),
-                CubicLerp(ValCoord3D(seed, x0, y1, z3),
-                        ValCoord3D(seed, x1, y1, z3),
-                        ValCoord3D(seed, x2, y1, z3),
-                        ValCoord3D(seed, x3, y1, z3),
-                        xs
-                ),
-                CubicLerp(ValCoord3D(seed, x0, y2, z3),
-                        ValCoord3D(seed, x1, y2, z3),
-                        ValCoord3D(seed, x2, y2, z3),
-                        ValCoord3D(seed, x3, y2, z3),
-                        xs
-                ),
-                CubicLerp(ValCoord3D(seed, x0, y3, z3),
-                        ValCoord3D(seed, x1, y3, z3),
-                        ValCoord3D(seed, x2, y3, z3),
-                        ValCoord3D(seed, x3, y3, z3),
-                        xs
-                ),
-                ys
-        ), zs) * CUBIC_3D_BOUNDING;
+        return CubicLerp(
+                CubicLerp(
+                        CubicLerp(
+                                ValCoord3D(seed, x0, y0, z0),
+                                ValCoord3D(seed, x1, y0, z0),
+                                ValCoord3D(seed, x2, y0, z0),
+                                ValCoord3D(seed, x3, y0, z0),
+                                xs
+                        ), CubicLerp(
+                                ValCoord3D(seed, x0, y1, z0),
+                                ValCoord3D(seed, x1, y1, z0),
+                                ValCoord3D(seed, x2, y1, z0),
+                                ValCoord3D(seed, x3, y1, z0),
+                                xs
+                        ), CubicLerp(
+                                ValCoord3D(seed, x0, y2, z0),
+                                ValCoord3D(seed, x1, y2, z0),
+                                ValCoord3D(seed, x2, y2, z0),
+                                ValCoord3D(seed, x3, y2, z0),
+                                xs
+                        ), CubicLerp(
+                                ValCoord3D(seed, x0, y3, z0),
+                                ValCoord3D(seed, x1, y3, z0),
+                                ValCoord3D(seed, x2, y3, z0),
+                                ValCoord3D(seed, x3, y3, z0),
+                                xs
+                        ), ys
+                ), CubicLerp(
+                        CubicLerp(
+                                ValCoord3D(seed, x0, y0, z1),
+                                ValCoord3D(seed, x1, y0, z1),
+                                ValCoord3D(seed, x2, y0, z1),
+                                ValCoord3D(seed, x3, y0, z1),
+                                xs
+                        ), CubicLerp(
+                                ValCoord3D(seed, x0, y1, z1),
+                                ValCoord3D(seed, x1, y1, z1),
+                                ValCoord3D(seed, x2, y1, z1),
+                                ValCoord3D(seed, x3, y1, z1),
+                                xs
+                        ), CubicLerp(
+                                ValCoord3D(seed, x0, y2, z1),
+                                ValCoord3D(seed, x1, y2, z1),
+                                ValCoord3D(seed, x2, y2, z1),
+                                ValCoord3D(seed, x3, y2, z1),
+                                xs
+                        ), CubicLerp(
+                                ValCoord3D(seed, x0, y3, z1),
+                                ValCoord3D(seed, x1, y3, z1),
+                                ValCoord3D(seed, x2, y3, z1),
+                                ValCoord3D(seed, x3, y3, z1),
+                                xs
+                        ), ys
+                ), CubicLerp(
+                        CubicLerp(
+                                ValCoord3D(seed, x0, y0, z2),
+                                ValCoord3D(seed, x1, y0, z2),
+                                ValCoord3D(seed, x2, y0, z2),
+                                ValCoord3D(seed, x3, y0, z2),
+                                xs
+                        ), CubicLerp(
+                                ValCoord3D(seed, x0, y1, z2),
+                                ValCoord3D(seed, x1, y1, z2),
+                                ValCoord3D(seed, x2, y1, z2),
+                                ValCoord3D(seed, x3, y1, z2),
+                                xs
+                        ), CubicLerp(
+                                ValCoord3D(seed, x0, y2, z2),
+                                ValCoord3D(seed, x1, y2, z2),
+                                ValCoord3D(seed, x2, y2, z2),
+                                ValCoord3D(seed, x3, y2, z2),
+                                xs
+                        ), CubicLerp(
+                                ValCoord3D(seed, x0, y3, z2),
+                                ValCoord3D(seed, x1, y3, z2),
+                                ValCoord3D(seed, x2, y3, z2),
+                                ValCoord3D(seed, x3, y3, z2),
+                                xs
+                        ), ys
+                ), CubicLerp(
+                        CubicLerp(
+                                ValCoord3D(seed, x0, y0, z3),
+                                ValCoord3D(seed, x1, y0, z3),
+                                ValCoord3D(seed, x2, y0, z3),
+                                ValCoord3D(seed, x3, y0, z3),
+                                xs
+                        ), CubicLerp(
+                                ValCoord3D(seed, x0, y1, z3),
+                                ValCoord3D(seed, x1, y1, z3),
+                                ValCoord3D(seed, x2, y1, z3),
+                                ValCoord3D(seed, x3, y1, z3),
+                                xs
+                        ), CubicLerp(
+                                ValCoord3D(seed, x0, y2, z3),
+                                ValCoord3D(seed, x1, y2, z3),
+                                ValCoord3D(seed, x2, y2, z3),
+                                ValCoord3D(seed, x3, y2, z3),
+                                xs
+                        ), CubicLerp(
+                                ValCoord3D(seed, x0, y3, z3),
+                                ValCoord3D(seed, x1, y3, z3),
+                                ValCoord3D(seed, x2, y3, z3),
+                                ValCoord3D(seed, x3, y3, z3),
+                                xs
+                        ), ys
+                ), zs
+        ) * CUBIC_3D_BOUNDING;
     }
 
     private static float SingleCubic(int seed, float x, float y) {
@@ -1448,27 +1450,33 @@ public class FastNoise {
         float xs = x - (float) x1;
         float ys = y - (float) y1;
 
-        return CubicLerp(CubicLerp(ValCoord2D(seed, x0, y0),
-                ValCoord2D(seed, x1, y0),
-                ValCoord2D(seed, x2, y0),
-                ValCoord2D(seed, x3, y0),
-                xs
-        ), CubicLerp(ValCoord2D(seed, x0, y1),
-                ValCoord2D(seed, x1, y1),
-                ValCoord2D(seed, x2, y1),
-                ValCoord2D(seed, x3, y1),
-                xs
-        ), CubicLerp(ValCoord2D(seed, x0, y2),
-                ValCoord2D(seed, x1, y2),
-                ValCoord2D(seed, x2, y2),
-                ValCoord2D(seed, x3, y2),
-                xs
-        ), CubicLerp(ValCoord2D(seed, x0, y3),
-                ValCoord2D(seed, x1, y3),
-                ValCoord2D(seed, x2, y3),
-                ValCoord2D(seed, x3, y3),
-                xs
-        ), ys) * CUBIC_2D_BOUNDING;
+        return CubicLerp(
+                CubicLerp(
+                        ValCoord2D(seed, x0, y0),
+                        ValCoord2D(seed, x1, y0),
+                        ValCoord2D(seed, x2, y0),
+                        ValCoord2D(seed, x3, y0),
+                        xs
+                ), CubicLerp(
+                        ValCoord2D(seed, x0, y1),
+                        ValCoord2D(seed, x1, y1),
+                        ValCoord2D(seed, x2, y1),
+                        ValCoord2D(seed, x3, y1),
+                        xs
+                ), CubicLerp(
+                        ValCoord2D(seed, x0, y2),
+                        ValCoord2D(seed, x1, y2),
+                        ValCoord2D(seed, x2, y2),
+                        ValCoord2D(seed, x3, y2),
+                        xs
+                ), CubicLerp(
+                        ValCoord2D(seed, x0, y3),
+                        ValCoord2D(seed, x1, y3),
+                        ValCoord2D(seed, x2, y3),
+                        ValCoord2D(seed, x3, y3),
+                        xs
+                ), ys
+        ) * CUBIC_2D_BOUNDING;
     }
 
     // Returns the seed used by this object
@@ -2917,16 +2925,7 @@ public class FastNoise {
     }
 
     public enum NoiseType {
-        Value,
-        ValueFractal,
-        Perlin,
-        PerlinFractal,
-        Simplex,
-        SimplexFractal,
-        Cellular,
-        WhiteNoise,
-        Cubic,
-        CubicFractal
+        Value, ValueFractal, Perlin, PerlinFractal, Simplex, SimplexFractal, Cellular, WhiteNoise, Cubic, CubicFractal
     }
 
     public enum Interp {Linear, Hermite, Quintic}
@@ -2936,14 +2935,7 @@ public class FastNoise {
     public enum CellularDistanceFunction {Euclidean, Manhattan, Natural}
 
     public enum CellularReturnType {
-        CellValue,
-        NoiseLookup,
-        Distance,
-        Distance2,
-        Distance2Add,
-        Distance2Sub,
-        Distance2Mul,
-        Distance2Div
+        CellValue, NoiseLookup, Distance, Distance2, Distance2Add, Distance2Sub, Distance2Mul, Distance2Div
     }
 
     private record Float2(float x, float y) {
