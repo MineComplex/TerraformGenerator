@@ -42,9 +42,9 @@ public class SaplingOverrider implements Listener {
 
         boolean isLarge = event.getBlocks().size() > 150;
         List<BlockState> baseBlocks = event.getBlocks()
-                                           .stream()
-                                           .filter((b) -> Tag.LEAVES.isTagged(b.getType()))
-                                           .toList();
+                .stream()
+                .filter((b) -> Tag.LEAVES.isTagged(b.getType()))
+                .toList();
         if (baseBlocks.isEmpty()) {   // Leafless trees are not trees
             event.setCancelled(false);
             return;
@@ -76,7 +76,7 @@ public class SaplingOverrider implements Listener {
                 if (isLarge) {
                     if (TConfig.c.MISC_SAPLING_CUSTOM_TREES_BIGTREES_JUNGLE) {
                         new FractalTreeBuilder(FractalTypes.Tree.JUNGLE_BIG).skipGradientCheck()
-                                                                            .build(tw, data, x, y, z);
+                                .build(tw, data, x, y, z);
                     }
                     else {
                         event.setCancelled(wasCancelled);
@@ -104,9 +104,9 @@ public class SaplingOverrider implements Listener {
                         );
                         // Set the original podzol radius
                         event.getBlocks()
-                             .stream()
-                             .filter((b) -> b.getType() == Material.PODZOL)
-                             .forEach((b) -> data.setType(b.getX(), b.getY(), b.getZ(), b.getType()));
+                                .stream()
+                                .filter((b) -> b.getType() == Material.PODZOL)
+                                .forEach((b) -> data.setType(b.getX(), b.getY(), b.getZ(), b.getType()));
                     }
                     else {
                         event.setCancelled(wasCancelled);
@@ -117,7 +117,9 @@ public class SaplingOverrider implements Listener {
                     FractalTypes.Tree.TAIGA_SMALL.build(
                             tw,
                             new SimpleBlock(data, x, y, z),
-                            (nt -> nt.setCheckGradient(false))
+                            (nt -> nt.
+                                     setCheckGradient(false).
+                                     setPrePlacement(null) //Do NOT set podzol)
                     );
                 }
                 break;
