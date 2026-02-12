@@ -61,6 +61,7 @@ public class SaplingOverrider implements Listener {
                 FractalTypes.Tree.NORMAL_SMALL.build(
                         tw, new SimpleBlock(data, x, y, z), (nt -> {
                             nt.setCheckGradient(false);
+                            nt.setPrePlacement(null); //Do NOT set leaf litters
                             //Let grown trees spawn beehives
                             if (GenUtils.RANDOMIZER.nextInt(5) == 0) {
                                 nt.setSpawnBees(true);
@@ -100,7 +101,9 @@ public class SaplingOverrider implements Listener {
                         FractalTypes.Tree.TAIGA_BIG.build(
                                 tw,
                                 new SimpleBlock(data, x, y, z),
-                                (nt -> nt.setCheckGradient(false))
+                                (nt -> nt
+                                        .setPrePlacement(null) //Do NOT set podzol
+                                        .setCheckGradient(false))
                         );
                         // Set the original podzol radius
                         event.getBlocks()
@@ -117,9 +120,9 @@ public class SaplingOverrider implements Listener {
                     FractalTypes.Tree.TAIGA_SMALL.build(
                             tw,
                             new SimpleBlock(data, x, y, z),
-                            (nt -> nt.
-                                     setCheckGradient(false).
-                                     setPrePlacement(null) //Do NOT set podzol)
+                            (nt -> nt
+                                    .setPrePlacement(null) //Do NOT set podzol
+                                    .setCheckGradient(false))
                     );
                 }
                 break;
