@@ -21,11 +21,6 @@ import java.util.Random;
 public class SnowyWastelandHandler extends BiomeHandler {
 
     @Override
-    public boolean isOcean() {
-        return false;
-    }
-
-    @Override
     public @NotNull Biome getBiome() {
         return Biome.SNOWY_PLAINS;
     }

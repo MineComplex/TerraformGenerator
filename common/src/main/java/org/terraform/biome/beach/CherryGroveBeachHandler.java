@@ -15,11 +15,6 @@ import java.util.Random;
 public class CherryGroveBeachHandler extends BiomeHandler {
 
     @Override
-    public boolean isOcean() {
-        return false;
-    }
-
-    @Override
     public @NotNull Biome getBiome() {
         return Biome.BEACH;
     }

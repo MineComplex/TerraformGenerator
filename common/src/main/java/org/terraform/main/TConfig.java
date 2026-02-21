@@ -113,10 +113,6 @@ public class TConfig extends YamlFileInterface {
     public String BIOME_SINGLE_TERRESTRIAL_TYPE = "disabled";
     @YamlKey("biome.defaults.flat")
     public String BIOME_DEFAULT_FLAT = "PLAINS";
-    @YamlKey("biome.defaults.river")
-    public String BIOME_DEFAULT_RIVER = "RIVER";
-    @YamlKey("biome.defaults.beach")
-    public String BIOME_DEFAULT_BEACH = "SANDY_BEACH";
 
     @YamlKey("biome.plains.weight")
     public int BIOME_PLAINS_WEIGHT = 7;

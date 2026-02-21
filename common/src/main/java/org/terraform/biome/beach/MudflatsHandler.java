@@ -14,11 +14,6 @@ import java.util.Random;
 public class MudflatsHandler extends BiomeHandler {
 
     @Override
-    public boolean isOcean() {
-        return false;
-    }
-
-    @Override
     public @NotNull Biome getBiome() {
         return Biome.MANGROVE_SWAMP;
     }

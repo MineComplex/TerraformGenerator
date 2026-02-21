@@ -34,11 +34,6 @@ public class MangroveHandler extends BiomeHandler {
     }
 
     @Override
-    public boolean isOcean() {
-        return true;
-    }
-
-    @Override
     public @NotNull Biome getBiome() {
         return Biome.MANGROVE_SWAMP;
     }

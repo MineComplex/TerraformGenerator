@@ -22,11 +22,6 @@ import java.util.Random;
 public class MushroomBeachHandler extends BiomeHandler {
 
     @Override
-    public boolean isOcean() {
-        return false;
-    }
-
-    @Override
     public @NotNull Biome getBiome() {
         return Biome.MUSHROOM_FIELDS;
     }

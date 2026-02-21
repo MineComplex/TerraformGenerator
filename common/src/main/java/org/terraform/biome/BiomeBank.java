@@ -26,6 +26,7 @@ import java.util.Locale;
 import java.util.Random;
 
 public enum BiomeBank {
+
     // RIVERS (Don't include in selectBiome)
     // Rivers are handled specially and will not be allocated in selectBiome
     RIVER(new RiverHandler(), BiomeType.RIVER, BiomeClimate.TRANSITION),
@@ -288,8 +289,7 @@ public enum BiomeBank {
             // If the height is at, or slightly higher than, sea level,
             // it is a beach.
         }
-        else if (height >= TerraformGenerator.seaLevel && height <= TerraformGenerator.seaLevel + 4 * 2 * Math.abs(
-                beachNoise.GetNoise(rawX, rawZ)))
+        else if (height >= TerraformGenerator.seaLevel && height <= TerraformGenerator.seaLevel + 4 * 2 * Math.abs(beachNoise.GetNoise(rawX, rawZ)))
         {
             bank = bank.getHandler().getBeachType();
             if (debugPrint) {
@@ -432,12 +432,8 @@ public enum BiomeBank {
         BiomeClimate climate = BiomeClimate.selectClimate(temperature, moisture);
 
         // Force types if they're set.
-        switch (targetType) {
-            case FLAT -> {
-                if (singleLand != null) {
-                    return singleLand;
-                }
-            }
+        if (singleLand != null) {
+            return singleLand;
         }
 
         ArrayList<BiomeBank> contenders = new ArrayList<>();
@@ -467,14 +463,10 @@ public enum BiomeBank {
                                                  + climate
                                                  + ":"
                                                  + targetType);
-            return switch (targetType) {
-                case BEACH -> BiomeBank.valueOf(TConfig.c.BIOME_DEFAULT_BEACH);
-                case FLAT -> BiomeBank.valueOf(TConfig.c.BIOME_DEFAULT_FLAT);
-                case RIVER -> BiomeBank.valueOf(TConfig.c.BIOME_DEFAULT_RIVER);
-            };
+            return BiomeBank.valueOf(TConfig.c.BIOME_DEFAULT_FLAT);
         }
         else {
-            return contenders.get(0);
+            return contenders.getFirst();
         }
     }
 

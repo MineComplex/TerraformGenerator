@@ -72,11 +72,6 @@ public class JungleHandler extends BiomeHandler {
     }
 
     @Override
-    public boolean isOcean() {
-        return false;
-    }
-
-    @Override
     public @NotNull Biome getBiome() {
         return Biome.JUNGLE;
     }

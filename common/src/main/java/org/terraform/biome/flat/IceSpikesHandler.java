@@ -61,11 +61,6 @@ public class IceSpikesHandler extends BiomeHandler {
     }
 
     @Override
-    public boolean isOcean() {
-        return false;
-    }
-
-    @Override
     public @NotNull Biome getBiome() {
         return Biome.ICE_SPIKES;
     }

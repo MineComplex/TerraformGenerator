@@ -14,7 +14,6 @@ import org.terraform.data.TerraformWorld;
 import java.util.Random;
 
 public abstract class BiomeHandler {
-    public abstract boolean isOcean();
 
     public @NotNull CustomBiomeType getCustomBiome() {
         return CustomBiomeType.NONE;

@@ -66,11 +66,6 @@ public class DarkForestHandler extends BiomeHandler {
     }
 
     @Override
-    public boolean isOcean() {
-        return false;
-    }
-
-    @Override
     public @NotNull Biome getBiome() {
         return Biome.DARK_FOREST;
     }

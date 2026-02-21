@@ -66,11 +66,6 @@ public class ForestHandler extends BiomeHandler {
     }
 
     @Override
-    public boolean isOcean() {
-        return false;
-    }
-
-    @Override
     public @NotNull Biome getBiome() {
         return Biome.FOREST;
     }

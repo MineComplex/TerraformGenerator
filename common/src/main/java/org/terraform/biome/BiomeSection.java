@@ -116,7 +116,6 @@ public class BiomeSection {
     }
 
     public static @NotNull BiomeSection getMostDominantSection(@NotNull TerraformWorld tw, int x, int z) {
-
         double dither = TConfig.c.BIOME_DITHER;
         Random locationBasedRandom = new Random(Objects.hash(tw.getSeed(), x, z));
         SimpleLocation target = new SimpleLocation(x, 0, z);

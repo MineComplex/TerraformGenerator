@@ -23,11 +23,6 @@ import java.util.Random;
 public class PaleForestHandler extends BiomeHandler {
 
     @Override
-    public boolean isOcean() {
-        return false;
-    }
-
-    @Override
     public @NotNull Biome getBiome() {
         return Biome.PALE_GARDEN;
     }

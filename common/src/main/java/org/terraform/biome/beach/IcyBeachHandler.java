@@ -33,11 +33,6 @@ public class IcyBeachHandler extends BiomeHandler {
     }
 
     @Override
-    public boolean isOcean() {
-        return false;
-    }
-
-    @Override
     public @NotNull Biome getBiome() {
         return Biome.SNOWY_BEACH;
     }

@@ -37,11 +37,6 @@ public class GorgeHandler extends BiomeHandler {
     }
 
     @Override
-    public boolean isOcean() {
-        return plainsHandler.isOcean();
-    }
-
-    @Override
     public Biome getBiome() {
         return plainsHandler.getBiome();
     }

@@ -14,11 +14,6 @@ import java.util.Random;
 public class ScarletForestBeachHandler extends BiomeHandler {
 
     @Override
-    public boolean isOcean() {
-        return false;
-    }
-
-    @Override
     public @NotNull Biome getBiome() {
         return Biome.BEACH;
     }
