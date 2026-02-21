@@ -43,18 +43,11 @@ public class BiomeDistribCommand extends TerraCommand {
         HashMap<BiomeClimate, Integer> climates = new HashMap<>();
         MathValues temperature = new MathValues();
         MathValues moisture = new MathValues();
-        double numOceans = 0;
-        double numMountains = 0;
         double total = 0;
         TerraformWorld tw = TerraformWorld.get("world-" + new Random().nextInt(99999), new Random().nextInt(99999));
         for (int nx = -50; nx < 50; nx++) {
             for (int nz = -50; nz < 50; nz++) {
                 BiomeSection sect = BiomeBank.getBiomeSectionFromSectionCoords(tw, nx, nz, true);
-                if (sect.getBiomeBank().getType() == BiomeType.MOUNTAINOUS
-                    || sect.getBiomeBank().getType() == BiomeType.HIGH_MOUNTAINOUS)
-                {
-                    numMountains++;
-                }
 
                 temperature.addValue(sect.getTemperature());
                 moisture.addValue(sect.getMoisture());
@@ -81,7 +74,6 @@ public class BiomeDistribCommand extends TerraCommand {
             total += val;
         }
 
-
         for (BiomeBank b : BiomeBank.values()) {
             if (b.getType() != BiomeType.BEACH && b.getType() != BiomeType.RIVER) {
                 String count = "" + counts.getOrDefault(b, 0);
@@ -103,10 +95,6 @@ public class BiomeDistribCommand extends TerraCommand {
             }
         }
 
-        sender.sendMessage("=====================================");
-        sender.sendMessage("Percent Ocean: " + (100.0 * numOceans / total) + "%");
-        sender.sendMessage("Percent Mountain: " + (100.0 * numMountains / total) + "%");
-        sender.sendMessage("===================================");
         total = 0;
 
         for (int val : climates.values()) {
@@ -125,10 +113,7 @@ public class BiomeDistribCommand extends TerraCommand {
 
             int biomeTypes = 0;
             for (BiomeBank b : BiomeBank.values()) {
-                if (b.getClimate() == c && (b.getType() == BiomeType.FLAT
-                                            || b.getType() == BiomeType.MOUNTAINOUS
-                                            || b.getType() == BiomeType.HIGH_MOUNTAINOUS))
-                {
+                if (b.getClimate() == c && b.getType() == BiomeType.FLAT) {
                     biomeTypes++;
                 }
             }

@@ -573,10 +573,6 @@ public class BlockUtils {
         return GenUtils.randChoice(POTTED);
     }
 
-    public static PlantBuilder pickTallFlower() {
-        return GenUtils.randChoice(TALL_FLOWER);
-    }
-
     public static void dropDownBlock(@NotNull SimpleBlock block) {
         dropDownBlock(block, Material.CAVE_AIR);
     }

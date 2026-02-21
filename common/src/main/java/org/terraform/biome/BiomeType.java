@@ -3,8 +3,6 @@ package org.terraform.biome;
 public enum BiomeType {
 
     FLAT(true),
-    MOUNTAINOUS(true),
-    HIGH_MOUNTAINOUS(true),
     BEACH(true),
     RIVER(false),
     ;

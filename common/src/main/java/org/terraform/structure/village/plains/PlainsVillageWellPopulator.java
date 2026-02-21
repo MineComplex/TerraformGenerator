@@ -168,7 +168,7 @@ public class PlainsVillageWellPopulator extends PlainsVillageAbstractRoomPopulat
                 super.applyData(block, data);
             }
             else if (data.getMaterial() == Material.IRON_BARS) {
-                data = Bukkit.createBlockData(Material.CHAIN);
+                data = Bukkit.createBlockData(Material.IRON_CHAIN);
 
                 super.applyData(block, data);
             }

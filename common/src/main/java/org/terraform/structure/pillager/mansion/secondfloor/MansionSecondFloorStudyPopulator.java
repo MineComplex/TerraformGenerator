@@ -120,7 +120,7 @@ public class MansionSecondFloorStudyPopulator extends MansionRoomPopulator {
         new OrientableBuilder(Material.DARK_OAK_LOG).setAxis(BlockUtils.getAxisFromBlockFace(w.getDirection()))
                                                     .apply(w.getRear().getUp(5));
 
-        w.getUp(5).downPillar(rand, 2, Material.CHAIN);
+        w.getUp(5).downPillar(rand, 2, Material.IRON_CHAIN);
         Lantern lantern = (Lantern) Bukkit.createBlockData(Material.LANTERN);
         lantern.setHanging(true);
         w.getUp(3).setBlockData(lantern);

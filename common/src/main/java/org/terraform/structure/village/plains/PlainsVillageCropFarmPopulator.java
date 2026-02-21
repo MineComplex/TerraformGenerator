@@ -125,7 +125,7 @@ public class PlainsVillageCropFarmPopulator extends PlainsVillageAbstractRoomPop
                                 lampWall = lampWall.getRear().getDown();
 
                                 for (int j = 0; j < GenUtils.randInt(rand, 0, 1); j++) {
-                                    lampWall.setType(Material.CHAIN);
+                                    lampWall.setType(Material.IRON_CHAIN);
                                     lampWall = lampWall.getDown();
                                 }
                                 Lantern lantern = (Lantern) Bukkit.createBlockData(Material.LANTERN);

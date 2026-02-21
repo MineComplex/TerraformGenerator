@@ -150,8 +150,6 @@ public enum BiomeBank {
     // public static final BiomeBank[] VALUES = values();
     public static boolean debugPrint = false;
     public static @Nullable BiomeBank singleLand = null;
-    public static @Nullable BiomeBank singleMountain = null;
-    public static @Nullable BiomeBank singleHighMountain = null;
     public static final ConcurrentLRUCache<BiomeSection, BiomeSection> BIOME_SECTION_CACHE = new ConcurrentLRUCache<>(
             "BIOME_SECTION_CACHE", 250, (key) -> {
         key.doCalculations();
@@ -390,18 +388,6 @@ public enum BiomeBank {
         catch (IllegalArgumentException e) {
             singleLand = null;
         }
-        try {
-            singleMountain = BiomeBank.valueOf(TConfig.c.BIOME_SINGLE_MOUNTAIN_TYPE.toUpperCase(Locale.ENGLISH));
-        }
-        catch (IllegalArgumentException e) {
-            singleMountain = null;
-        }
-        try {
-            singleHighMountain = BiomeBank.valueOf(TConfig.c.BIOME_SINGLE_HIGHMOUNTAIN_TYPE.toUpperCase(Locale.ENGLISH));
-        }
-        catch (IllegalArgumentException e) {
-            singleHighMountain = null;
-        }
     }
 
     /**
@@ -416,9 +402,6 @@ public enum BiomeBank {
         return switch (bank.getType()) {
             case BEACH, RIVER -> true; // L
             case FLAT -> singleLand == null || singleLand == bank;
-            case HIGH_MOUNTAINOUS -> singleHighMountain == null || singleHighMountain == bank;
-            case MOUNTAINOUS -> singleMountain == null || singleMountain == bank;
-            // L
         };
     }
 
@@ -455,16 +438,6 @@ public enum BiomeBank {
                     return singleLand;
                 }
             }
-            case MOUNTAINOUS -> {
-                if (singleMountain != null) {
-                    return singleMountain;
-                }
-            }
-            case HIGH_MOUNTAINOUS -> {
-                if (singleHighMountain != null) {
-                    return singleHighMountain;
-                }
-            }
         }
 
         ArrayList<BiomeBank> contenders = new ArrayList<>();
@@ -497,9 +470,7 @@ public enum BiomeBank {
             return switch (targetType) {
                 case BEACH -> BiomeBank.valueOf(TConfig.c.BIOME_DEFAULT_BEACH);
                 case FLAT -> BiomeBank.valueOf(TConfig.c.BIOME_DEFAULT_FLAT);
-                case MOUNTAINOUS -> BiomeBank.valueOf(TConfig.c.BIOME_DEFAULT_MOUNTAINOUS);
                 case RIVER -> BiomeBank.valueOf(TConfig.c.BIOME_DEFAULT_RIVER);
-                case HIGH_MOUNTAINOUS -> BiomeBank.valueOf(TConfig.c.BIOME_DEFAULT_HIGHMOUNTAINOUS);
             };
         }
         else {

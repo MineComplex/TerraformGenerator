@@ -28,7 +28,7 @@ public class DudChunkData implements ChunkGenerator.ChunkData {
     @NotNull
     @Override
     public Biome getBiome(int i, int i1, int i2) {
-        throw new NotImplementedException();
+        throw new RuntimeException();
     }
 
     @Override

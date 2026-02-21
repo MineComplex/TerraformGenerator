@@ -1,6 +1,5 @@
 package org.terraform.structure.caves;
 
-import org.apache.commons.lang3.NotImplementedException;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.data.type.SeaPickle;
@@ -52,7 +51,7 @@ public class GenericLargeCavePopulator extends RoomPopulatorAbstract {
     @Override
     public void populate(@NotNull PopulatorDataAbstract data, CubeRoom room) {
         if (!(room instanceof LargeCaveRoomPiece caveRoom)) {
-            throw new NotImplementedException("room for LargeCavePopulator was not a LargeCaveRoomPiece");
+            throw new RuntimeException("room for LargeCavePopulator was not a LargeCaveRoomPiece");
         }
         assert data.getChunkX() == room.getX() >> 4;
         assert data.getChunkZ() == room.getZ() >> 4;

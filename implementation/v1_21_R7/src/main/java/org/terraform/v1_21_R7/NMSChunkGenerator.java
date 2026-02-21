@@ -2,51 +2,41 @@ package org.terraform.v1_21_R7;
 
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.MapCodec;
-import it.unimi.dsi.fastutil.ints.IntArraySet;
 import it.unimi.dsi.fastutil.objects.ObjectArraySet;
-import net.minecraft.*;
+import net.minecraft.CrashReport;
+import net.minecraft.CrashReportCategory;
+import net.minecraft.ReportedException;
+import net.minecraft.SharedConstants;
 import net.minecraft.core.*;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.level.WorldGenRegion;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.WorldGenRegion;
 import net.minecraft.util.Util;
 import net.minecraft.world.level.*;
-import net.minecraft.world.level.NoiseColumn;
-import net.minecraft.world.level.biome.*;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.biome.BiomeManager;
+import net.minecraft.world.level.biome.BiomeSource;
+import net.minecraft.world.level.biome.FeatureSorter;
 import net.minecraft.world.level.chunk.*;
 import net.minecraft.world.level.levelgen.*;
 import net.minecraft.world.level.levelgen.blending.Blender;
 import net.minecraft.world.level.levelgen.feature.FeatureCountTracker;
-import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
+import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.levelgen.structure.StructureSet;
-import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 import net.minecraft.world.level.levelgen.structure.placement.StructurePlacement;
-import net.minecraft.world.level.levelgen.structure.structures.BuriedTreasureStructure;
-import net.minecraft.world.level.levelgen.structure.structures.JigsawStructure;
-import net.minecraft.world.level.levelgen.structure.structures.OceanMonumentStructure;
 import net.minecraft.world.level.levelgen.structure.structures.StrongholdStructure;
-import net.minecraft.world.level.levelgen.structure.structures.WoodlandMansionStructure;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplateManager;
 import org.jetbrains.annotations.NotNull;
 import org.terraform.coregen.bukkit.TerraformGenerator;
 import org.terraform.data.MegaChunk;
 import org.terraform.data.TerraformWorld;
 import org.terraform.main.TerraformGeneratorPlugin;
-import org.terraform.main.config.TConfig;
-import org.terraform.structure.SingleMegaChunkStructurePopulator;
-import org.terraform.structure.StructureLocator;
-import org.terraform.structure.StructurePopulator;
-import org.terraform.structure.StructureRegistry;
-import org.terraform.structure.VanillaStructurePopulator;
-import org.terraform.structure.monument.MonumentPopulator;
-import org.terraform.structure.pillager.mansion.MansionPopulator;
-import org.terraform.structure.small.buriedtreasure.BuriedTreasurePopulator;
+import org.terraform.structure.*;
 import org.terraform.structure.stronghold.StrongholdPopulator;
-import org.terraform.structure.trialchamber.TrialChamberPopulator;
 import org.terraform.utils.version.TerraformFieldHandler;
 import org.terraform.utils.version.TerraformMethodHandler;
 
@@ -152,10 +142,10 @@ public class NMSChunkGenerator extends ChunkGenerator {
             TerraformGeneratorPlugin.logger.info("Vanilla locate for " + feature.getClass().getName() + " invoked.");
 
             if (holder.value().getClass() == StrongholdStructure.class) { // stronghold
-                int[] coords = new StrongholdPopulator().getNearestFeature(tw, pX, pZ);
-                return new Pair<>(new BlockPos(coords[0], 20, coords[1]), holder);
+                StructureLocator.StructureLocation coords = new StrongholdPopulator().getNearestFeature(tw, pX, pZ);
+                return new Pair<>(new BlockPos(coords.x(), 20, coords.z()), holder);
             }
-            else if(!TConfig.c.DEVSTUFF_VANILLA_LOCATE_DISABLE)
+/*            else if(!TConfig.c.DEVSTUFF_VANILLA_LOCATE_DISABLE)
             {
                 if (holder.value().getClass() == OceanMonumentStructure.class) { // Monument
 
@@ -185,7 +175,7 @@ public class NMSChunkGenerator extends ChunkGenerator {
                     return new Pair<>
                             (new BlockPos(coords[0], 50, coords[1]), holder);
                 }
-            }
+            }*/
         }
         return null;
     }

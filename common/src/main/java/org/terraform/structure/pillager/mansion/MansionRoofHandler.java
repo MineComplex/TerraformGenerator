@@ -382,7 +382,7 @@ public class MansionRoofHandler {
                 if (chainLength < 0) {
                     chainLength = 0;
                 }
-                ceiling.downPillar(chainLength, Material.CHAIN);
+                ceiling.downPillar(chainLength, Material.IRON_CHAIN);
                 Lantern lantern = (Lantern) Bukkit.createBlockData(Material.LANTERN);
                 lantern.setHanging(true);
                 ceiling.getDown(chainLength).setBlockData(lantern);

@@ -36,14 +36,11 @@ public class NoiseCacheHandler {
     public enum NoiseCacheEntry {
         TW_TEMPERATURE,
         TW_MOISTURE,
-        TW_OCEANIC,
-        TW_MOUNTAINOUS,
 
         CARVER_STANDARD,
 
         HEIGHTMAP_CORE,
         HEIGHTMAP_RIVER,
-        // HEIGHTMAP_MOUNTAINOUS,
         HEIGHTMAP_ATTRITION,
 
         BIOME_BEACH_HEIGHT,

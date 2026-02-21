@@ -1,8 +1,9 @@
 group = "org.terraform"
 
 dependencies {
-    compileOnly("org.purpurmc.purpur:purpur-api:1.21.7-R0.1-SNAPSHOT")
-    compileOnly("org.jetbrains:annotations:20.1.0")
+    compileOnly("org.apache.commons:commons-lang3:3.20.0")
+    compileOnly("cn.dreeam.leaf:leaf-api:1.21.11-R0.1-SNAPSHOT")
+    compileOnly("cn.dreeam.leaf:leaf-server:1.21.11-R0.1-SNAPSHOT")
     compileOnly("com.github.AvarionMC:yaml:1.1.7")
 }
 

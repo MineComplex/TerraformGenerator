@@ -111,16 +111,8 @@ public class TConfig extends YamlFileInterface {
     public int BIOME_CLAY_DEPOSIT_CHANCE_OUT_OF_THOUSAND = 3;
     @YamlKey("biome.single.land")
     public String BIOME_SINGLE_TERRESTRIAL_TYPE = "disabled";
-    @YamlKey("biome.single.mountain")
-    public String BIOME_SINGLE_MOUNTAIN_TYPE = "disabled";
-    @YamlKey("biome.single.highmountain")
-    public String BIOME_SINGLE_HIGHMOUNTAIN_TYPE = "disabled";
     @YamlKey("biome.defaults.flat")
     public String BIOME_DEFAULT_FLAT = "PLAINS";
-    @YamlKey("biome.defaults.mountainous")
-    public String BIOME_DEFAULT_MOUNTAINOUS = "ROCKY_MOUNTAINS";
-    @YamlKey("biome.defaults.highmountainous")
-    public String BIOME_DEFAULT_HIGHMOUNTAINOUS = "JAGGED_PEAKS";
     @YamlKey("biome.defaults.river")
     public String BIOME_DEFAULT_RIVER = "RIVER";
     @YamlKey("biome.defaults.beach")

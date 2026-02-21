@@ -110,7 +110,7 @@ public class PlainsVillageStandardPiece extends JigsawStructurePiece {
                 w.setBlockData(lantern);
             }
             else {
-                w.setType(Material.CHAIN);
+                w.setType(Material.IRON_CHAIN);
                 w = w.getDown();
             }
         }

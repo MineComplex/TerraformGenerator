@@ -159,7 +159,7 @@ public class CatacombsStandardPopulator extends RoomPopulatorAbstract {
                 continue;
             }
 
-            target.getDown().downLPillar(new Random(), GenUtils.randInt(3, 5), Material.CHAIN);
+            target.getDown().downLPillar(new Random(), GenUtils.randInt(3, 5), Material.IRON_CHAIN);
         }
     }
 

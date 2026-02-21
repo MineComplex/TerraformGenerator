@@ -49,7 +49,7 @@ public class SaplingOverrider implements Listener {
             event.setCancelled(false);
             return;
         }
-        BlockState baseBlock = baseBlocks.get(0);
+        BlockState baseBlock = baseBlocks.getFirst();
 
         // This used to use event.getSpecies(), but some weird bug
         // made event.getSpecies() give incorrect values.
@@ -73,7 +73,6 @@ public class SaplingOverrider implements Listener {
                 new FractalTreeBuilder(FractalTypes.Tree.BIRCH_SMALL).skipGradientCheck().build(tw, data, x, y, z);
                 break;
             case JUNGLE_LEAVES:
-
                 if (isLarge) {
                     if (TConfig.c.MISC_SAPLING_CUSTOM_TREES_BIGTREES_JUNGLE) {
                         new FractalTreeBuilder(FractalTypes.Tree.JUNGLE_BIG).skipGradientCheck()

@@ -118,8 +118,8 @@ public class MansionGroundLevelBrewingRoomPopulator extends MansionRoomPopulator
                                                         .apply(w.getUp(4).getLeft())
                                                         .apply(w.getUp(4).getRight());
 
-        w.getUp(4).setType(Material.CHAIN);
-        w.getUp(3).setType(Material.CHAIN);
+        w.getUp(4).setType(Material.IRON_CHAIN);
+        w.getUp(3).setType(Material.IRON_CHAIN);
         Lantern lat = (Lantern) Bukkit.createBlockData(Material.LANTERN);
         lat.setHanging(true);
         w.getUp(2).setBlockData(lat);

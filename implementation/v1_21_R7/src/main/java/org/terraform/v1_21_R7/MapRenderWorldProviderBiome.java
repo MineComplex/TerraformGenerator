@@ -9,7 +9,7 @@ import net.minecraft.world.level.biome.BiomeSource;
 import org.bukkit.craftbukkit.block.CraftBiome;
 import org.terraform.coregen.HeightMap;
 import org.terraform.data.TerraformWorld;
-import org.terraform.main.config.TConfig;
+import org.terraform.main.TConfig;
 
 import java.util.Set;
 import java.util.stream.Stream;
