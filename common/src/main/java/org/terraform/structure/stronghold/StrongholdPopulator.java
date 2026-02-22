@@ -44,7 +44,7 @@ public class StrongholdPopulator extends SingleMegaChunkStructurePopulator {
             for (int i = 0; i < 3; i++) {
                 CoordPair coords = randomCircleCoords(rand, radius);
                 if (!debugSpawnMessage) {
-                    TerraformGeneratorPlugin.logger.info("Will spawn stronghold at: " + coords);
+                    //TerraformGeneratorPlugin.logger.info("Will spawn stronghold at: " + coords);
                     debugSpawnMessage = true;
                 }
                 positions[pos++] = coords;

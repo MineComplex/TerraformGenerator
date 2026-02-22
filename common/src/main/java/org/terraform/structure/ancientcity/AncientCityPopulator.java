@@ -53,7 +53,7 @@ public class AncientCityPopulator extends JigsawStructurePopulator {
         int y = GenUtils.randInt(minY, TConfig.c.STRUCTURES_ANCIENTCITY_MAX_Y);
         Random random = tw.getHashedRand(x, y, z, 23412222);
 
-        TerraformGeneratorPlugin.logger.info("Spawning ancient city at: " + x + "," + y + "," + z);
+        //TerraformGeneratorPlugin.logger.info("Spawning ancient city at: " + x + "," + y + "," + z);
 
         //Cave carver
         RoomLayoutGenerator carverGen = new RoomLayoutGenerator(GenUtils.RANDOMIZER, RoomLayout.RANDOM_BRUTEFORCE, 0, x,y,z, RADIUS);

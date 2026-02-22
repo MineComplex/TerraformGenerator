@@ -377,7 +377,7 @@ public class NMSChunkGenerator extends ChunkGenerator {
                         Object retVal = tryGenerateStructure.method.invoke(this, list.getFirst(), structuremanager, registryAccess, randomstate,
                                 structuretemplatemanager, chunkgeneratorstructurestate.getLevelSeed(),
                                 ChunkAccess, ChunkPos, sectionPos, resourcekey);
-                        TerraformGeneratorPlugin.logger.info(ChunkPos.x + "," + ChunkPos.z + " will spawn a vanilla structure, with tryGenerateStructure == " + retVal);
+                        //TerraformGeneratorPlugin.logger.info(ChunkPos.x + "," + ChunkPos.z + " will spawn a vanilla structure, with tryGenerateStructure == " + retVal);
                     }
                     catch(Throwable t)
                     {
