@@ -6,8 +6,6 @@ import org.terraform.coregen.NMSInjectorAbstract;
 import org.terraform.main.TerraformGeneratorPlugin;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.HashMap;
-import java.util.Map;
 
 public enum Version {
 
@@ -17,6 +15,10 @@ public enum Version {
     v1_21_9("v1_21_R6",18),
     v1_21_10("v1_21_R6",19),
     v1_21_11("v1_21_R7",20),
+    v26_1("v26_1",21),
+    v26_1_1("v26_1",22),
+    v26_1_2("v26_1",23),
+    v26_2("v26_2",24),
     ;
     final String packName;
     final int priority;
@@ -25,6 +27,7 @@ public enum Version {
         this.priority = priority;
     }
 
+    //Man what the fuck is this now
     public String getSchematicHeader(){
         return this.toString().replace("v1_","").replace("_",".");
     }
@@ -37,12 +40,15 @@ public enum Version {
         return priority >= other.priority;
     }
 
-    public static final Version VERSION = toVersion(Bukkit.getServer().getBukkitVersion().split("-")[0]);
+    //Cannot use getMinecraftVersion, because it only exists in paper, not spigot
+    //Spigot's getBukkitVersion returns getMinecraftVersion, but paper's adds some build versioning to it
+    public static final String VERSION_STRING = Bukkit.getServer().getBukkitVersion().split(".build")[0].split("-")[0];
+    public static final Version VERSION = toVersion(VERSION_STRING);
 
     /**
      * @param version a string like "1.20.4"
      * @return one of the enums. If this fails, failsafe is the
-     * latest priority.
+     * highest priority version.
      */
     private static Version toVersion(@NotNull String version) {
         try{

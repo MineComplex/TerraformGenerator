@@ -1,7 +1,5 @@
 package org.terraform.coregen.bukkit;
 
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Material;
@@ -12,22 +10,19 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.world.WorldUnloadEvent;
 import org.bukkit.generator.BlockPopulator;
-import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 import org.terraform.data.SimpleChunkLocation;
 import org.terraform.data.SimpleLocation;
-import org.terraform.main.TConfig;
 import org.terraform.main.TerraformGeneratorPlugin;
+import org.terraform.main.TConfig;
 
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class PhysicsUpdaterPopulator extends BlockPopulator implements Listener {
 
     // SimpleChunkLocation to a collection of simplelocations
-    public static final @NotNull Map<SimpleChunkLocation, Collection<SimpleLocation>> cache = Maps.newConcurrentMap();
-    private static final @NotNull Set<SimpleChunkLocation> pending = Sets.newConcurrentHashSet();
-    private static boolean flushIsQueued = false;
+    public static final @NotNull Map<SimpleChunkLocation, Collection<SimpleLocation>> cache = new HashMap<>();
+    // private final TerraformWorld tw;
 
     public PhysicsUpdaterPopulator() {
         // this.tw = tw;
@@ -35,26 +30,27 @@ public class PhysicsUpdaterPopulator extends BlockPopulator implements Listener 
     }
 
     public static void pushChange(String world, @NotNull SimpleLocation loc) {
-        if (!flushIsQueued && pending.isEmpty() && cache.size() > TConfig.c.DEVSTUFF_FLUSH_PATCHER_CACHE_FREQUENCY) {
-            flushIsQueued = true;
-            new BukkitRunnable() {
-                @Override
-                public void run() {
-                    flushChanges();
-                    flushIsQueued = false;
-                }
-            }.runTask(TerraformGeneratorPlugin.get());
-        }
+        synchronized (cache){
+            if (cache.size() > TConfig.c.DEVSTUFF_FLUSH_PATCHER_CACHE_FREQUENCY) {
+                flushChanges();
+            }
 
-        SimpleChunkLocation scl = new SimpleChunkLocation(world, loc.getX(), loc.getY(), loc.getZ());
-        if (!cache.containsKey(scl)) {
-            cache.put(scl, new ArrayList<>());
-        }
+            SimpleChunkLocation scl = new SimpleChunkLocation(world, loc.getX(), loc.getY(), loc.getZ());
+            if (!cache.containsKey(scl)) {
+                cache.put(scl, new ArrayList<>());
+            }
 
-        cache.get(scl).add(loc);
+            cache.get(scl).add(loc);
+        }
     }
 
-    public static void flushChanges() {
+    public static void syncAndFlush(){
+        synchronized (cache){
+            flushChanges();
+        }
+    }
+    private static void flushChanges() {
+
         if (cache.isEmpty()) {
             return;
         }
@@ -64,26 +60,24 @@ public class PhysicsUpdaterPopulator extends BlockPopulator implements Listener 
         ArrayList<SimpleChunkLocation> locs = new ArrayList<>(cache.keySet());
         for (SimpleChunkLocation scl : locs) {
             World w = Bukkit.getWorld(scl.getWorld());
-            if (w == null)
+            if (w == null) {
                 continue;
-
-            if (w.isChunkLoaded(scl.getX(), scl.getZ())) {
-                Collection<SimpleLocation> changes = cache.remove(scl);
-                if (changes != null) {
-                    for (SimpleLocation entry : changes) {
-                        Block target = w.getBlockAt(entry.getX(), entry.getY(), entry.getZ());
-                        // Set block physics by calling setBlockData
-                        // Note that this should not be used for complex blocks.
-                        BlockData old = target.getBlockData();
-                        TerraformGeneratorPlugin.logger.info("[PhysicsUpdaterPopulator] " + target.getLocation());
-                        target.setType(Material.AIR);
-                        target.setBlockData(old, true);
-                    }
-                }
-            } else {
-                // Let the event handler do it
-                pending.add(scl);
-                w.getChunkAtAsync(scl.getX(), scl.getZ());
+            }
+            Collection<SimpleLocation> changes = cache.remove(scl);
+            if (changes != null) {
+                TerraformGeneratorPlugin.taskScheduler.execAsyncRegion(w,
+                        scl.getX(), scl.getZ(),
+                        ()-> {
+                            for (SimpleLocation entry : changes) {
+                                Block target = w.getBlockAt(entry.getX(), entry.getY(), entry.getZ());
+                                // Set block physics by calling setBlockData
+                                // Note that this should not be used for complex blocks.
+                                BlockData old = target.getBlockData();
+                                //TerraformGeneratorPlugin.logger.info("[PhysicsUpdaterPopulator] " + target.getLocation());
+                                target.setType(Material.AIR);
+                                target.setBlockData(old, true);
+                            }
+                        });
             }
         }
     }
@@ -91,9 +85,13 @@ public class PhysicsUpdaterPopulator extends BlockPopulator implements Listener 
     @Override
     public void populate(@NotNull World world, @NotNull Random random, @NotNull Chunk chunk) {
         SimpleChunkLocation scl = new SimpleChunkLocation(chunk);
-        Collection<SimpleLocation> changes = cache.remove(scl);
+        Collection<SimpleLocation> changes;
+
+        synchronized (cache){
+            changes = cache.remove(scl);
+        }
+
         if (changes != null) {
-            pending.remove(scl);
             // TerraformGeneratorPlugin.logger.info("[PhysicsUpdaterPopulator] Detected anomalous generation by NMS on " + scl + ". Running repairs on " + changes.size() + " blocks");
             for (SimpleLocation entry : changes) {
                 Block target = world.getBlockAt(entry.getX(), entry.getY(), entry.getZ());
@@ -114,34 +112,7 @@ public class PhysicsUpdaterPopulator extends BlockPopulator implements Listener 
                                              + " ("
                                              + cache.size()
                                              + " chunks in cache)");
-
-        int processed = 0;
-        for (SimpleChunkLocation scl : Set.copyOf(cache.keySet())) {
-            if (!scl.getWorld().equals(event.getWorld().getName())) {
-                continue;
-            }
-
-            Collection<SimpleLocation> changes = cache.remove(scl);
-            if (changes != null) {
-                pending.remove(scl);
-                // TerraformGeneratorPlugin.logger.info("[PhysicsUpdaterPopulator] Detected anomalous generation by NMS on " + scl + ". Running repairs on " + changes.size() + " blocks");
-                for (SimpleLocation entry : changes) {
-                    Block target = event.getWorld().getBlockAt(entry.getX(), entry.getY(), entry.getZ());
-                    // Set block physics by calling setBlockData
-                    // Note that this should not be used for complex blocks.
-                    BlockData old = target.getBlockData();
-                    target.setType(Material.AIR);
-                    target.setBlockData(old, true);
-                }
-            }
-
-            processed++;
-            if (processed % 20 == 0) {
-                TerraformGeneratorPlugin.logger.info("[PhysicsUpdaterPopulator] Processed "
-                                                     + processed
-                                                     + " more chunks");
-            }
-        }
+        syncAndFlush();
     }
 
 }

@@ -2,6 +2,7 @@ package org.terraform.structure;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.terraform.data.CoordPair;
 import org.terraform.data.MegaChunk;
 import org.terraform.data.TerraformWorld;
 import org.terraform.main.TConfig;
@@ -58,15 +59,15 @@ public class StructureRegistry {
                     largeStructureRegistry.get(StructureType.MEGA_DUNGEON)
             );
             for (SingleMegaChunkStructurePopulator pop : available) {
-                int[] coords = mc.getCenterBiomeSectionBlockCoords(); // pop.getCoordsFromMegaChunk(tw, mc);
+                CoordPair coords = mc.getCenterBiomeSectionBlockCoords(); // pop.getCoordsFromMegaChunk(tw, mc);
                 if (coords == null) {
                     continue;
                 }
 
                 if (TConfig.areStructuresEnabled() && pop.canSpawn(
                         tw,
-                        coords[0] >> 4,
-                        coords[1] >> 4,
+                        coords.x() >> 4,
+                        coords.z() >> 4,
                         mc.getCenterBiomeSection(tw).getBiomeBank()
                 ))
                 {
@@ -84,10 +85,10 @@ public class StructureRegistry {
         for (StructureType type : types) {
             if (largeStructureRegistry.containsKey(type)) {
                 for (SingleMegaChunkStructurePopulator pop : largeStructureRegistry.get(type)) {
-                    int[] coords = mc.getCenterBiomeSectionBlockCoords();
+                    CoordPair coords = mc.getCenterBiomeSectionBlockCoords();
                     if (TConfig.areStructuresEnabled() && pop.canSpawn(tw,
-                            coords[0] >> 4,
-                            coords[1] >> 4,
+                            coords.x() >> 4,
+                            coords.z() >> 4,
                             mc.getCenterBiomeSection(tw).getBiomeBank()
                     ))
                     {

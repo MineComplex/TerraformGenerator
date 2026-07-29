@@ -56,6 +56,7 @@ public class TerraformCommandManager implements TabExecutor {
         this.registerCommand(new TerraCacheFlushCommand(plugin, "flushterracache"));
         this.registerCommand(new LocateBiomeCommand(plugin, "locatebiome", "lb"));
         this.registerCommand(new LocateCommand(plugin, "locate"));
+        this.registerCommand(new DebugCachePushCommand(plugin, "debugcachepush"));
     }
 
     public void unregisterCommand(@NotNull Class<?> clazz) {

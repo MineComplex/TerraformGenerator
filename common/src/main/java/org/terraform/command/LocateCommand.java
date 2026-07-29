@@ -140,7 +140,7 @@ public class LocateCommand extends TerraCommand implements Listener {
 
         long startTime = System.currentTimeMillis();
 
-        BukkitRunnable runnable = new BukkitRunnable() {
+        Runnable runnable = new Runnable() {
             public void run() {
                 StructureLocator.StructureLocation loc = StructureLocator.locateSingleMegaChunkStructure(tw, center, populator, -1);
                 long timeTaken = System.currentTimeMillis() - startTime;
@@ -149,7 +149,7 @@ public class LocateCommand extends TerraCommand implements Listener {
                 syncSendMessage(p, populator, loc);
             }
         };
-        runnable.runTaskAsynchronously(plugin);
+        TerraformGeneratorPlugin.taskScheduler.execAsync(runnable);
     }
 
     private void syncSendMessage(UUID uuid, String msg) {
@@ -167,10 +167,10 @@ public class LocateCommand extends TerraCommand implements Listener {
         syncSendMessageTP(uuid,
                 "Locate",
                 ChatColor.GREEN
-                + "["
-                + populator.getClass().getSimpleName()
-                + "] "
-                + LangOpt.COMMAND_LOCATE_LOCATE_COORDS.parse("%x%", loc.x() + "", "%z%", loc.z() + ""),
+                        + "["
+                        + populator.getClass().getSimpleName()
+                        + "] "
+                        + LangOpt.COMMAND_LOCATE_LOCATE_COORDS.parse("%x%", loc.x() + "", "%z%", loc.z() + ""),
                 loc.x(),
                 getHighestY(TerraformWorld.get(p.getWorld()), loc.x(), loc.z()),
                 loc.z()

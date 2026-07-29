@@ -17,17 +17,26 @@ public class NoiseCacheHandler {
     // set of storable things is bounded by this enum, there's
     // no reason to use a complex cache that frees things lazily - just store
     // everything and leave it there until the world is unloaded.
-    public static final ConcurrentHashMap<NoiseCacheKey, FastNoise> NOISE_CACHE = new ConcurrentHashMap<>();
+    // This is a concurrent hash map instead of a hashmap because there are
+    // some weird instances where the hashmap instance is thrown around different
+    // threads after unpacking.
+    private static final ThreadLocal<ConcurrentHashMap<NoiseCacheKey, FastNoise>> NOISE_CACHE = ThreadLocal.withInitial(
+            ConcurrentHashMap::new);
+    public static void flushNoiseCaches(TerraformWorld tw){
+        for(NoiseCacheKey k:NOISE_CACHE.get().keySet()){
+            if(k.tw.equals(tw)) NOISE_CACHE.get().remove(k);
+        }
+    }
 
     public static @NotNull FastNoise getNoise(TerraformWorld world,
                                               NoiseCacheEntry entry,
                                               @NotNull Function<TerraformWorld, FastNoise> noiseFunction)
     {
         NoiseCacheKey key = new NoiseCacheKey(world, entry);
-        FastNoise noise = NOISE_CACHE.get(key);
+        FastNoise noise = NOISE_CACHE.get().get(key);
         if (noise == null) {
             noise = noiseFunction.apply(world);
-            NOISE_CACHE.put(key, noise);
+            NOISE_CACHE.get().put(key, noise);
         }
         return noise;
 
@@ -88,7 +97,9 @@ public class NoiseCacheHandler {
 
         BIOME_SWAMP_MUDNOISE,
 
+        BIOME_CAVE_SULFUR_THRESNOISE,
         BIOME_CAVECLUSTER_CIRCLENOISE,
+        BIOME_SULFURCAVE_BLOCKNOISE,
 
         BIOME_JAGGED_PEAKSNOISE,
 

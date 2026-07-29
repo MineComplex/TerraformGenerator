@@ -5,6 +5,7 @@ import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import org.jetbrains.annotations.NotNull;
 import org.terraform.biome.BiomeBank;
+import org.terraform.data.CoordPair;
 import org.terraform.data.MegaChunk;
 import org.terraform.data.TerraformWorld;
 import org.terraform.main.TConfig;
@@ -151,7 +152,7 @@ public class StructureLocator {
                 if (mc.getX() > upperBound.getX() || mc.getZ() > upperBound.getZ()) {
                     upperBound = mc;
                 }
-                int[] coords = mc.getCenterBiomeSectionBlockCoords(); // populator.getCoordsFromMegaChunk(tw, mc);
+                CoordPair coords = mc.getCenterBiomeSectionBlockCoords(); // populator.getCoordsFromMegaChunk(tw, mc);
                 if (coords == null) {
                     continue;
                 }
@@ -160,8 +161,8 @@ public class StructureLocator {
 
                 if (TConfig.areStructuresEnabled() && populator.canSpawn(
                         tw,
-                        coords[0] >> 4,
-                        coords[1] >> 4,
+                        coords.x() >> 4,
+                        coords.z() >> 4,
                         biome
                 )) {
                     for (SingleMegaChunkStructurePopulator availablePops : StructureRegistry.getLargeStructureForMegaChunk(
@@ -173,15 +174,15 @@ public class StructureLocator {
                         }
                         if (TConfig.areStructuresEnabled() && availablePops.canSpawn(
                                 tw,
-                                coords[0] >> 4,
-                                coords[1] >> 4,
+                                coords.x() >> 4,
+                                coords.z() >> 4,
                                 biome
                         )) {
                             if (availablePops.getClass().equals(populator.getClass())) {
                                 // Can spawn
                                 found = true;
-                                blockX = coords[0];
-                                blockZ = coords[1];
+                                blockX = coords.x();
+                                blockZ = coords.z();
                             }
 
                             // Break either way, as the first structure that can spawn will spawn.

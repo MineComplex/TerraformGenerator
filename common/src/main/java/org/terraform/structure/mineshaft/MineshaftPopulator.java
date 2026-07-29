@@ -3,10 +3,11 @@ package org.terraform.structure.mineshaft;
 import org.bukkit.Material;
 import org.jetbrains.annotations.NotNull;
 import org.terraform.biome.BiomeBank;
+import org.terraform.data.CoordPair;
 import org.terraform.data.MegaChunk;
 import org.terraform.data.TerraformWorld;
-import org.terraform.main.TConfig;
 import org.terraform.main.TerraformGeneratorPlugin;
+import org.terraform.main.TConfig;
 import org.terraform.structure.JigsawState;
 import org.terraform.structure.JigsawStructurePopulator;
 import org.terraform.structure.room.CubeRoom;
@@ -34,20 +35,26 @@ public class MineshaftPopulator extends JigsawStructurePopulator {
     }
 
     private boolean rollSpawnRatio(@NotNull TerraformWorld tw, int chunkX, int chunkZ) {
-        return GenUtils.chance(
-                tw.getHashedRand(chunkX, chunkZ, 12222),
+        return GenUtils.chance(tw.getHashedRand(chunkX, chunkZ, 12222),
                 (int) (TConfig.c.STRUCTURES_MINESHAFT_SPAWNRATIO * 10000),
                 10000
         );
     }
 
-    public @NotNull JigsawState calculateRoomPopulators(@NotNull TerraformWorld tw, @NotNull MegaChunk mc)
+    @Override
+    public @NotNull JigsawState calculateRoomPopulators(@NotNull TerraformWorld tw, @NotNull MegaChunk mc) {
+        return calculateRoomPopulators(tw, mc, false);
+    }
+
+    public @NotNull JigsawState calculateRoomPopulators(@NotNull TerraformWorld tw,
+                                                        @NotNull MegaChunk mc,
+                                                        boolean badlandsMineshaft)
     {
         JigsawState state = new JigsawState();
 
-        int[] coords = mc.getCenterBiomeSectionBlockCoords();
-        int x = coords[0];
-        int z = coords[1];
+        CoordPair coords = mc.getCenterBiomeSectionBlockCoords();
+        int x = coords.x();
+        int z = coords.z();
 
         int y = GenUtils.randInt(TConfig.c.STRUCTURES_MINESHAFT_MIN_Y, TConfig.c.STRUCTURES_MINESHAFT_MAX_Y);
         if (y < TerraformGeneratorPlugin.injector.getMinY()) {
@@ -78,8 +85,7 @@ public class MineshaftPopulator extends JigsawStructurePopulator {
         ));
 
         if (doubleLevel) {
-            gen.registerRoomPopulator(new ShaftRoomPopulator(
-                    tw.getHashedRand(mc.getX(), mc.getZ(), 213098),
+            gen.registerRoomPopulator(new ShaftRoomPopulator(tw.getHashedRand(mc.getX(), mc.getZ(), 213098),
                     true,
                     false
             ));
@@ -115,8 +121,7 @@ public class MineshaftPopulator extends JigsawStructurePopulator {
             for (CubeRoom room : gen.getRooms()) {
 
                 if (room.getPop() instanceof ShaftRoomPopulator) {
-                    CubeRoom topShaft = new CubeRoom(
-                            room.getWidthX(),
+                    CubeRoom topShaft = new CubeRoom(room.getWidthX(),
                             room.getHeight(),
                             room.getWidthZ(),
                             room.getX(),

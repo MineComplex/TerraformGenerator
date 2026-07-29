@@ -77,14 +77,7 @@ public class PopulatorDataSpigotAPI extends PopulatorDataAbstract
     @Override
     public Biome getBiome(int rawX, int rawZ) {
         if (!lr.isInRegion(rawX, 50, rawZ)) {
-            TerraformGeneratorPlugin.logger.error("Tried to access biome outside of LR bounds at: "
-                                                  + rawX
-                                                  + ","
-                                                  + rawZ
-                                                  + " from LR centered at chunk "
-                                                  + chunkX
-                                                  + ","
-                                                  + chunkZ);
+            TerraformGeneratorPlugin.logger.error("Tried to access biome outside of LR bounds at: "+rawX + "," + rawZ + " from LR centered at chunk " + chunkX + "," + chunkZ);
             return Biome.PLAINS;
         }
         return lr.getBiome(rawX, 50, rawZ);
@@ -93,14 +86,7 @@ public class PopulatorDataSpigotAPI extends PopulatorDataAbstract
     @Override
     public void addEntity(int rawX, int rawY, int rawZ, @NotNull EntityType type) {
         if (!lr.isInRegion(rawX, rawY, rawZ)) {
-            TerraformGeneratorPlugin.logger.error("Tried to add entity outside of LR bounds at: "
-                                                  + rawX
-                                                  + ","
-                                                  + rawZ
-                                                  + " from LR centered at chunk "
-                                                  + chunkX
-                                                  + ","
-                                                  + chunkZ);
+            TerraformGeneratorPlugin.logger.error("Tried to add entity outside of LR bounds at: "+rawX + "," + rawZ + " from LR centered at chunk " + chunkX + "," + chunkZ);
             return;
         }
         lr.spawnEntity(new Location(tw.getWorld(), rawX, rawY, rawZ), type);
@@ -122,14 +108,7 @@ public class PopulatorDataSpigotAPI extends PopulatorDataAbstract
             return;
         }
         if (!lr.isInRegion(rawX, 50, rawZ)) {
-            TerraformGeneratorPlugin.logger.error("Tried to set spawner outside of LR bounds at: "
-                                                  + rawX
-                                                  + ","
-                                                  + rawZ
-                                                  + " from LR centered at chunk "
-                                                  + chunkX
-                                                  + ","
-                                                  + chunkZ);
+            TerraformGeneratorPlugin.logger.error("Tried to set spawner outside of LR bounds at: "+rawX + "," + rawZ + " from LR centered at chunk " + chunkX + "," + chunkZ);
             return;
         }
 
@@ -150,14 +129,7 @@ public class PopulatorDataSpigotAPI extends PopulatorDataAbstract
     @Override
     public void lootTableChest(int x, int y, int z, @NotNull TerraLootTable table) {
         if (!lr.isInRegion(x, y, z)) {
-            TerraformGeneratorPlugin.logger.error("Tried to lootTableChest outside of LR bounds at: "
-                                                  + x
-                                                  + ","
-                                                  + z
-                                                  + " from LR centered at chunk "
-                                                  + chunkX
-                                                  + ","
-                                                  + chunkZ);
+            TerraformGeneratorPlugin.logger.error("Tried to lootTableChest outside of LR bounds at: "+x + "," + z + " from LR centered at chunk " + chunkX + "," + chunkZ);
             return;
         }
         BlockState s = lr.getBlockState(x, y, z);
@@ -172,7 +144,12 @@ public class PopulatorDataSpigotAPI extends PopulatorDataAbstract
         return tw;
     }
 
+    @Override
+    public boolean isInBound(int x, int y, int z) {
+        return lr.isInRegion(x,y,z);
+    }
 
+    private static boolean canUseNewApi = false;
     @Override
     public void setBeehiveWithBee(int rawX, int rawY, int rawZ) {
         if (!lr.isInRegion(rawX, rawY, rawZ)) {
@@ -180,9 +157,30 @@ public class PopulatorDataSpigotAPI extends PopulatorDataAbstract
         }
 
         setType(rawX, rawY, rawZ, Material.BEE_NEST);
+        // I guess the above can fail sometimes. I don't know why.
+        // Catch and throw because that's fucking stupid
         try {
             Beehive bukkitBeehive = (Beehive) lr.getBlockState(rawX, rawY, rawZ);
-            TerraformGeneratorPlugin.injector.storeBee(bukkitBeehive);
+
+            //This broke in 1.21.6, ngl im kinda sick of this shit. I'm going to stay with NMS for now.
+            /*if(canUseNewApi){
+                try{
+                    if(addEntity == null)
+                    {
+                        addEntity = RegionAccessor.class.getDeclaredMethod("addEntity", Entity.class);
+                        createEntity = RegionAccessor.class.getDeclaredMethod("createEntity", Location.class, Class.class);
+                    }
+                    Bee bee = (Bee) createEntity.invoke(lr, new Location(bukkitBeehive.getWorld(), rawX,rawY,rawZ), Bee.class);
+                    //addEntity.invoke(lr, bee);
+                    bukkitBeehive.addEntity(bee);
+                }catch(Exception e){
+                    TerraformGeneratorPlugin.logger.info("Falling back to NMS bee spawning (addEntity api not present)");
+                    canUseNewApi = false;
+                }
+            }*/
+
+            if(!canUseNewApi)
+                TerraformGeneratorPlugin.injector.storeBee(bukkitBeehive);
         }
         catch (ClassCastException e) {
             TerraformGeneratorPlugin.logger.info("Failed to set beehive at " + rawX + "," + rawY + "," + rawZ);

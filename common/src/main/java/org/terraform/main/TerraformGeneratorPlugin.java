@@ -14,6 +14,9 @@ import org.terraform.coregen.ChunkCache;
 import org.terraform.coregen.HeightMap;
 import org.terraform.coregen.NMSInjectorAbstract;
 import org.terraform.coregen.bukkit.TerraformGenerator;
+import org.terraform.coregen.folia.AbstractScheduler;
+import org.terraform.coregen.folia.FoliaScheduler;
+import org.terraform.coregen.folia.SpigotScheduler;
 import org.terraform.data.TerraformWorld;
 import org.terraform.populators.OrePopulator;
 import org.terraform.schematic.SchematicListener;
@@ -36,6 +39,7 @@ import java.util.Set;
 
 public class TerraformGeneratorPlugin extends JavaPlugin implements Listener {
 
+    public static AbstractScheduler taskScheduler;
     public static final Set<String> INJECTED_WORLDS = new HashSet<>();
     public static TLogger logger;
 
@@ -54,6 +58,7 @@ public class TerraformGeneratorPlugin extends JavaPlugin implements Listener {
     @Override
     public void onEnable() {
         instance = this;
+        taskScheduler = isPaperOrFolia() ? new FoliaScheduler() : new SpigotScheduler();
 
         try {
             TConfig.init(new File(getDataFolder(), "config.yml"));
@@ -80,27 +85,30 @@ public class TerraformGeneratorPlugin extends JavaPlugin implements Listener {
 
         // Initialize chunk cache based on config size
         TerraformGenerator.CHUNK_CACHE = new ConcurrentLRUCache<>(
-                "CHUNK_CACHE", TConfig.c.DEVSTUFF_CHUNKCACHE_SIZE, (key) -> {
-            return new ChunkCache(key.tw(), key.x(), key.z());
-        }
-        );
+                "CHUNK_CACHE",
+                TConfig.c.DEVSTUFF_CHUNKCACHE_SIZE,
+                (key)->{
+                    return new ChunkCache(key.tw(),key.x(),key.z());
+                });
 
         // Initialize biome query cache based on config size
         GenUtils.BIOME_QUERY_CACHE = new ConcurrentLRUCache<>(
-                "biomeQueryCache", TConfig.c.DEVSTUFF_CHUNKBIOMES_SIZE, (key) -> {
-            EnumSet<BiomeBank> banks = EnumSet.noneOf(BiomeBank.class);
-            int gridX = key.chunkX * 16;
-            int gridZ = key.chunkZ * 16;
-            for (int x = gridX; x < gridX + 16; x++) {
-                for (int z = gridZ; z < gridZ + 16; z++) {
-                    BiomeBank bank = key.tw.getBiomeBank(x, z);
-                    if (!banks.contains(bank)) {
-                        banks.add(bank);
+                "biomeQueryCache",
+                TConfig.c.DEVSTUFF_CHUNKBIOMES_SIZE,
+                (key) -> {
+                    EnumSet<BiomeBank> banks = EnumSet.noneOf(BiomeBank.class);
+                    int gridX = key.chunkX * 16;
+                    int gridZ = key.chunkZ * 16;
+                    for (int x = gridX; x < gridX + 16; x++) {
+                        for (int z = gridZ; z < gridZ + 16; z++) {
+                            BiomeBank bank = key.tw.getBiomeBank(x, z);
+                            if (!banks.contains(bank)) {
+                                banks.add(bank);
+                            }
+                        }
                     }
+                    return banks;
                 }
-            }
-            return banks;
-        }
         );
 
         LangOpt.init(this);
@@ -110,8 +118,7 @@ public class TerraformGeneratorPlugin extends JavaPlugin implements Listener {
         new TerraformCommandManager(this, "terraform", "terra");
         Bukkit.getPluginManager().registerEvents(this, this);
         Bukkit.getPluginManager().registerEvents(new SchematicListener(), this);
-        String version = Version.VERSION.getPackName();
-        logger.stdout("Detected version: " + version + ", packName: " + Version.VERSION.getPackName());
+        logger.stdout("Detected version: " + Version.VERSION_STRING + ", plugin will use Version."+ Version.VERSION + ", packName: " + Version.VERSION.getPackName());
         try {
             injector = Version.getInjector();
             if (injector != null) {
@@ -122,12 +129,13 @@ public class TerraformGeneratorPlugin extends JavaPlugin implements Listener {
         } catch (ClassNotFoundException e) {
             TerraformGeneratorPlugin.logger.stackTrace(e);
             logger.stdout("&cNo support for this version has been made yet!");
-        } catch (InstantiationException |
-                 IllegalAccessException |
-                 IllegalArgumentException |
-                 InvocationTargetException |
-                 NoSuchMethodException |
-                 SecurityException e) {
+        }
+        catch (InstantiationException |
+               IllegalAccessException |
+               IllegalArgumentException |
+               InvocationTargetException |
+               NoSuchMethodException |
+               SecurityException e) {
             TerraformGeneratorPlugin.logger.stackTrace(e);
             logger.stdout("&cSomething went wrong initiating the injector!");
         }
@@ -151,7 +159,6 @@ public class TerraformGeneratorPlugin extends JavaPlugin implements Listener {
                 tw.maxY = injector.getMaxY();
 
                 logger.stdout("&aInjection success! Proceeding with generation.");
-
             } else {
                 logger.stdout("&cInjection failed.");
             }
@@ -160,17 +167,17 @@ public class TerraformGeneratorPlugin extends JavaPlugin implements Listener {
 
     @SuppressWarnings("unused")
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-    public void onWorldUnload(WorldUnloadEvent event) {
+    public void onWorldUnload(WorldUnloadEvent event){
         if (INJECTED_WORLDS.contains(event.getWorld().getName())) {
             TerraformWorld world = TerraformWorld.get(event.getWorld());
             logger.stdout("Flushing caches for world " + event.getWorld().getName());
             clearCache();
+            NoiseCacheHandler.flushNoiseCaches(world);
             OrePopulator.ORE_NOISE_CACHE.remove(world);
         }
     }
 
     public void clearCache() {
-        NoiseCacheHandler.NOISE_CACHE.clear();
         BiomeBank.BIOME_SECTION_CACHE.clear();
         GenUtils.BIOME_QUERY_CACHE.clear();
         StructureRegistry.STRUCTURE_QUERY_CACHE.clear();
@@ -189,4 +196,12 @@ public class TerraformGeneratorPlugin extends JavaPlugin implements Listener {
         return lang;
     }
 
+    private static boolean isPaperOrFolia() {
+        try {
+            Class.forName("io.papermc.paper.world.MoonPhase");
+            return true;
+        } catch (ClassNotFoundException e) {
+            return false;
+        }
+    }
 }

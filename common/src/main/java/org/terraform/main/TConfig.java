@@ -9,6 +9,13 @@ import java.io.IOException;
 @YamlFile(lenient = Leniency.LENIENT)
 public class TConfig extends YamlFileInterface {
     public static TConfig c;
+    public static void init(final File f) throws IOException {
+        if (c == null) {
+            c = new TConfig().load(f);
+            c.save(f); // updates the configuration file to the newest format
+        }
+    }
+
     // -=[HEIGHTMAP]=-
     @YamlKey("heightmap.core-frequency")
     public float HEIGHT_MAP_CORE_FREQUENCY = 0.003f;
@@ -76,7 +83,6 @@ public class TConfig extends YamlFileInterface {
     public float BIOME_TEMPERATURE_FREQUENCY = 0.03f;
     @YamlKey("biome.moisture-frequency")
     public float BIOME_MOISTURE_FREQUENCY = 0.03f;
-
     @YamlKey("biome.cave.crystalline-cluster.separation")
     public int BIOME_CAVE_CRYSTALLINECLUSTER_SEPARATION = 86;
     @YamlKey("biome.cave.crystalline-cluster.separation-maxpertub")
@@ -97,6 +103,13 @@ public class TConfig extends YamlFileInterface {
     public int BIOME_CAVE_DRIPSTONECLUSTER_MINSIZE = 5;
     @YamlKey("biome.cave.dripstone-cluster.maxsize")
     public int BIOME_CAVE_DRIPSTONECLUSTER_MAXSIZE = 11;
+    @YamlKey("biome.cave.sulfur-cluster.threshold")
+    public float BIOME_CAVE_SULFUR_THRESHOLD = 0.8f;
+    @YamlKey("biome.cave.sulfur-cluster.frequency")
+    public float BIOME_CAVE_SULFUR_FREQUENCY = 0.0015f;
+    @YamlComment("Chance for a sulfur spring to spawn for each block. Bounded between 0 and 1")
+    @YamlKey("biome.cave.sulfur-cluster.spring-chance")
+    public double BIOME_CAVE_SULFUR_SPRING_CHANCE = 0.002f;
     @YamlKey("biome.cave.lush-cluster.separation")
     public int BIOME_CAVE_LUSHCLUSTER_SEPARATION = 64;
     @YamlKey("biome.cave.lush-cluster.separation-maxpertub")
@@ -107,6 +120,7 @@ public class TConfig extends YamlFileInterface {
     public int BIOME_CAVE_LUSHCLUSTER_MAXSIZE = 15;
     @YamlKey("biome.dithering")
     public double BIOME_DITHER = 0.04d;
+    @YamlComment("Controls the size of each biome. Changing this also changes the distance between each structure. The default 7 means that each biome is 2^7=128 blocks wide.")
     @YamlKey("biome.biomesection-bitshifts")
     public int BIOME_SECTION_BITSHIFTS = 7;
     @YamlKey("biome.clay-deposit-radius")
@@ -238,6 +252,155 @@ public class TConfig extends YamlFileInterface {
     public boolean DEVSTUFF_EXTENDED_COMMANDS = false;
     @YamlKey("dev-stuff.suppress-terraform-console-logs")
     public boolean DEVSTUFF_SUPPRESS_CONSOLE_LOGS = true;
+
+    @YamlComment("Bounded from 0.0 to 1.0. At 1.0, caves are completely blocked at a 200 block radius around each structure. Otherwise, caves gradually shrink towards large structures (even if they're on land). Does not apply to Strongholds.")
+    @YamlKey("caves.structure-suppression-threshold")
+    public float CAVES_STRUCTURE_SUPPRESSION_THRESHOLD = 0.5f;
+    // CAVES_ALLOW_FLOODED_RAVINES("caves.allow-flooded-ravines",true),
+
+    // -=[STRUCTURES]=-
+    @YamlKey("structures.technical.megachunk.numbiomesections")
+    public int STRUCTURES_MEGACHUNK_NUMBIOMESECTIONS = 4;
+    @YamlKey("structures.technical.megachunk.max-structures-per-megachunk")
+    public int STRUCTURES_MEGACHUNK_MAXSTRUCTURES = 3;
+    @YamlKey("structures.mansion.enabled")
+    public boolean STRUCTURES_MANSION_ENABLED = true;
+    @YamlKey("structures.mansion.size")
+    public int STRUCTURES_MANSION_SIZE = 80;
+    @YamlKey("structures.mansion.min-distance-blocks")
+    public int STRUCTURES_MANSION_MINDISTANCE = 5000;
+    @YamlKey("structures.mansion.pillager-spawn-aggression")
+    public int STRUCTURES_MANSION_SPAWNAGGRESSION = 1;
+    @YamlKey("structures.mansion.spawnratio")
+    public double STRUCTURES_MANSION_SPAWNRATIO = 0.3d;
+    @YamlKey("structures.mansion.chunk-exclusion-zone")
+    public int STRUCTURES_MANSION_CHUNK_EXCLUSION_ZONE = 4;
+    @YamlKey("structures.stronghold.enabled")
+    public boolean STRUCTURES_STRONGHOLD_ENABLED = true;
+    @YamlKey("structures.stronghold.failsafe-y")
+    public int STRUCTURES_STRONGHOLD_FAILSAFE_Y = -16;
+    @YamlKey("structures.stronghold.min-y")
+    public int STRUCTURES_STRONGHOLD_MIN_Y = 0;
+    @YamlKey("structures.stronghold.max-y")
+    public int STRUCTURES_STRONGHOLD_MAX_Y = 25;
+    @YamlKey("structures.pyramid.enabled")
+    public boolean STRUCTURES_PYRAMID_ENABLED = true;
+    @YamlKey("structures.pyramid.spawn-ratio")
+    public double STRUCTURES_PYRAMID_SPAWNRATIO = 0.3d;
+    @YamlKey("structures.pyramid.spawn-elder-guardian")
+    public boolean STRUCTURES_PYRAMID_SPAWN_ELDER_GUARDIAN = true;
+    @YamlKey("structures.pyramid.suspicious-sand-per-antechamber")
+    public int STRUCTURES_PYRAMID_SUSPICIOUS_SAND_COUNT_PER_ANTECHAMBER = 4;
+    @YamlKey("structures.villagehouse.spawnratio")
+    public double STRUCTURES_VILLAGEHOUSE_SPAWNRATIO = 0.8d;;
+    @YamlKey("structures.farmhouse.enabled")
+    public boolean STRUCTURES_FARMHOUSE_ENABLED = true;
+    @YamlKey("structures.animalfarm.enabled")
+    public boolean STRUCTURES_ANIMALFARM_ENABLED = true;
+    @YamlKey("structures.trailruins.spawnratio")
+    public double STRUCTURES_TRAILRUINS_SPAWNRATIO = 0.5d;
+    @YamlKey("structures.trailruins.enabled")
+    public boolean STRUCTURES_TRAILRUINS_ENABLED = true;
+    @YamlKey("structures.trialchamber.spawnratio")
+    public double STRUCTURES_TRIALCHAMBER_SPAWNRATIO = 0.3d;
+    @YamlKey("structures.trialchamber.enabled")
+    public boolean STRUCTURES_TRIALCHAMBER_ENABLED = true;
+    @YamlKey("structures.warmoceanruins.spawnratio")
+    public double STRUCTURES_WARMOCEANRUINS_SPAWNRATIO = 1d;
+    @YamlKey("structures.warmoceanruins.enabled")
+    public boolean STRUCTURES_WARMOCEANRUINS_ENABLED = true;
+    @YamlKey("structures.village.spawnratio")
+    public double STRUCTURES_VILLAGE_SPAWNRATIO = 1d;
+    @YamlKey("structures.plainsvillage.enabled")
+    public boolean STRUCTURES_PLAINSVILLAGE_ENABLED = true;
+    @YamlKey("structures.plainsvillage.height-tolerance")
+    public int STRUCTURES_PLAINSVILLAGE_HEIGHT_TOLERANCE = 10;
+    @YamlKey("structures.village.chunk-exclusion-zone")
+    public int STRUCTURES_VILLAGE_CHUNK_EXCLUSION_ZONE = 4;
+    @YamlKey("structures.swamphut.enabled")
+    public boolean STRUCTURES_SWAMPHUT_ENABLED = true;
+    @YamlKey("structures.swamphut.spawnratio")
+    public double STRUCTURES_SWAMPHUT_SPAWNRATIO = 0.4d;
+    @YamlKey("structures.swamphut.count-per-megachunk")
+    public int STRUCTURES_SWAMPHUT_COUNT_PER_MEGACHUNK = 1;
+    @YamlKey("structures.desertwell.enabled")
+    public boolean STRUCTURES_DESERTWELL_ENABLED = true;
+    @YamlKey("structures.desertwell.spawnratio")
+    public double STRUCTURES_DESERTWELL_SPAWNRATIO = 0.3d;
+    @YamlKey("structures.desertwell.count-per-megachunk")
+    public int STRUCTURES_DESERTWELL_COUNT_PER_MEGACHUNK = 2;
+    @YamlKey("structures.small-dungeon.spawnratio")
+    public double STRUCTURES_DUNGEONS_SPAWNRATIO = 0.4d;
+    @YamlKey("structures.small-dungeon.count-per-megachunk")
+    public int STRUCTURES_DUNGEONS_COUNT_PER_MEGACHUNK = 3;
+    @YamlKey("structures.underground-dungeon.enabled")
+    public boolean STRUCTURES_UNDERGROUNDDUNGEON_ENABLED = true;
+    @YamlKey("structures.drowned-dungeon.enabled")
+    public boolean STRUCTURES_DROWNEDDUNGEON_ENABLED = true;
+    @YamlKey("structures.drowned-dungeon.min-chunk-y")
+    public int STRUCTURES_DROWNEDDUNGEON_MIN_DEPTH = 52;
+    @YamlKey("structures.drowned-dungeon.chance-out-of-1000")
+    public int STRUCTURES_DROWNEDDUNGEON_CHANCE = 200;
+    @YamlKey("structures.shipwreck.spawnratio")
+    public double STRUCTURES_SHIPWRECK_SPAWNRATIO = 0.6d;
+    @YamlKey("structures.shipwreck.enabled")
+    public boolean STRUCTURES_SHIPWRECK_ENABLED = true;
+    @YamlKey("structures.shipwreck.count-per-megachunk")
+    public int STRUCTURES_SHIPWRECK_COUNT_PER_MEGACHUNK = 2;
+    @YamlKey("structures.ruinedportal.spawnratio")
+    public double STRUCTURES_RUINEDPORTAL_SPAWNRATIO = 0.4d;
+    @YamlKey("structures.ruinedportal.enabled")
+    public boolean STRUCTURES_RUINEDPORTAL_ENABLED = true;
+    @YamlKey("structures.ruinedportal.count-per-megachunk")
+    public int STRUCTURES_RUINEDPORTAL_COUNT_PER_MEGACHUNK = 1;
+    @YamlKey("structures.igloo.spawnratio")
+    public double STRUCTURES_IGLOO_SPAWNRATIO = 0.8d;
+    @YamlKey("structures.igloo.enabled")
+    public boolean STRUCTURES_IGLOO_ENABLED = true;
+    @YamlKey("structures.igloo.count-per-megachunk")
+    public int STRUCTURES_IGLOO_COUNT_PER_MEGACHUNK = 1;
+    @YamlKey("structures.buriedtreasure.spawnratio")
+    public double STRUCTURES_BURIEDTREASURE_SPAWNRATIO = 0.3d;
+    @YamlKey("structures.buriedtreasure.enabled")
+    public boolean STRUCTURES_BURIEDTREASURE_ENABLED = true;
+    @YamlKey("structures.buriedtreasure.count-per-megachunk")
+    public int STRUCTURES_BURIEDTREASURE_COUNT_PER_MEGACHUNK = 2;
+    @YamlKey("structures.mineshaft.enabled")
+    public boolean STRUCTURES_MINESHAFT_ENABLED = true;
+    @YamlKey("structures.mineshaft.spawnratio")
+    public double STRUCTURES_MINESHAFT_SPAWNRATIO = 0.8d;
+    @YamlKey("structures.mineshaft.min-y")
+    public int STRUCTURES_MINESHAFT_MIN_Y = -10;
+    @YamlKey("structures.mineshaft.max-y")
+    public int STRUCTURES_MINESHAFT_MAX_Y = 30;
+    @YamlKey("structures.catacombs.enabled")
+    public boolean STRUCTURES_CATACOMBS_ENABLED = true;
+    @YamlKey("structures.catacombs.spawnratio")
+    public double STRUCTURES_CATACOMBS_SPAWNRATIO = 0.6d;
+    @YamlKey("structures.catacombs.sizerollchance")
+    public double STRUCTURES_CATACOMBS_SIZEROLLCHANCE = 0.40d;
+    @YamlKey("structures.catacombs.max-levels")
+    public int STRUCTURES_CATACOMBS_MAX_LEVELS = 5;
+    @YamlKey("structures.catacombs.min-y")
+    public int STRUCTURES_CATACOMBS_MIN_Y = 0;
+    @YamlKey("structures.catacombs.max-y")
+    public int STRUCTURES_CATACOMBS_MAX_Y = 30;
+    @YamlKey("structures.ancientcity.enabled")
+    public boolean STRUCTURES_ANCIENTCITY_ENABLED = true;
+    @YamlKey("structures.ancientcity.spawnratio")
+    public double STRUCTURES_ANCIENTCITY_SPAWNRATIO = 0.5d;
+    @YamlKey("structures.ancientcity.min-y")
+    public int STRUCTURES_ANCIENTCITY_MIN_Y = -20;
+    @YamlKey("structures.ancientcity.max-y")
+    public int STRUCTURES_ANCIENTCITY_MAX_Y = -10;
+    @YamlKey("structures.largecave.enabled")
+    public boolean STRUCTURES_LARGECAVE_ENABLED = true;
+    @YamlKey("structures.largecave.spawnratio")
+    public double STRUCTURES_LARGECAVE_SPAWNRATIO = 0.8d;
+    @YamlKey("structures.outpost.enabled")
+    public boolean STRUCTURES_OUTPOST_ENABLED = true;
+    @YamlKey("structures.outpost.spawnratio")
+    public double STRUCTURES_OUTPOST_SPAWNRATIO = 0.8d;
 
     // -=[ANIMALS]=-
     // BEES
@@ -476,157 +639,13 @@ public class TConfig extends YamlFileInterface {
     @YamlComment("Small lanterns, barrels, chests, ...")
     @YamlKey("feature_toggle.decorations")
     public boolean FEATURE_DECORATIONS_ENABLED = true;
+    @YamlComment("Toggle this for no more villages, ruined portals, ...")
     @YamlKey("feature_toggle.structures")
     public boolean FEATURE_STRUCTURES_ENABLED = true;
     // Extras
     @YamlComment("What language file should be used?")
     @YamlKey("lang")
     public String LANGUAGE_FILE = "eng.yml";
-
-    // -=[STRUCTURES]=-
-    @YamlKey("structures.technical.megachunk.numbiomesections")
-    public int STRUCTURES_MEGACHUNK_NUMBIOMESECTIONS = 4;
-    @YamlKey("structures.mansion.enabled")
-    public boolean STRUCTURES_MANSION_ENABLED = true;
-    @YamlKey("structures.mansion.size")
-    public int STRUCTURES_MANSION_SIZE = 80;
-    @YamlKey("structures.mansion.min-distance-blocks")
-    public int STRUCTURES_MANSION_MINDISTANCE = 5000;
-    @YamlKey("structures.mansion.pillager-spawn-aggression")
-    public int STRUCTURES_MANSION_SPAWNAGGRESSION = 1;
-    @YamlKey("structures.mansion.spawnratio")
-    public double STRUCTURES_MANSION_SPAWNRATIO = 0.3d;
-    @YamlKey("structures.mansion.chunk-exclusion-zone")
-    public int STRUCTURES_MANSION_CHUNK_EXCLUSION_ZONE = 4;
-    @YamlKey("structures.stronghold.enabled")
-    public boolean STRUCTURES_STRONGHOLD_ENABLED = true;
-    @YamlKey("structures.stronghold.failsafe-y")
-    public int STRUCTURES_STRONGHOLD_FAILSAFE_Y = -16;
-    @YamlKey("structures.stronghold.min-y")
-    public int STRUCTURES_STRONGHOLD_MIN_Y = 0;
-    @YamlKey("structures.stronghold.max-y")
-    public int STRUCTURES_STRONGHOLD_MAX_Y = 25;
-    @YamlKey("structures.pyramid.enabled")
-    public boolean STRUCTURES_PYRAMID_ENABLED = true;
-    @YamlKey("structures.pyramid.spawn-ratio")
-    public double STRUCTURES_PYRAMID_SPAWNRATIO = 0.3d;
-    @YamlKey("structures.pyramid.spawn-elder-guardian")
-    public boolean STRUCTURES_PYRAMID_SPAWN_ELDER_GUARDIAN = true;
-    @YamlKey("structures.pyramid.suspicious-sand-per-antechamber")
-    public int STRUCTURES_PYRAMID_SUSPICIOUS_SAND_COUNT_PER_ANTECHAMBER = 4;
-    @YamlKey("structures.villagehouse.spawnratio")
-    public double STRUCTURES_VILLAGEHOUSE_SPAWNRATIO = 0.8d;
-    @YamlKey("structures.farmhouse.enabled")
-    public boolean STRUCTURES_FARMHOUSE_ENABLED = true;
-    @YamlKey("structures.animalfarm.enabled")
-    public boolean STRUCTURES_ANIMALFARM_ENABLED = true;
-    @YamlKey("structures.trailruins.spawnratio")
-    public double STRUCTURES_TRAILRUINS_SPAWNRATIO = 0.5d;
-    @YamlKey("structures.trailruins.enabled")
-    public boolean STRUCTURES_TRAILRUINS_ENABLED = true;
-    @YamlKey("structures.trialchamber.spawnratio")
-    public double STRUCTURES_TRIALCHAMBER_SPAWNRATIO = 0.3d;
-    @YamlKey("structures.trialchamber.enabled")
-    public boolean STRUCTURES_TRIALCHAMBER_ENABLED = true;
-    @YamlKey("structures.village.spawnratio")
-    public double STRUCTURES_VILLAGE_SPAWNRATIO = 1d;
-    @YamlKey("structures.plainsvillage.enabled")
-    public boolean STRUCTURES_PLAINSVILLAGE_ENABLED = true;
-    @YamlKey("structures.plainsvillage.height-tolerance")
-    public int STRUCTURES_PLAINSVILLAGE_HEIGHT_TOLERANCE = 10;
-    @YamlKey("structures.village.chunk-exclusion-zone")
-    public int STRUCTURES_VILLAGE_CHUNK_EXCLUSION_ZONE = 4;
-    @YamlKey("structures.swamphut.enabled")
-    public boolean STRUCTURES_SWAMPHUT_ENABLED = true;
-    @YamlKey("structures.swamphut.spawnratio")
-    public double STRUCTURES_SWAMPHUT_SPAWNRATIO = 0.4d;
-    @YamlKey("structures.swamphut.count-per-megachunk")
-    public int STRUCTURES_SWAMPHUT_COUNT_PER_MEGACHUNK = 1;
-    @YamlKey("structures.desertwell.enabled")
-    public boolean STRUCTURES_DESERTWELL_ENABLED = true;
-    @YamlKey("structures.desertwell.spawnratio")
-    public double STRUCTURES_DESERTWELL_SPAWNRATIO = 0.3d;
-    @YamlKey("structures.desertwell.count-per-megachunk")
-    public int STRUCTURES_DESERTWELL_COUNT_PER_MEGACHUNK = 2;
-    @YamlKey("structures.small-dungeon.spawnratio")
-    public double STRUCTURES_DUNGEONS_SPAWNRATIO = 0.4d;
-    @YamlKey("structures.small-dungeon.count-per-megachunk")
-    public int STRUCTURES_DUNGEONS_COUNT_PER_MEGACHUNK = 3;
-    @YamlKey("structures.underground-dungeon.enabled")
-    public boolean STRUCTURES_UNDERGROUNDDUNGEON_ENABLED = true;
-    @YamlKey("structures.drowned-dungeon.enabled")
-    public boolean STRUCTURES_DROWNEDDUNGEON_ENABLED = true;
-    @YamlKey("structures.drowned-dungeon.min-chunk-y")
-    public int STRUCTURES_DROWNEDDUNGEON_MIN_DEPTH = 52;
-    @YamlKey("structures.drowned-dungeon.chance-out-of-1000")
-    public int STRUCTURES_DROWNEDDUNGEON_CHANCE = 200;
-    @YamlKey("structures.shipwreck.spawnratio")
-    public double STRUCTURES_SHIPWRECK_SPAWNRATIO = 0.6d;
-    @YamlKey("structures.shipwreck.enabled")
-    public boolean STRUCTURES_SHIPWRECK_ENABLED = true;
-    @YamlKey("structures.shipwreck.count-per-megachunk")
-    public int STRUCTURES_SHIPWRECK_COUNT_PER_MEGACHUNK = 2;
-    @YamlKey("structures.ruinedportal.spawnratio")
-    public double STRUCTURES_RUINEDPORTAL_SPAWNRATIO = 0.4d;
-    @YamlKey("structures.ruinedportal.enabled")
-    public boolean STRUCTURES_RUINEDPORTAL_ENABLED = true;
-    @YamlKey("structures.ruinedportal.count-per-megachunk")
-    public int STRUCTURES_RUINEDPORTAL_COUNT_PER_MEGACHUNK = 1;
-    @YamlKey("structures.igloo.spawnratio")
-    public double STRUCTURES_IGLOO_SPAWNRATIO = 0.8d;
-    @YamlKey("structures.igloo.enabled")
-    public boolean STRUCTURES_IGLOO_ENABLED = true;
-    @YamlKey("structures.igloo.count-per-megachunk")
-    public int STRUCTURES_IGLOO_COUNT_PER_MEGACHUNK = 1;
-    @YamlKey("structures.buriedtreasure.spawnratio")
-    public double STRUCTURES_BURIEDTREASURE_SPAWNRATIO = 0.3d;
-    @YamlKey("structures.buriedtreasure.enabled")
-    public boolean STRUCTURES_BURIEDTREASURE_ENABLED = true;
-    @YamlKey("structures.buriedtreasure.count-per-megachunk")
-    public int STRUCTURES_BURIEDTREASURE_COUNT_PER_MEGACHUNK = 2;
-    @YamlKey("structures.mineshaft.enabled")
-    public boolean STRUCTURES_MINESHAFT_ENABLED = true;
-    @YamlKey("structures.mineshaft.spawnratio")
-    public double STRUCTURES_MINESHAFT_SPAWNRATIO = 0.8d;
-    @YamlKey("structures.mineshaft.min-y")
-    public int STRUCTURES_MINESHAFT_MIN_Y = -10;
-    @YamlKey("structures.mineshaft.max-y")
-    public int STRUCTURES_MINESHAFT_MAX_Y = 30;
-    @YamlKey("structures.catacombs.enabled")
-    public boolean STRUCTURES_CATACOMBS_ENABLED = true;
-    @YamlKey("structures.catacombs.spawnratio")
-    public double STRUCTURES_CATACOMBS_SPAWNRATIO = 0.6d;
-    @YamlKey("structures.catacombs.sizerollchance")
-    public double STRUCTURES_CATACOMBS_SIZEROLLCHANCE = 0.40d;
-    @YamlKey("structures.catacombs.max-levels")
-    public int STRUCTURES_CATACOMBS_MAX_LEVELS = 5;
-    @YamlKey("structures.catacombs.min-y")
-    public int STRUCTURES_CATACOMBS_MIN_Y = 0;
-    @YamlKey("structures.catacombs.max-y")
-    public int STRUCTURES_CATACOMBS_MAX_Y = 30;
-    @YamlKey("structures.ancientcity.enabled")
-    public boolean STRUCTURES_ANCIENTCITY_ENABLED = true;
-    @YamlKey("structures.ancientcity.spawnratio")
-    public double STRUCTURES_ANCIENTCITY_SPAWNRATIO = 0.5d;
-    @YamlKey("structures.ancientcity.min-y")
-    public int STRUCTURES_ANCIENTCITY_MIN_Y = -20;
-    @YamlKey("structures.ancientcity.max-y")
-    public int STRUCTURES_ANCIENTCITY_MAX_Y = -10;
-    @YamlKey("structures.largecave.enabled")
-    public boolean STRUCTURES_LARGECAVE_ENABLED = true;
-    @YamlKey("structures.largecave.spawnratio")
-    public double STRUCTURES_LARGECAVE_SPAWNRATIO = 0.8d;
-    @YamlKey("structures.outpost.enabled")
-    public boolean STRUCTURES_OUTPOST_ENABLED = true;
-    @YamlKey("structures.outpost.spawnratio")
-    public double STRUCTURES_OUTPOST_SPAWNRATIO = 0.8d;
-
-    public static void init(final File f) throws IOException {
-        if (c == null) {
-            c = new TConfig().load(f);
-            c.save(f); // updates the configuration file to the newest format
-        }
-    }
 
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public static boolean areCavesEnabled() {
