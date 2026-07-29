@@ -27,7 +27,6 @@ import org.bukkit.Material;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.craftbukkit.block.CraftBiome;
 import org.bukkit.craftbukkit.block.data.CraftBlockData;
-import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
 import org.jetbrains.annotations.NotNull;
 import org.terraform.biome.custombiomes.CustomBiomeType;
 import org.terraform.coregen.NaturalSpawnType;
@@ -39,10 +38,7 @@ import org.terraform.main.TerraformGeneratorPlugin;
 import org.terraform.utils.version.TerraformFieldHandler;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Random;
+import java.util.*;
 
 public class PopulatorDataICA extends PopulatorDataICABiomeWriterAbstract {
     private final PopulatorDataAbstract parent;
@@ -70,13 +66,13 @@ public class PopulatorDataICA extends PopulatorDataICABiomeWriterAbstract {
     public @NotNull Material getType(int x, int y, int z) {
         // return parent.getType(x, y, z);
         BlockState ibd = ica.getBlockState(new BlockPos(x, y, z)); // getState
-        return CraftBlockData.fromData(ibd).getMaterial();
+        return CraftBlockData.createData(ibd).getMaterial();
     }
 
     public BlockData getBlockData(int x, int y, int z) {
         // return parent.getBlockData(x, y, z);
         BlockState ibd = ica.getBlockState(new BlockPos(x, y, z)); // getState
-        return CraftBlockData.fromData(ibd);
+        return CraftBlockData.createData(ibd);
     }
 
     @Override
@@ -105,7 +101,9 @@ public class PopulatorDataICA extends PopulatorDataICABiomeWriterAbstract {
     @Override
     public void setBiome(int rawX, int rawY, int rawZ, org.bukkit.block.Biome biome) {
         // TerraformGeneratorPlugin.logger.info("Set " + rawX + "," + rawY + "," + rawZ + " to " + biome);
-        ica.setBiome(rawX >> 2, rawY >> 2, rawZ >> 2, CraftBiome.bukkitToMinecraftHolder(biome));
+        ica.setBiome(rawX >> 2, rawY >> 2, rawZ >> 2,
+                Objects.requireNonNull(CraftBiome.bukkitToMinecraftHolder(biome))
+        );
     }
 
     @Override

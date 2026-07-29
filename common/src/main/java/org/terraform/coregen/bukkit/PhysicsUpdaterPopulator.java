@@ -1,5 +1,7 @@
 package org.terraform.coregen.bukkit;
 
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Material;
@@ -23,7 +25,8 @@ import java.util.concurrent.ConcurrentHashMap;
 public class PhysicsUpdaterPopulator extends BlockPopulator implements Listener {
 
     // SimpleChunkLocation to a collection of simplelocations
-    public static final @NotNull Map<SimpleChunkLocation, Collection<SimpleLocation>> cache = new ConcurrentHashMap<>();
+    public static final @NotNull Map<SimpleChunkLocation, Collection<SimpleLocation>> cache = Maps.newConcurrentMap();
+    private static final @NotNull Set<SimpleChunkLocation> pending = Sets.newConcurrentHashSet();
     private static boolean flushIsQueued = false;
 
     public PhysicsUpdaterPopulator() {
@@ -32,7 +35,7 @@ public class PhysicsUpdaterPopulator extends BlockPopulator implements Listener 
     }
 
     public static void pushChange(String world, @NotNull SimpleLocation loc) {
-        if (!flushIsQueued && cache.size() > TConfig.c.DEVSTUFF_FLUSH_PATCHER_CACHE_FREQUENCY) {
+        if (!flushIsQueued && pending.isEmpty() && cache.size() > TConfig.c.DEVSTUFF_FLUSH_PATCHER_CACHE_FREQUENCY) {
             flushIsQueued = true;
             new BukkitRunnable() {
                 @Override
@@ -79,7 +82,8 @@ public class PhysicsUpdaterPopulator extends BlockPopulator implements Listener 
                 }
             } else {
                 // Let the event handler do it
-                w.loadChunk(scl.getX(), scl.getZ());
+                pending.add(scl);
+                w.getChunkAtAsync(scl.getX(), scl.getZ());
             }
         }
     }
@@ -89,6 +93,7 @@ public class PhysicsUpdaterPopulator extends BlockPopulator implements Listener 
         SimpleChunkLocation scl = new SimpleChunkLocation(chunk);
         Collection<SimpleLocation> changes = cache.remove(scl);
         if (changes != null) {
+            pending.remove(scl);
             // TerraformGeneratorPlugin.logger.info("[PhysicsUpdaterPopulator] Detected anomalous generation by NMS on " + scl + ". Running repairs on " + changes.size() + " blocks");
             for (SimpleLocation entry : changes) {
                 Block target = world.getBlockAt(entry.getX(), entry.getY(), entry.getZ());
@@ -118,6 +123,7 @@ public class PhysicsUpdaterPopulator extends BlockPopulator implements Listener 
 
             Collection<SimpleLocation> changes = cache.remove(scl);
             if (changes != null) {
+                pending.remove(scl);
                 // TerraformGeneratorPlugin.logger.info("[PhysicsUpdaterPopulator] Detected anomalous generation by NMS on " + scl + ". Running repairs on " + changes.size() + " blocks");
                 for (SimpleLocation entry : changes) {
                     Block target = event.getWorld().getBlockAt(entry.getX(), entry.getY(), entry.getZ());

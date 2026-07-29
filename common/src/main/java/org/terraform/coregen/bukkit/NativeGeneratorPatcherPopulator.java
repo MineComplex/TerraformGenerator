@@ -1,5 +1,6 @@
 package org.terraform.coregen.bukkit;
 
+import com.google.common.collect.Sets;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.World;
@@ -22,6 +23,7 @@ public class NativeGeneratorPatcherPopulator extends BlockPopulator implements L
 
     // SimpleChunkLocation to a collection of location:blockdata entries marked for repair.
     private static final @NotNull Map<SimpleChunkLocation, Collection<ChunkBlockData>> cache = new ConcurrentHashMap<>();
+    private static final @NotNull Set<SimpleChunkLocation> pending = Sets.newConcurrentHashSet();
     private static boolean flushIsQueued = false;
 
     public NativeGeneratorPatcherPopulator() {
@@ -29,7 +31,7 @@ public class NativeGeneratorPatcherPopulator extends BlockPopulator implements L
     }
 
     public static void pushChange(String world, int x, int y, int z, BlockData data) {
-        if (!flushIsQueued && cache.size() > TConfig.c.DEVSTUFF_FLUSH_PATCHER_CACHE_FREQUENCY) {
+        if (!flushIsQueued && pending.isEmpty() && cache.size() > TConfig.c.DEVSTUFF_FLUSH_PATCHER_CACHE_FREQUENCY) {
             flushIsQueued = true;
             new BukkitRunnable() {
                 @Override
@@ -64,7 +66,8 @@ public class NativeGeneratorPatcherPopulator extends BlockPopulator implements L
             } else {
                 // Let the event handler do it
                 // TerraformGeneratorPlugin.logger.info("[NativeGeneratorPatcher]   - Loading a chunk to flush changes...");
-                w.loadChunk(scl.getX(), scl.getZ());
+                pending.add(scl);
+                w.getChunkAtAsync(scl.getX(), scl.getZ());
             }
         }
     }
@@ -82,6 +85,7 @@ public class NativeGeneratorPatcherPopulator extends BlockPopulator implements L
     private static void repairChunk(World world, SimpleChunkLocation scl) {
         Collection<ChunkBlockData> changes = cache.remove(scl);
         if (changes != null) {
+            pending.remove(scl);
             // TerraformGeneratorPlugin.logger.info("[NativeGeneratorPatcher] Flushing repairs for 1 chunk (" + scl.getX() + "," + scl.getZ() + "), pushed by chunkloadevent");
             for (ChunkBlockData entry : changes) {
                 world.getBlockAt(entry.x, entry.y, entry.z).setBlockData(entry.data, false);
@@ -106,6 +110,7 @@ public class NativeGeneratorPatcherPopulator extends BlockPopulator implements L
 
             Collection<ChunkBlockData> changes = cache.remove(scl);
             if (changes != null) {
+                pending.remove(scl);
                 for (ChunkBlockData entry : changes) {
                     event.getWorld().getBlockAt(entry.x, entry.y, entry.z).setBlockData(entry.data, false);
                 }

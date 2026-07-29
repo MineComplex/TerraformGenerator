@@ -53,8 +53,8 @@ public enum CaveClusterRegistry {
             ));
             case FLUID -> new CaveFluidClusterPopulator(GenUtils.randInt(
                     random,
-                    TConfig.c.BIOME_CAVE_CRYSTALLINECLUSTER_MINSIZE,
-                    TConfig.c.BIOME_CAVE_CRYSTALLINECLUSTER_MAXSIZE
+                    TConfig.c.BIOME_CAVE_FLUIDCLUSTER_MINSIZE,
+                    TConfig.c.BIOME_CAVE_FLUIDCLUSTER_MAXSIZE
             ));
         };
 

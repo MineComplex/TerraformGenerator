@@ -85,6 +85,10 @@ public class TConfig extends YamlFileInterface {
     public int BIOME_CAVE_CRYSTALLINECLUSTER_MINSIZE = 7;
     @YamlKey("biome.cave.crystalline-cluster.maxsize")
     public int BIOME_CAVE_CRYSTALLINECLUSTER_MAXSIZE = 11;
+    @YamlKey("biome.cave.fluid-cluster.minsize")
+    public int BIOME_CAVE_FLUIDCLUSTER_MINSIZE = 7;
+    @YamlKey("biome.cave.fluid-cluster.maxsize")
+    public int BIOME_CAVE_FLUIDCLUSTER_MAXSIZE = 11;
     @YamlKey("biome.cave.dripstone-cluster.separation")
     public int BIOME_CAVE_DRIPSTONECLUSTER_SEPARATION = 64;
     @YamlKey("biome.cave.dripstone-cluster.separation-maxpertub")
@@ -194,6 +198,8 @@ public class TConfig extends YamlFileInterface {
     public boolean TREES_JUNGLE_BIG_ENABLED = true;
     @YamlKey("trees.big-taiga-trees.enabled")
     public boolean TREES_TAIGA_BIG_ENABLED = true;
+    @YamlKey("trees.big-snowy-taiga-trees.enabled")
+    public boolean TREES_SNOWY_TAIGA_BIG_ENABLED = true;
     @YamlKey("trees.big-forest-trees.enabled")
     public boolean TREES_FOREST_BIG_ENABLED = true;
     @YamlKey("trees.big-savanna-trees.enabled")
