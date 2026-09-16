@@ -527,6 +527,8 @@ public class TConfig extends YamlFileInterface {
     public boolean STRUCTURES_ABANDONEDCAMP_ENABLED = true;
     @YamlKey("structures.abandonedcamp.spawnratio")
     public double STRUCTURES_ABANDONEDCAMP_SPAWNRATIO = 0.7d;
+    @YamlKey("structures.abandonedcamp.count-per-megachunk")
+    public int STRUCTURES_ABANDONEDCAMP_COUNT_PER_MEGACHUNK = 1;
     @YamlKey("structures.igloo.spawnratio")
     public double STRUCTURES_IGLOO_SPAWNRATIO = 0.8d;
     @YamlKey("structures.igloo.enabled")

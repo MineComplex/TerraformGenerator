@@ -83,6 +83,10 @@ public class SimpleBlock {
         // this.data = b.getBlockData().getAsString();
     }
 
+    public CoordPair xzCoordPair(){
+        return new CoordPair(this.x, this.z);
+    }
+
     public void pathTowards(int width, int maxLength, @NotNull SimpleBlock target, Material... types) {
         BlockFace dir = BlockFace.NORTH;
         int max = -1;
