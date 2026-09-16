@@ -34,6 +34,7 @@ dependencies {
 		implementation(project(":implementation:Spigotv1_21_R7"))
         implementation(project(":implementation:Spigotv26_1"))
         implementation(project(":implementation:Spigotv26_2"))
+        implementation(project(":implementation:Spigotv26_3"))
 	}
 }
 

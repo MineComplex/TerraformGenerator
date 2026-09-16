@@ -95,7 +95,7 @@ public class AbandonedCampPopulator  extends MultiMegaChunkStructurePopulator {
                     //Force a flat platform of planks against the tent's base area
                     base.lsetType(planks);
                     var stair = base.getUp(height);
-                    if(random.nextInt(10) == 0)
+                    if(random.nextInt(7) == 0)
                         stair.setType(Material.COBWEB);
                     else
                         new StairBuilder(stairs)
@@ -118,6 +118,7 @@ public class AbandonedCampPopulator  extends MultiMegaChunkStructurePopulator {
                                     .setFacing(side.getOppositeFace())
                                     .setLootTable(TerraLootTable.ABANDONED_CAMP_COMMON_CHEST)
                                     .apply(base.getUp());
+                            base.getUp(2).setType(Material.AIR);
                         }
                     }
                     delta += 1;
@@ -140,6 +141,7 @@ public class AbandonedCampPopulator  extends MultiMegaChunkStructurePopulator {
                            BiomeBank variant)
     {
         List<SimpleBlock> candidateSecretBlocks = new ArrayList<>();
+        HashSet<SimpleBlock> cushionPoses = new HashSet<>();
         //patch of soil
         BlockUtils.replaceCircularPatch(random.nextInt(12309), 3, core, Material.DIRT_PATH);
 
@@ -147,6 +149,7 @@ public class AbandonedCampPopulator  extends MultiMegaChunkStructurePopulator {
         Campfire campfire = (Campfire) Bukkit.createBlockData(Material.CAMPFIRE);
         campfire.setLit(true);
         campfire.setFacing(BlockUtils.getDirectBlockFace(random));
+        core.getUp().Pillar(2,Material.AIR);
         core.getUp().setBlockData(campfire);
         core.setType(Material.DIRT);
         candidateSecretBlocks.add(core);
@@ -156,8 +159,9 @@ public class AbandonedCampPopulator  extends MultiMegaChunkStructurePopulator {
             for(BlockFace f:BlockUtils.xzPlaneBlockFaces)
                 if(random.nextInt(5) == 0) {
                     var ground = core.getRelative(f).getGround();
-                    ground.getUp().addEntity(V_26_3.CUSHION);
                     ground.setType(Material.DIRT);
+                    ground.getUp().Pillar(2,Material.AIR);
+                    cushionPoses.add(ground.getUp());
                     candidateSecretBlocks.add(ground);
                 }
 
@@ -165,19 +169,20 @@ public class AbandonedCampPopulator  extends MultiMegaChunkStructurePopulator {
         CoordPair outerLow = core.getRelative(-3,0,-3).xzCoordPair();
         CoordPair outerHigh = core.getRelative(3,0,3).xzCoordPair();
         //Barrel
-        if(random.nextInt(3) == 0){
+        for(int i = 0; i <= GenUtils.randInt(random,1,2); i++){
             var outer = GenUtils.randomOuterCoords(random, outerLow, outerHigh);
             var barrelGround = new SimpleBlock(core.getPopData(),outer.x(),core.getY(),outer.z())
                     .getGround();
             new BarrelBuilder()
                     .setLootTable(TerraLootTable.ABANDONED_CAMP_BARREL)
                     .apply(barrelGround.getUp());
+            barrelGround.getUp(2).setType(Material.AIR);
             barrelGround.setType(Material.DIRT);
             candidateSecretBlocks.add(barrelGround);
         }
 
         //Hay
-        if(random.nextInt(7) == 0){
+        if(random.nextInt(4) == 0){
             var outer = GenUtils.randomOuterCoords(random, outerLow, outerHigh);
             var locGround = new SimpleBlock(core.getPopData(),outer.x(),core.getY(),outer.z())
                             .getGround();
@@ -197,6 +202,18 @@ public class AbandonedCampPopulator  extends MultiMegaChunkStructurePopulator {
                 .setFacing(BlockUtils.getDirectBlockFace(random))
                 .setLootTable(TerraLootTable.ABANDONED_CAMP_SECRET_CHEST)
                 .apply(secretChest);
+        if(cushionPoses.remove(secretChest.getUp())){
+            secretChest.getPopData().addEntity(
+                secretChest.getX()+0.5f,
+                secretChest.getY() + 0.875f,
+                secretChest.getZ()+0.5f,
+                V_26_3.CUSHION
+            );
+        }
+
+        for(var pos : cushionPoses){
+            pos.addEntity(V_26_3.CUSHION);
+        }
     }
 
     private boolean rollSpawnRatio(@NotNull TerraformWorld tw, int chunkX, int chunkZ) {

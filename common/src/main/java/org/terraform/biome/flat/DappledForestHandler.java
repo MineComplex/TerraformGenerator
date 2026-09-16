@@ -132,7 +132,7 @@ public class DappledForestHandler extends BiomeHandler {
 
                     if(TConfig.c.FEATURE_PLANTS_ENABLED){
                         for(int i = -length; i <= length; i++) {
-                            if(!w.getFront(i).isAir()
+                            if(w.getFront(i).isSolid()
                                || !w.getFront(i).getDown().isSolid()) break;
                             Wall target = w.getFront(i);
                             target.setBlockData(new OrientableBuilder(V_26_3.POPLAR_LOG)

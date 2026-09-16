@@ -1,4 +1,4 @@
-package org.terraform.v26_3;
+package org.terraform.spigot.v26_3;
 
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.MapCodec;
