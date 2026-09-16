@@ -181,7 +181,7 @@ public class PopulatorData extends PopulatorDataAbstract
     }
 
     @Override
-    public void addEntity(int rawX, int rawY, int rawZ, @NotNull org.bukkit.entity.EntityType type) {
+    public void addEntity(float rawX, float rawY, float rawZ, @NotNull org.bukkit.entity.EntityType type) {
         if (Math.abs((rawX >> 4) - chunkX) > 1 || Math.abs((rawZ >> 4) - chunkZ) > 1) {
             TerraformGeneratorPlugin.logger.info("Failed to spawn " + type + " as it was out of bounds.");
             return;

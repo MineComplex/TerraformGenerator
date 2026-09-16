@@ -4,14 +4,11 @@ import org.bukkit.Bukkit;
 import org.bukkit.Difficulty;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.RegionAccessor;
 import org.bukkit.block.Beehive;
 import org.bukkit.block.Biome;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.CreatureSpawner;
 import org.bukkit.block.data.BlockData;
-import org.bukkit.entity.Bee;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.minecart.StorageMinecart;
 import org.bukkit.generator.LimitedRegion;
@@ -89,8 +86,8 @@ public class PopulatorDataSpigotAPI extends PopulatorDataAbstract
     }
 
     @Override
-    public void addEntity(int rawX, int rawY, int rawZ, @NotNull EntityType type) {
-        if (!lr.isInRegion(rawX, rawY, rawZ)) {
+    public void addEntity(float rawX, float rawY, float rawZ, @NotNull EntityType type) {
+        if (!lr.isInRegion((int)rawX, (int)rawY, (int)rawZ)) {
             TerraformGeneratorPlugin.logger.error("Tried to add entity outside of LR bounds at: "+rawX + "," + rawZ + " from LR centered at chunk " + chunkX + "," + chunkZ);
             return;
         }

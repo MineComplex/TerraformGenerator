@@ -242,7 +242,7 @@ public class SimpleBlock {
     }
 
     public void addEntity(EntityType type) {
-        popData.addEntity(x, y, z, type);
+        popData.addEntity(x+0.5f, y, z+0.5f, type);
     }
 
 
