@@ -8,6 +8,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.world.StructureGrowEvent;
 import org.jetbrains.annotations.NotNull;
+import org.terraform.biome.flat.DappledForestHandler;
 import org.terraform.biome.flat.PaleForestHandler;
 import org.terraform.coregen.bukkit.TerraformGenerator;
 import org.terraform.coregen.populatordata.PopulatorDataPostGen;
@@ -15,8 +16,10 @@ import org.terraform.data.SimpleBlock;
 import org.terraform.data.TerraformWorld;
 import org.terraform.main.TConfig;
 import org.terraform.utils.GenUtils;
+import org.terraform.utils.version.V_26_3;
 
 import java.util.List;
+import java.util.Set;
 
 public class SaplingOverrider implements Listener {
 
@@ -49,7 +52,7 @@ public class SaplingOverrider implements Listener {
             event.setCancelled(false);
             return;
         }
-        BlockState baseBlock = baseBlocks.getFirst();
+        BlockState baseBlock = baseBlocks.get(0);
 
         // This used to use event.getSpecies(), but some weird bug
         // made event.getSpecies() give incorrect values.
@@ -59,13 +62,14 @@ public class SaplingOverrider implements Listener {
                 break;
             case OAK_LEAVES:
                 FractalTypes.Tree.NORMAL_SMALL.build(
-                        tw, new SimpleBlock(data, x, y, z), (nt -> {
+                        tw,
+                        new SimpleBlock(data, x, y, z),
+                        (nt -> {
                             nt.setCheckGradient(false);
                             nt.setPrePlacement(null); //Do NOT set leaf litters
                             //Let grown trees spawn beehives
-                            if (GenUtils.RANDOMIZER.nextInt(5) == 0) {
+                            if (GenUtils.RANDOMIZER.nextInt(5) == 0)
                                 nt.setSpawnBees(true);
-                            }
                         })
                 );
                 break;
@@ -73,17 +77,15 @@ public class SaplingOverrider implements Listener {
                 new FractalTreeBuilder(FractalTypes.Tree.BIRCH_SMALL).skipGradientCheck().build(tw, data, x, y, z);
                 break;
             case JUNGLE_LEAVES:
+
                 if (isLarge) {
                     if (TConfig.c.MISC_SAPLING_CUSTOM_TREES_BIGTREES_JUNGLE) {
-                        new FractalTreeBuilder(FractalTypes.Tree.JUNGLE_BIG).skipGradientCheck()
-                                .build(tw, data, x, y, z);
-                    }
-                    else {
+                        new FractalTreeBuilder(FractalTypes.Tree.JUNGLE_BIG).skipGradientCheck().build(tw, data, x, y, z);
+                    } else {
                         event.setCancelled(wasCancelled);
                         return;
                     }
-                }
-                else {
+                } else {
                     TreeDB.spawnSmallJungleTree(true, tw, data, x, y, z);
                 }
                 break;
@@ -97,27 +99,24 @@ public class SaplingOverrider implements Listener {
             case SPRUCE_LEAVES:
                 if (isLarge) {
                     if (TConfig.c.MISC_SAPLING_CUSTOM_TREES_BIGTREES_SPRUCE) {
-                        FractalTypes.Tree.TAIGA_BIG.build(
-                                tw,
-                                new SimpleBlock(data, x, y, z),
-                                (nt -> nt
-                                        .setPrePlacement(null) //Do NOT set podzol
-                                        .setCheckGradient(false))
-                        );
+                        FractalTypes.Tree.TAIGA_BIG
+                                .build(tw,
+                                        new SimpleBlock(data, x, y, z),
+                                        (nt -> nt
+                                                .setPrePlacement(null) //Do NOT set podzol
+                                                .setCheckGradient(false))
+                                );
                         // Set the original podzol radius
                         event.getBlocks()
                                 .stream()
                                 .filter((b) -> b.getType() == Material.PODZOL)
                                 .forEach((b) -> data.setType(b.getX(), b.getY(), b.getZ(), b.getType()));
-                    }
-                    else {
+                    } else {
                         event.setCancelled(wasCancelled);
                         return;
                     }
-                }
-                else {
-                    FractalTypes.Tree.TAIGA_SMALL.build(
-                            tw,
+                } else {
+                    FractalTypes.Tree.TAIGA_SMALL.build(tw,
                             new SimpleBlock(data, x, y, z),
                             (nt -> nt
                                     .setPrePlacement(null) //Do NOT set podzol
@@ -131,12 +130,30 @@ public class SaplingOverrider implements Listener {
                     return;
                 }
                 if (baseBlock.getType() == Material.PALE_OAK_LEAVES) {
-                    FractalTypes.Tree.DARK_OAK_SMALL.build(
-                            tw, new SimpleBlock(data, x, y, z), (nt -> {
-                                nt.setCheckGradient(false);
-                                new PaleForestHandler().paleTreeMutator(nt);
-                            })
-                    );
+                    FractalTypes.Tree.DARK_OAK_SMALL
+                            .build(
+                                    tw,
+                                    new SimpleBlock(data, x, y, z),
+                                    (nt -> {
+                                        nt.setCheckGradient(false);
+                                        new PaleForestHandler().paleTreeMutator(nt);
+                                    })
+                            );
+                    return;
+                }
+                if (Set.of(V_26_3.RED_POPLAR_LEAVES,
+                                V_26_3.ORANGE_POPLAR_LEAVES,
+                                V_26_3.YELLOW_POPLAR_LEAVES)
+                        .contains(baseBlock.getType())) {
+                    FractalTypes.Tree.NORMAL_SMALL
+                            .build(
+                                    tw,
+                                    new SimpleBlock(data, x, y, z),
+                                    (nt -> {
+                                        nt.setCheckGradient(false);
+                                        DappledForestHandler.PoplarMutator(nt);
+                                    })
+                            );
                     return;
                 }
                 // Not handled by TG

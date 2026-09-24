@@ -1,4 +1,4 @@
-package org.terraform.v26_2;
+package org.terraform.v26_3;
 
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
@@ -122,9 +122,9 @@ public class CustomBiomeHandler {
         newBiomeBuilder.hasPrecipitation(forestbiome.hasPrecipitation()); // c is hasPrecipitation
 
         // k is mobSettings
-        var biomeSettingMobsField = new TerraformFieldHandler(Biome.class, "mobSettings","k");
-        MobSpawnSettings biomeSettingMobs = (MobSpawnSettings) biomeSettingMobsField.field.get(forestbiome);
-        newBiomeBuilder.mobSpawnSettings(biomeSettingMobs);
+        var biomeSettingEnvironmentAttributeMapField = new TerraformFieldHandler(Biome.class, "attributes","k");
+        EnvironmentAttributeMap envAttrMap = (EnvironmentAttributeMap) biomeSettingEnvironmentAttributeMapField.field.get(forestbiome);
+        newBiomeBuilder.mobSpawnSettings((MobSpawnSettings) envAttrMap.get(EnvironmentAttributes.NATURAL_MOB_SPAWNS).argument());
 
         // j is generationSettings
         var biomeSettingGenField = new TerraformFieldHandler(Biome.class, "generationSettings", "j");
@@ -166,11 +166,11 @@ public class CustomBiomeHandler {
         newBiomeBuilder.specialEffects(newFog.build());
         var eamb = EnvironmentAttributeMap.builder();
         if(!biomeType.getFogColor().isEmpty())
-            eamb.set(EnvironmentAttributes.FOG_COLOR, Integer.parseInt(biomeType.getFogColor(), 16));
+            eamb.set(EnvironmentAttributes.FOG_COLOR, biomeType.getFogColorVec());
         if(!biomeType.getWaterFogColor().isEmpty())
-            eamb.set(EnvironmentAttributes.WATER_FOG_COLOR, Integer.parseInt(biomeType.getWaterFogColor(), 16));
+            eamb.set(EnvironmentAttributes.WATER_FOG_COLOR, biomeType.getWaterFogColorVec());
         if(!biomeType.getSkyColor().isEmpty())
-            eamb.set(EnvironmentAttributes.SKY_COLOR, Integer.parseInt(biomeType.getSkyColor(), 16));
+            eamb.set(EnvironmentAttributes.SKY_COLOR, biomeType.getSkyColorVec());
         newBiomeBuilder.putAttributes(eamb.build());
 
         Biome biome = newBiomeBuilder.build(); // biomebuilder.build();

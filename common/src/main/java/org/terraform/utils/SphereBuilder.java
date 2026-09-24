@@ -33,6 +33,7 @@ public class SphereBuilder {
     private int staticWaterLevel = -9999;
     private float sphereFrequency = 0.09f;
     private boolean doLiquidContainment = false;
+    private boolean replaceSolidsDuringLiquidContainment = false;
     private SphereType sphereType = SphereType.FULL_SPHERE;
 
 
@@ -53,6 +54,11 @@ public class SphereBuilder {
         return this;
     }
 
+    public @NotNull SphereBuilder setTypes(Material... types) {
+        this.types = types;
+        return this;
+    }
+
     public @NotNull SphereBuilder setLowerType(Material... lowerType) {
         this.lowerType = lowerType;
         return this;
@@ -65,6 +71,10 @@ public class SphereBuilder {
 
     public @NotNull SphereBuilder addToWhitelist(Material @NotNull ... mats) {
         replaceWhitelist.addAll(Arrays.asList(mats));
+        return this;
+    }
+    public @NotNull SphereBuilder addToWhitelist(@NotNull Collection<Material> mats) {
+        replaceWhitelist.addAll(mats);
         return this;
     }
 
@@ -109,8 +119,12 @@ public class SphereBuilder {
         this.doLiquidContainment = doLiquidContainment;
         return this;
     }
+    public @NotNull SphereBuilder setReplaceSolidsDuringLiquidContainment(boolean replaceSolidsDuringLiquidContainment) {
+        this.replaceSolidsDuringLiquidContainment = replaceSolidsDuringLiquidContainment;
+        return this;
+    }
 
-    public @NotNull SphereBuilder setCointainmentMaterials(Material... containmentMaterial) {
+    public @NotNull SphereBuilder setContainmentMaterials(Material... containmentMaterial) {
         this.containmentMaterial = containmentMaterial;
         return this;
     }
@@ -141,13 +155,13 @@ public class SphereBuilder {
         return this;
     }
 
-    public void build() {
+    public @NotNull SphereBuilder build() {
         if (rX <= 0 && rY <= 0 && rZ <= 0) {
-            return;
+            return this;
         }
         if (rX <= 0.5 && rY <= 0.5 && rZ <= 0.5) {
             unitReplace(core, core.getY());
-            return;
+            return this;
         }
 
         FastNoise noise = new FastNoise(seed);
@@ -169,8 +183,8 @@ public class SphereBuilder {
                     SimpleBlock rel = core.getRelative(Math.round(x), Math.round(y), Math.round(z));
                     // double radiusSquared = Math.pow(trueRadius+noise.GetNoise(rel.getX(), rel.getY(), rel.getZ())*2,2);
                     double equationResult = Math.pow(x, 2) / Math.pow(rX, 2)
-                                            + Math.pow(y, 2) / Math.pow(rY, 2)
-                                            + Math.pow(z, 2) / Math.pow(rZ, 2);
+                            + Math.pow(y, 2) / Math.pow(rY, 2)
+                            + Math.pow(z, 2) / Math.pow(rZ, 2);
                     double noiseVal;
 
                     if (!isSmooth) {
@@ -192,7 +206,11 @@ public class SphereBuilder {
                         if (rel.getY() <= staticWaterLevel) {
                             types = new Material[] {Material.WATER};
                             for (BlockFace face : new BlockFace[] {
-                                    BlockFace.NORTH, BlockFace.SOUTH, BlockFace.EAST, BlockFace.WEST, BlockFace.DOWN
+                                    BlockFace.NORTH,
+                                    BlockFace.SOUTH,
+                                    BlockFace.EAST,
+                                    BlockFace.WEST,
+                                    BlockFace.DOWN
                             }) {
                                 if (BlockUtils.isAir(rel.getRelative(face).getType())) {
                                     types = new Material[] {Material.STONE};
@@ -205,6 +223,7 @@ public class SphereBuilder {
                 }
             }
         }
+        return this;
     }
 
     private void unitReplace(@NotNull SimpleBlock rel, int effectiveRYUpper) {
@@ -212,22 +231,20 @@ public class SphereBuilder {
             if (hardReplace || !rel.isSolid()) {
                 rel.setType(GenUtils.randChoice(random, types));
                 if (this.doLiquidContainment) {
-                    rel.replaceAdjacentNonLiquids(
-                            new BlockFace[] {
+                    rel.replaceAdjacentNonLiquids(new BlockFace[] {
                                     BlockFace.DOWN, BlockFace.NORTH, BlockFace.SOUTH, BlockFace.EAST, BlockFace.WEST
-                            }, types[0], containmentMaterial
-                    );
+                            }, this.replaceSolidsDuringLiquidContainment,
+                            types[0], containmentMaterial);
                 }
             }
         }
         else if (replaceWhitelist.contains(rel.getType())) {
             rel.setType(GenUtils.randChoice(random, types));
             if (this.doLiquidContainment) {
-                rel.replaceAdjacentNonLiquids(
-                        new BlockFace[] {
+                rel.replaceAdjacentNonLiquids(new BlockFace[] {
                                 BlockFace.DOWN, BlockFace.NORTH, BlockFace.SOUTH, BlockFace.EAST, BlockFace.WEST
-                        }, types[0], containmentMaterial
-                );
+                        }, this.replaceSolidsDuringLiquidContainment,
+                        types[0], containmentMaterial);
             }
         }
 

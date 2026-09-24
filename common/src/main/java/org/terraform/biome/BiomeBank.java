@@ -99,6 +99,11 @@ public enum BiomeBank {
     SCARLET_FOREST(new ScarletForestHandler(), BiomeType.FLAT, BiomeClimate.COLD, TConfig.c.BIOME_SCARLETFOREST_WEIGHT),
     CHERRY_GROVE(new CherryGroveHandler(), BiomeType.FLAT, BiomeClimate.COLD, TConfig.c.BIOME_CHERRYGROVE_WEIGHT),
     TAIGA(new TaigaHandler(), BiomeType.FLAT, BiomeClimate.COLD, TConfig.c.BIOME_TAIGA_WEIGHT),
+    DAPPLED_FOREST(new DappledForestHandler(),
+            BiomeType.FLAT,
+            BiomeClimate.COLD,
+            TConfig.c.BIOME_DAPPLEDFOREST_WEIGHT
+    ),
     SNOWY_TAIGA(
             new SnowyTaigaHandler(),
             BiomeType.FLAT,
@@ -147,6 +152,7 @@ public enum BiomeBank {
     MUDFLATS(new MudflatsHandler(), BiomeType.BEACH, BiomeClimate.HUMID_VEGETATION), // Special case, handle later
     CHERRY_GROVE_BEACH(new CherryGroveBeachHandler(), BiomeType.BEACH, BiomeClimate.COLD),
     SCARLET_FOREST_BEACH(new ScarletForestBeachHandler(), BiomeType.BEACH, BiomeClimate.COLD),
+    DAPPLEDFOREST_BEACH(new DappledForestBeachHandler(), BiomeType.BEACH, BiomeClimate.COLD),
     ;
     // public static final BiomeBank[] VALUES = values();
     public static boolean debugPrint = false;
@@ -251,13 +257,13 @@ public enum BiomeBank {
     public static @NotNull BiomeBank calculateBiome(@NotNull TerraformWorld tw, int rawX, int height, int rawZ) {
         if (debugPrint) {
             TerraformGeneratorPlugin.logger.info("calculateBiome called with args: "
-                                                 + tw.getName()
-                                                 + ","
-                                                 + rawX
-                                                 + ","
-                                                 + height
-                                                 + ","
-                                                 + rawZ);
+                    + tw.getName()
+                    + ","
+                    + rawX
+                    + ","
+                    + height
+                    + ","
+                    + rawZ);
         }
 
         BiomeBank bank = calculateHeightIndependentBiome(tw, rawX, rawZ);
@@ -280,7 +286,7 @@ public enum BiomeBank {
         // carved dry land into the sea level.
         // That's a river.
         if (height < TerraformGenerator.seaLevel
-            && height + HeightMap.getRawRiverDepth(tw, rawX, rawZ) >= TerraformGenerator.seaLevel)
+                && height + HeightMap.getRawRiverDepth(tw, rawX, rawZ) >= TerraformGenerator.seaLevel)
         {
             bank = bank.getHandler().getRiverType();
             if (debugPrint) {
@@ -300,9 +306,9 @@ public enum BiomeBank {
         // Correct submerged biomes. They'll be rivers.
         // Exclude swamps from this check, as swamps are submerged.
         if (bank != BiomeBank.SWAMP
-            && bank != BiomeBank.MANGROVE
-            && height < TerraformGenerator.seaLevel
-            && bank.isDry())
+                && bank != BiomeBank.MANGROVE
+                && height < TerraformGenerator.seaLevel
+                && bank.isDry())
         {
             bank = bank.getHandler().getRiverType();
             if (debugPrint) {
@@ -325,7 +331,7 @@ public enum BiomeBank {
                 for (BiomeSection sect : BiomeSection.getSurroundingSections(tw, rawX, rawZ)) {
                     if (debugPrint) {
                         TerraformGeneratorPlugin.logger.info("calculateBiome -> -> Comparison Section: "
-                                                             + sect.toString());
+                                + sect.toString());
                     }
                     if (sect.getBiomeBank().isDry()) {
                         int compDist = (int) sect.getDominanceBasedOnRadius(rawX, rawZ);
@@ -345,7 +351,7 @@ public enum BiomeBank {
 
             if (debugPrint) {
                 TerraformGeneratorPlugin.logger.info("calculateBiome -> -> Submerged biome defaulted to: "
-                                                     + replacement);
+                        + replacement);
             }
 
         }
@@ -421,9 +427,9 @@ public enum BiomeBank {
                     (TConfig.c.BIOME_FORCE_RADIUS) >> BiomeSection.bitshifts
             );
             if (lowerZoneBound.x() <= section.getX()
-                && section.getX() <= upperZoneBound.x()
-                && lowerZoneBound.z() <= section.getZ()
-                && section.getZ() <= upperZoneBound.z())
+                    && section.getX() <= upperZoneBound.x()
+                    && lowerZoneBound.z() <= section.getZ()
+                    && section.getZ() <= upperZoneBound.z())
             {
                 return BiomeBank.valueOf(TConfig.c.BIOME_FORCED_BIOME);
             }
@@ -456,13 +462,13 @@ public enum BiomeBank {
 
         if (contenders.isEmpty()) {
             TerraformGeneratorPlugin.logger.info("Defaulted for: "
-                                                 + temperature
-                                                 + " : "
-                                                 + moisture
-                                                 + ","
-                                                 + climate
-                                                 + ":"
-                                                 + targetType);
+                    + temperature
+                    + " : "
+                    + moisture
+                    + ","
+                    + climate
+                    + ":"
+                    + targetType);
             return BiomeBank.valueOf(TConfig.c.BIOME_DEFAULT_FLAT);
         }
         else {

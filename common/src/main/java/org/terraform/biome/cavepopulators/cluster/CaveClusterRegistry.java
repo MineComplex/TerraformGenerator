@@ -7,19 +7,18 @@ import org.terraform.utils.GenUtils;
 import java.util.Random;
 
 public enum CaveClusterRegistry {
-    LUSH(9527213,
-            TConfig.c.BIOME_CAVE_LUSHCLUSTER_SEPARATION,
-            (float) TConfig.c.BIOME_CAVE_LUSHCLUSTER_MAXPERTUB),
-    DRIPSTONE(
-            5902907,
+    DRIPSTONE(5902907,
             TConfig.c.BIOME_CAVE_DRIPSTONECLUSTER_SEPARATION,
-            (float) TConfig.c.BIOME_CAVE_DRIPSTONECLUSTER_MAXPERTUB
+            (float)TConfig.c.BIOME_CAVE_DRIPSTONECLUSTER_MAXPERTUB
     ),
-    CRYSTALLINE(
-            4427781,
+    CRYSTALLINE(4427781,
             TConfig.c.BIOME_CAVE_CRYSTALLINECLUSTER_SEPARATION,
-            (float) TConfig.c.BIOME_CAVE_CRYSTALLINECLUSTER_MAXPERTUB
+            (float)TConfig.c.BIOME_CAVE_CRYSTALLINECLUSTER_MAXPERTUB
     ),
+//    SULFUR(8927342,
+//            TConfig.c.BIOME_CAVE_SULFURCLUSTER_SEPARATION,
+//            (float)TConfig.c.BIOME_CAVE_SULFURCLUSTER_MAXPERTUB
+//    ),
     FLUID(79183628, 40, 0.2f),
     ;
 
@@ -35,26 +34,15 @@ public enum CaveClusterRegistry {
 
     public @NotNull AbstractCaveClusterPopulator getPopulator(@NotNull Random random) {
         return switch (this) {
-            case LUSH -> new LushClusterCavePopulator(
-                    GenUtils.randInt(
-                            random,
-                            TConfig.c.BIOME_CAVE_LUSHCLUSTER_MINSIZE,
-                            TConfig.c.BIOME_CAVE_LUSHCLUSTER_MAXSIZE
-                    ),
-                    false
-            );
-            case DRIPSTONE -> new DripstoneClusterCavePopulator(GenUtils.randInt(
-                    random,
+            case DRIPSTONE -> new DripstoneClusterCavePopulator(GenUtils.randInt(random,
                     TConfig.c.BIOME_CAVE_DRIPSTONECLUSTER_MINSIZE,
                     TConfig.c.BIOME_CAVE_DRIPSTONECLUSTER_MAXSIZE
             ));
-            case CRYSTALLINE -> new CrystallineClusterCavePopulator(GenUtils.randInt(
-                    random,
+            case CRYSTALLINE -> new CrystallineClusterCavePopulator(GenUtils.randInt(random,
                     TConfig.c.BIOME_CAVE_CRYSTALLINECLUSTER_MINSIZE,
                     TConfig.c.BIOME_CAVE_CRYSTALLINECLUSTER_MAXSIZE
             ));
-            case FLUID -> new CaveFluidClusterPopulator(GenUtils.randInt(
-                    random,
+            case FLUID -> new CaveFluidClusterPopulator(GenUtils.randInt(random,
                     TConfig.c.BIOME_CAVE_FLUIDCLUSTER_MINSIZE,
                     TConfig.c.BIOME_CAVE_FLUIDCLUSTER_MAXSIZE
             ));

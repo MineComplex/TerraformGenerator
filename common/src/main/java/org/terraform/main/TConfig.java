@@ -18,11 +18,16 @@ public class TConfig extends YamlFileInterface {
 
     // -=[HEIGHTMAP]=-
     @YamlKey("heightmap.core-frequency")
+    @YamlComment("A higher core frequency causes land height to vary in shorter distance.")
     public float HEIGHT_MAP_CORE_FREQUENCY = 0.003f;
     @YamlKey("heightmap.river-frequency")
+    @YamlComment("A higher frequency means thinner, but closer rivers.")
     public float HEIGHT_MAP_RIVER_FREQUENCY = 0.005f;
     @YamlKey("heightmap.land-height-amplifier")
     public float HEIGHT_MAP_LAND_HEIGHT_AMPLIFIER = 1f;
+    @YamlKey("heightmap.rivers-enabled")
+    @YamlComment("Set to false to disable rivers entirely.")
+    public boolean HEIGHT_MAP_RIVERS_ENABLED = true;
     @YamlKey("heightmap.sea-level")
     public int HEIGHT_MAP_SEA_LEVEL = 62;
     @YamlKey("heightmap.bedrock-height")
@@ -31,6 +36,7 @@ public class TConfig extends YamlFileInterface {
     public int HEIGHT_MAP_BEDROCK_DENSITY = 70;
     @YamlKey("heightmap.spawn-flat-radius")
     public int HEIGHT_MAP_SPAWN_FLAT_RADIUS = -1;
+
     // -=[CLIMATES]=-
     @YamlKey("climate.humid-vegetation.minimum-temperature")
     public double CLIMATE_HUMIDVEGETATION_MINTEMP = -0.35d;
@@ -40,6 +46,7 @@ public class TConfig extends YamlFileInterface {
     public double CLIMATE_HUMIDVEGETATION_MINMOIST = 0d;
     @YamlKey("climate.humid-vegetation.maximum-moisture")
     public double CLIMATE_HUMIDVEGETATION_MAXMOIST = 4d;
+
     @YamlKey("climate.dry-vegetation.minimum-temperature")
     public double CLIMATE_DRYVEGETATION_MINTEMP = -0.35d;
     @YamlKey("climate.dry-vegetation.maximum-temperature")
@@ -48,6 +55,7 @@ public class TConfig extends YamlFileInterface {
     public double CLIMATE_DRYVEGETATION_MINMOIST = -4d;
     @YamlKey("climate.dry-vegetation.maximum-moisture")
     public double CLIMATE_DRYVEGETATION_MAXMOIST = 0d;
+
     @YamlKey("climate.hot-barren.minimum-temperature")
     public double CLIMATE_HOTBARREN_MINTEMP = 1d;
     @YamlKey("climate.hot-barren.maximum-temperature")
@@ -56,6 +64,7 @@ public class TConfig extends YamlFileInterface {
     public double CLIMATE_HOTBARREN_MINMOIST = -4d;
     @YamlKey("climate.hot-barren.maximum-moisture")
     public double CLIMATE_HOTBARREN_MAXMOIST = -1d;
+
     @YamlKey("climate.cold.minimum-temperature")
     public double CLIMATE_COLD_MINTEMP = -4d;
     @YamlKey("climate.cold.maximum-temperature")
@@ -64,6 +73,7 @@ public class TConfig extends YamlFileInterface {
     public double CLIMATE_COLD_MINMOIST = -4d;
     @YamlKey("climate.cold.maximum-moisture")
     public double CLIMATE_COLD_MAXMOIST = 4d;
+
     @YamlKey("climate.snowy.minimum-temperature")
     public double CLIMATE_SNOWY_MINTEMP = -4d;
     @YamlKey("climate.snowy.maximum-temperature")
@@ -72,6 +82,7 @@ public class TConfig extends YamlFileInterface {
     public double CLIMATE_SNOWY_MINMOIST = -4d;
     @YamlKey("climate.snowy.maximum-moisture")
     public double CLIMATE_SNOWY_MAXMOIST = 4d;
+
     // -=[BIOMES]=-
     // Biome globals
     @YamlKey("biome.force.radius")
@@ -103,21 +114,27 @@ public class TConfig extends YamlFileInterface {
     public int BIOME_CAVE_DRIPSTONECLUSTER_MINSIZE = 5;
     @YamlKey("biome.cave.dripstone-cluster.maxsize")
     public int BIOME_CAVE_DRIPSTONECLUSTER_MAXSIZE = 11;
+
+    @YamlComment("Decrease the number to make lush caves smaller")
+    @YamlKey("biome.cave.lush-cluster.threshold")
+    public float BIOME_CAVE_LUSH_THRESHOLD = 0.68f;
+
+    @YamlComment("Decrease the number to make lush caves more spaced out AND bigger")
+    @YamlKey("biome.cave.lush-cluster.frequency")
+    public float BIOME_CAVE_LUSH_FREQUENCY = 0.010f;
+
+    @YamlComment("Decrease the number to make sulfur caves smaller")
     @YamlKey("biome.cave.sulfur-cluster.threshold")
     public float BIOME_CAVE_SULFUR_THRESHOLD = 0.8f;
+
+    @YamlComment("Decrease the number to make sulfur caves more spaced out AND bigger")
     @YamlKey("biome.cave.sulfur-cluster.frequency")
     public float BIOME_CAVE_SULFUR_FREQUENCY = 0.0015f;
+
     @YamlComment("Chance for a sulfur spring to spawn for each block. Bounded between 0 and 1")
     @YamlKey("biome.cave.sulfur-cluster.spring-chance")
     public double BIOME_CAVE_SULFUR_SPRING_CHANCE = 0.002f;
-    @YamlKey("biome.cave.lush-cluster.separation")
-    public int BIOME_CAVE_LUSHCLUSTER_SEPARATION = 64;
-    @YamlKey("biome.cave.lush-cluster.separation-maxpertub")
-    public double BIOME_CAVE_LUSHCLUSTER_MAXPERTUB = 0.35d;
-    @YamlKey("biome.cave.lush-cluster.minsize")
-    public int BIOME_CAVE_LUSHCLUSTER_MINSIZE = 10;
-    @YamlKey("biome.cave.lush-cluster.maxsize")
-    public int BIOME_CAVE_LUSHCLUSTER_MAXSIZE = 15;
+
     @YamlKey("biome.dithering")
     public double BIOME_DITHER = 0.04d;
     @YamlComment("Controls the size of each biome. Changing this also changes the distance between each structure. The default 7 means that each biome is 2^7=128 blocks wide.")
@@ -180,6 +197,8 @@ public class TConfig extends YamlFileInterface {
     public double BIOME_BADLANDS_PLATEAU_COMMONNESS = 0.18d;
     @YamlKey("biome.taiga.weight")
     public int BIOME_TAIGA_WEIGHT = 6;
+    @YamlKey("biome.dappledforest.weight")
+    public int BIOME_DAPPLEDFOREST_WEIGHT = 3;
     @YamlKey("biome.cherrygrove.weight")
     public int BIOME_CHERRYGROVE_WEIGHT = 3;
     @YamlKey("biome.scarletforest.weight")
@@ -207,23 +226,28 @@ public class TConfig extends YamlFileInterface {
     public double BIOME_OASIS_COMMONNESS = 1d;
     @YamlKey("biome.oasis.frequency")
     public float BIOME_OASIS_FREQUENCY = 0.012f;
+
+
     // -=[TREES]=-
     @YamlKey("trees.big-jungle-trees.enabled")
     public boolean TREES_JUNGLE_BIG_ENABLED = true;
     @YamlKey("trees.big-taiga-trees.enabled")
     public boolean TREES_TAIGA_BIG_ENABLED = true;
-    @YamlKey("trees.big-snowy-taiga-trees.enabled")
-    public boolean TREES_SNOWY_TAIGA_BIG_ENABLED = true;
     @YamlKey("trees.big-forest-trees.enabled")
     public boolean TREES_FOREST_BIG_ENABLED = true;
+    @YamlKey("trees.big-dappledforest-trees.enabled")
+    public boolean TREES_DAPPLEDFOREST_BIG_ENABLED = true;
     @YamlKey("trees.big-savanna-trees.enabled")
     public boolean TREES_SAVANNA_BIG_ENABLED = true;
     @YamlKey("trees.big-scarlet-trees.enabled")
     public boolean TREES_SCARLET_BIG_ENABLED = true;
+    @YamlKey("trees.big-snowy-taiga-trees.enabled")
+    public boolean TREES_SNOWY_TAIGA_BIG_ENABLED = true;
     @YamlKey("trees.big-dark-forest-trees.enabled")
     public boolean TREES_DARK_FOREST_BIG_ENABLED = true;
     @YamlKey("trees.big-pale-forest-trees.enabled")
     public boolean TREES_PALE_FOREST_BIG_ENABLED = true;
+
     // -=[MISC]=-
     // MISC_SMOOTH_DESIGN("misc.smooth-design",false),
     @YamlKey("misc.custom-small-trees-from-saplings.enabled")
@@ -238,6 +262,7 @@ public class TConfig extends YamlFileInterface {
     public double MISC_TREES_GRADIENT_LIMIT = 1.3d;
     @YamlKey("misc.use-slabs-to-smooth-terrain")
     public boolean MISC_USE_SLABS_TO_SMOOTH = true;
+
     // -=[DEVSTUFF]=-
     @YamlKey("dev-stuff.suppress-watchdog")
     public boolean DEVSTUFF_SUPPRESS_WATCHDOG = true;
@@ -253,12 +278,27 @@ public class TConfig extends YamlFileInterface {
     @YamlKey("dev-stuff.suppress-terraform-console-logs")
     public boolean DEVSTUFF_SUPPRESS_CONSOLE_LOGS = true;
 
+    @YamlComment("DOES NOT CHANGE WORLD HEIGHT. This is a dev option for overriding height limits to work with height-changing datapacks.")
+    @YamlKey("dev-stuff.override-min-height")
+    public int DEVSTUFF_OVERRIDE_MINHEIGHT = -64;
+    @YamlComment("DOES NOT CHANGE WORLD HEIGHT. This is a dev option for overriding height limits to work with height-changing datapacks.")
+    @YamlKey("dev-stuff.override-max-height")
+    public int DEVSTUFF_OVERRIDE_MAXHEIGHT = 320;
+
     @YamlComment("Bounded from 0.0 to 1.0. At 1.0, caves are completely blocked at a 200 block radius around each structure. Otherwise, caves gradually shrink towards large structures (even if they're on land). Does not apply to Strongholds.")
     @YamlKey("caves.structure-suppression-threshold")
     public float CAVES_STRUCTURE_SUPPRESSION_THRESHOLD = 0.5f;
     // CAVES_ALLOW_FLOODED_RAVINES("caves.allow-flooded-ravines",true),
 
+    @YamlComment("Controls the size of cave caverns underground. Make it even lower (more negative) to shrink caves and vice versa.")
+    @YamlKey("caves.noisecabves.cheesecave-threshold")
+    public float CAVES_NOISECAVES_CHEESECAVE_THRESHOLD = -0.3f;
+    @YamlComment("Controls the size of noise ravines. Make it even lower (more negative) to shrink noise ravines and vice versa.")
+    @YamlKey("caves.noisecabves.noiseravine-threshold")
+    public float CAVES_NOISECAVES_NOISERAVINE_THRESHOLD = -1.3f;
+
     // -=[STRUCTURES]=-
+    @YamlComment("This controls the distance between each large structure. By default, each biome section is 128 blocks wide")
     @YamlKey("structures.technical.megachunk.numbiomesections")
     public int STRUCTURES_MEGACHUNK_NUMBIOMESECTIONS = 4;
     @YamlKey("structures.technical.megachunk.max-structures-per-megachunk")
@@ -292,7 +332,7 @@ public class TConfig extends YamlFileInterface {
     @YamlKey("structures.pyramid.suspicious-sand-per-antechamber")
     public int STRUCTURES_PYRAMID_SUSPICIOUS_SAND_COUNT_PER_ANTECHAMBER = 4;
     @YamlKey("structures.villagehouse.spawnratio")
-    public double STRUCTURES_VILLAGEHOUSE_SPAWNRATIO = 0.8d;;
+    public double STRUCTURES_VILLAGEHOUSE_SPAWNRATIO = 0.8d;
     @YamlKey("structures.farmhouse.enabled")
     public boolean STRUCTURES_FARMHOUSE_ENABLED = true;
     @YamlKey("structures.animalfarm.enabled")
@@ -353,6 +393,12 @@ public class TConfig extends YamlFileInterface {
     public boolean STRUCTURES_RUINEDPORTAL_ENABLED = true;
     @YamlKey("structures.ruinedportal.count-per-megachunk")
     public int STRUCTURES_RUINEDPORTAL_COUNT_PER_MEGACHUNK = 1;
+    @YamlKey("structures.abandonedcamp.enabled")
+    public boolean STRUCTURES_ABANDONEDCAMP_ENABLED = true;
+    @YamlKey("structures.abandonedcamp.spawnratio")
+    public double STRUCTURES_ABANDONEDCAMP_SPAWNRATIO = 0.7d;
+    @YamlKey("structures.abandonedcamp.count-per-megachunk")
+    public int STRUCTURES_ABANDONEDCAMP_COUNT_PER_MEGACHUNK = 1;
     @YamlKey("structures.igloo.spawnratio")
     public double STRUCTURES_IGLOO_SPAWNRATIO = 0.8d;
     @YamlKey("structures.igloo.enabled")
@@ -417,6 +463,7 @@ public class TConfig extends YamlFileInterface {
     public int ORE_AMETHYST_MIN_DEPTH = 70;
     @YamlKey("ore.amethyst.min-depth-below-surface")
     public int ORE_AMETHYST_MIN_DEPTH_BELOW_SURFACE = 15;
+
     // COAL
     @YamlKey("ore.coal.chance-per-chunk")
     public int ORE_COAL_CHANCE = 50;
@@ -430,6 +477,7 @@ public class TConfig extends YamlFileInterface {
     public int ORE_COAL_MAXSPAWNHEIGHT = 256;
     @YamlKey("ore.coal.min-spawn-height")
     public int ORE_COAL_MINSPAWNHEIGHT = 5;
+
     // IRON
     @YamlKey("ore.iron.chance-per-chunk")
     public int ORE_IRON_CHANCE = 50;
@@ -443,6 +491,7 @@ public class TConfig extends YamlFileInterface {
     public int ORE_IRON_MAXSPAWNHEIGHT = 256;
     @YamlKey("ore.iron.min-spawn-height")
     public int ORE_IRON_MINSPAWNHEIGHT = -64;
+
     // GOLD
     @YamlKey("ore.gold.chance-per-chunk")
     public int ORE_GOLD_CHANCE = 40;
@@ -456,6 +505,7 @@ public class TConfig extends YamlFileInterface {
     public int ORE_GOLD_MAXSPAWNHEIGHT = 32;
     @YamlKey("ore.gold.min-spawn-height")
     public int ORE_GOLD_MINSPAWNHEIGHT = -64;
+
     // GOLD
     @YamlKey("ore.badlandsgold.chance-per-chunk")
     public int ORE_BADLANDSGOLD_CHANCE = 40;
@@ -469,6 +519,7 @@ public class TConfig extends YamlFileInterface {
     public int ORE_BADLANDSGOLD_MAXSPAWNHEIGHT = 256;
     @YamlKey("ore.badlandsgold.min-spawn-height")
     public int ORE_BADLANDSGOLD_MINSPAWNHEIGHT = -64;
+
     // DIAMOND
     @YamlKey("ore.diamond.chance-per-chunk")
     public int ORE_DIAMOND_CHANCE = 30;
@@ -482,6 +533,7 @@ public class TConfig extends YamlFileInterface {
     public int ORE_DIAMOND_MAXSPAWNHEIGHT = 16;
     @YamlKey("ore.diamond.min-spawn-height")
     public int ORE_DIAMOND_MINSPAWNHEIGHT = -64;
+
     // EMERALD
     @YamlKey("ore.emerald.chance-per-chunk")
     public int ORE_EMERALD_CHANCE = 30;
@@ -495,6 +547,7 @@ public class TConfig extends YamlFileInterface {
     public int ORE_EMERALD_MAXSPAWNHEIGHT = 256;
     @YamlKey("ore.emerald.min-spawn-height")
     public int ORE_EMERALD_MINSPAWNHEIGHT = -16;
+
     // LAPIS
     @YamlKey("ore.lapis.chance-per-chunk")
     public int ORE_LAPIS_CHANCE = 30;
@@ -508,6 +561,7 @@ public class TConfig extends YamlFileInterface {
     public int ORE_LAPIS_MAXSPAWNHEIGHT = 64;
     @YamlKey("ore.lapis.min-spawn-height")
     public int ORE_LAPIS_MINSPAWNHEIGHT = -64;
+
     // REDSTONE
     @YamlKey("ore.redstone.chance-per-chunk")
     public int ORE_REDSTONE_CHANCE = 40;
@@ -521,6 +575,7 @@ public class TConfig extends YamlFileInterface {
     public int ORE_REDSTONE_MAXSPAWNHEIGHT = 16;
     @YamlKey("ore.redstone.min-spawn-height")
     public int ORE_REDSTONE_MINSPAWNHEIGHT = -64;
+
     // COPPER
     @YamlKey("ore.copper.chance-per-chunk")
     public int ORE_COPPER_CHANCE = 40;
@@ -534,6 +589,7 @@ public class TConfig extends YamlFileInterface {
     public int ORE_COPPER_MAXSPAWNHEIGHT = 104;
     @YamlKey("ore.copper.min-spawn-height")
     public int ORE_COPPER_MINSPAWNHEIGHT = -16;
+
     // GRAVEL
     @YamlKey("ore.gravel.chance-per-chunk")
     public int ORE_GRAVEL_CHANCE = 75;
@@ -547,6 +603,7 @@ public class TConfig extends YamlFileInterface {
     public int ORE_GRAVEL_MAXSPAWNHEIGHT = 300;
     @YamlKey("ore.gravel.min-spawn-height")
     public int ORE_GRAVEL_MINSPAWNHEIGHT = -64;
+
     // ANDESITE
     @YamlKey("ore.andesite.chance-per-chunk")
     public int ORE_ANDESITE_CHANCE = 80;
@@ -560,6 +617,7 @@ public class TConfig extends YamlFileInterface {
     public int ORE_ANDESITE_MAXSPAWNHEIGHT = 300;
     @YamlKey("ore.andesite.min-spawn-height")
     public int ORE_ANDESITE_MINSPAWNHEIGHT = -64;
+
     // DIORITE
     @YamlKey("ore.diorite.chance-per-chunk")
     public int ORE_DIORITE_CHANCE = 80;
@@ -573,6 +631,7 @@ public class TConfig extends YamlFileInterface {
     public int ORE_DIORITE_MAXSPAWNHEIGHT = 300;
     @YamlKey("ore.diorite.min-spawn-height")
     public int ORE_DIORITE_MINSPAWNHEIGHT = -64;
+
     // GRANITE
     @YamlKey("ore.granite.chance-per-chunk")
     public int ORE_GRANITE_CHANCE = 80;
@@ -586,6 +645,7 @@ public class TConfig extends YamlFileInterface {
     public int ORE_GRANITE_MAXSPAWNHEIGHT = 300;
     @YamlKey("ore.granite.min-spawn-height")
     public int ORE_GRANITE_MINSPAWNHEIGHT = -64;
+
     // TUFF
     @YamlKey("ore.tuff.chance-per-chunk")
     public int ORE_TUFF_CHANCE = 40;
@@ -599,6 +659,7 @@ public class TConfig extends YamlFileInterface {
     public int ORE_TUFF_MAXSPAWNHEIGHT = 10;
     @YamlKey("ore.tuff.min-spawn-height")
     public int ORE_TUFF_MINSPAWNHEIGHT = -63;
+
     // DEEPSLATE
     @YamlKey("ore.deepslate.chance-per-chunk")
     public int ORE_DEEPSLATE_CHANCE = 80;
@@ -612,6 +673,7 @@ public class TConfig extends YamlFileInterface {
     public int ORE_DEEPSLATE_MAXSPAWNHEIGHT = 15;
     @YamlKey("ore.deepslate.min-spawn-height")
     public int ORE_DEEPSLATE_MINSPAWNHEIGHT = 0;
+
     @YamlComment("Turn this off to remove any cave carveouts, including their decorations.")
     @YamlKey("feature_toggle.caves")
     public boolean FEATURE_CAVES_ENABLED = true;
@@ -642,6 +704,7 @@ public class TConfig extends YamlFileInterface {
     @YamlComment("Toggle this for no more villages, ruined portals, ...")
     @YamlKey("feature_toggle.structures")
     public boolean FEATURE_STRUCTURES_ENABLED = true;
+
     // Extras
     @YamlComment("What language file should be used?")
     @YamlKey("lang")

@@ -1,8 +1,7 @@
-package org.terraform.v26_2;
+package org.terraform.v26_3;
 
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.MapCodec;
-import it.unimi.dsi.fastutil.ints.IntArraySet;
 import it.unimi.dsi.fastutil.objects.ObjectArraySet;
 import net.minecraft.*;
 import net.minecraft.core.*;
@@ -19,35 +18,37 @@ import net.minecraft.world.level.biome.*;
 import net.minecraft.world.level.chunk.*;
 import net.minecraft.world.level.levelgen.*;
 import net.minecraft.world.level.levelgen.blending.Blender;
+import net.minecraft.world.level.levelgen.densityfunction.SamplerContext;
 import net.minecraft.world.level.levelgen.feature.FeatureCountTracker;
 import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.StructureSet;
-import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 import net.minecraft.world.level.levelgen.structure.placement.StructurePlacement;
-import net.minecraft.world.level.levelgen.structure.structures.BuriedTreasureStructure;
-import net.minecraft.world.level.levelgen.structure.structures.JigsawStructure;
-import net.minecraft.world.level.levelgen.structure.structures.OceanMonumentStructure;
-import net.minecraft.world.level.levelgen.structure.structures.StrongholdStructure;
-import net.minecraft.world.level.levelgen.structure.structures.WoodlandMansionStructure;
+import net.minecraft.world.level.levelgen.structure.structures.*;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplateManager;
 import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 import org.terraform.coregen.bukkit.TerraformGenerator;
 import org.terraform.data.CoordPair;
 import org.terraform.data.MegaChunk;
 import org.terraform.data.TerraformWorld;
 import org.terraform.main.TerraformGeneratorPlugin;
-import org.terraform.main.TConfig;
+import org.terraform.main.config.TConfig;
 import org.terraform.structure.SingleMegaChunkStructurePopulator;
 import org.terraform.structure.StructureLocator;
 import org.terraform.structure.StructurePopulator;
 import org.terraform.structure.StructureRegistry;
 import org.terraform.structure.VanillaStructurePopulator;
+import org.terraform.structure.ancientcity.AncientCityPopulator;
+import org.terraform.structure.mineshaft.MineshaftPopulator;
 import org.terraform.structure.monument.MonumentPopulator;
 import org.terraform.structure.pillager.mansion.MansionPopulator;
+import org.terraform.structure.pyramid.PyramidPopulator;
 import org.terraform.structure.small.buriedtreasure.BuriedTreasurePopulator;
 import org.terraform.structure.stronghold.StrongholdPopulator;
 import org.terraform.structure.trialchamber.TrialChamberPopulator;
+import org.terraform.structure.warmoceanruins.WarmOceanRuinsPopulator;
 import org.terraform.utils.version.TerraformFieldHandler;
 import org.terraform.utils.version.TerraformMethodHandler;
 
@@ -66,7 +67,7 @@ public class NMSChunkGenerator extends ChunkGenerator {
     private final ArrayList<Identifier> possibleStructureSets = new ArrayList<>();
 
     private final @NotNull TerraformMethodHandler getWriteableArea;
-    private final @NotNull Supplier featuresPerStep;
+    private final @NotNull Supplier<List<FeatureSorter.StepFeatureData>> featuresPerStep;
 
     public NMSChunkGenerator(String worldName, long seed, @NotNull ChunkGenerator delegate)
             throws NoSuchMethodException, SecurityException, NoSuchFieldException, IllegalAccessException
@@ -79,12 +80,12 @@ public class NMSChunkGenerator extends ChunkGenerator {
 
         // Set the long term biome handler to this one. The normal behaving one
         // is initiated inside the cave carver
-        mapRendererBS = new MapRenderWorldProviderBiome(tw, delegate.getBiomeSource());
-        twBS = new TerraformWorldProviderBiome(TerraformWorld.get(worldName, seed), delegate.getBiomeSource());
+        mapRendererBS = new MapRenderWorldProviderBiome(tw);
+        twBS = new TerraformWorldProviderBiome(TerraformWorld.get(worldName, seed));
 
         //This is needed for addVanillaFeatures (c)
 
-        featuresPerStep = (Supplier) new TerraformFieldHandler(ChunkGenerator.class, "featuresPerStep", "c")
+        featuresPerStep = (Supplier<List<FeatureSorter.StepFeatureData>>) new TerraformFieldHandler(ChunkGenerator.class, "featuresPerStep", "c")
                 .field.get(delegate);
 
         //a
@@ -112,8 +113,8 @@ public class NMSChunkGenerator extends ChunkGenerator {
                 long.class,
                 ChunkAccess.class,
                 ChunkPos.class,
-                SectionPos.class,
-                ResourceKey.class);
+                ResourceKey.class,
+                Climate.Sampler.class);
     }
 
 
@@ -158,15 +159,42 @@ public class NMSChunkGenerator extends ChunkGenerator {
             }
             else if(!TConfig.c.DEVSTUFF_VANILLA_LOCATE_DISABLE)
             {
-                if (holder.value().getClass() == OceanMonumentStructure.class) { // Monument
+                if (holder.value().getClass() == OceanMonumentStructure.class) {
 
                     int[] coords = StructureLocator.locateSingleMegaChunkStructure(tw, pX, pZ, new MonumentPopulator(), TConfig.c.DEVSTUFF_VANILLA_LOCATE_TIMEOUTMILLIS);
 
                     return new Pair<>
                             (new BlockPos(coords[0], 50, coords[1]), holder);
-                } else if (holder.value().getClass() == WoodlandMansionStructure.class) { // Mansion
+                } else if (holder.value().getClass() == WoodlandMansionStructure.class) {
 
                     int[] coords = StructureLocator.locateSingleMegaChunkStructure(tw, pX, pZ, new MansionPopulator(), TConfig.c.DEVSTUFF_VANILLA_LOCATE_TIMEOUTMILLIS);
+
+                    return new Pair<>
+                            (new BlockPos(coords[0], 50, coords[1]), holder);
+                } else if (holder.value().getClass() == DesertPyramidStructure.class) {
+
+                    int[] coords = StructureLocator.locateSingleMegaChunkStructure(tw, pX, pZ, new PyramidPopulator(), TConfig.c.DEVSTUFF_VANILLA_LOCATE_TIMEOUTMILLIS);
+
+                    return new Pair<>
+                            (new BlockPos(coords[0], 50, coords[1]), holder);
+                }else if (holder.value().getClass() == MineshaftStructure.class) {
+
+                    int[] coords = StructureLocator.locateSingleMegaChunkStructure(tw, pX, pZ, new MineshaftPopulator(), TConfig.c.DEVSTUFF_VANILLA_LOCATE_TIMEOUTMILLIS);
+
+                    return new Pair<>
+                            (new BlockPos(coords[0], 50, coords[1]), holder);
+                }else if (holder.value().getClass() == OceanRuinStructure.class) {
+
+                    int[] coords = StructureLocator.locateSingleMegaChunkStructure(tw, pX, pZ, new WarmOceanRuinsPopulator(), TConfig.c.DEVSTUFF_VANILLA_LOCATE_TIMEOUTMILLIS);
+
+                    return new Pair<>
+                            (new BlockPos(coords[0], 50, coords[1]), holder);
+                }else if (holder.value() instanceof JigsawStructure
+                          //bm is structure
+                          && MinecraftServer.getServer().registryAccess().lookup(Registries.STRUCTURE).orElseThrow().getValue(Identifier.parse("ancient_city")) == holder.value()
+                ) {
+
+                    int[] coords = StructureLocator.locateSingleMegaChunkStructure(tw, pX, pZ, new AncientCityPopulator(), TConfig.c.DEVSTUFF_VANILLA_LOCATE_TIMEOUTMILLIS);
 
                     return new Pair<>
                             (new BlockPos(coords[0], 50, coords[1]), holder);
@@ -239,14 +267,14 @@ public class NMSChunkGenerator extends ChunkGenerator {
                         for (Structure structure : (List<Structure>) map.getOrDefault(l, Collections.emptyList())) {
                             seededrandom.setFeatureSeed(i, i1, l);
                             Supplier<String> supplier = () -> {
-                                Optional optional = iregistry.getResourceKey(structure).map(Object::toString);
+                                Optional<String> optional = iregistry.getResourceKey(structure).map(Object::toString);
                                 Objects.requireNonNull(structure);
                                 return (String)optional.orElseGet(structure::toString);
                             };
 
                             try {
                                 worldGenLevel.setCurrentlyGenerating(supplier);
-                                structuremanager.startsForStructure(sectionPos, structure).forEach((structurestart) -> {
+                                structuremanager.startsForStructure(sectionPos.x(),sectionPos.z(), structure).forEach((structurestart) -> {
                                     try{
                                         structurestart.placeInChunk(worldGenLevel, structuremanager, this,
                                                 seededrandom, (BoundingBox) getWriteableArea.method.invoke(null,chunkAccess),
@@ -332,18 +360,24 @@ public class NMSChunkGenerator extends ChunkGenerator {
 
 
     @Override // applyCarvers
-    public void applyCarvers(WorldGenRegion worldGenRegion, long seed,
-                  RandomState randomstate, BiomeManager biomemanager,
-                  StructureManager structuremanager, @NotNull ChunkAccess chunkAccess)
+    public @NonNull CompletableFuture<ChunkAccess> buildTerrain(
+            @NonNull ChunkAccess chunkAccess,
+            @NonNull Blender blender,
+            @NonNull RandomState randomState,
+            @NonNull StructureManager structuremanager,
+            @NonNull BiomeManager biomemanager,
+            @Nullable WorldGenRegion worldGenRegion,
+            @NonNull Set<Holder<Biome>> biome)
     {
         // POPULATES BIOMES. IMPORTANT
-        // (net.minecraft.world.level.biome.BiomeResolver,net.minecraft.world.level.biome.Climate$Sampler)
         // Use twBS as it is the biome provider that actually calculates biomes.
         // The other one only returns river/plains
-        chunkAccess.fillBiomesFromNoise(this.twBS, null); // This can be null as its passed into twBS
-
-        // Call delegate applyCarvers to apply spigot ChunkGenerator;
-        delegate.applyCarvers(worldGenRegion, seed, randomstate, biomemanager,structuremanager, chunkAccess);
+        return CompletableFuture.supplyAsync(()->{
+            chunkAccess.fillBiomesFromNoise(this.twBS.getOrCreateBiomeResolver());
+            // Call delegate to apply spigot ChunkGenerator;
+            return delegate.buildTerrain(chunkAccess,blender,randomState, structuremanager, biomemanager, worldGenRegion, biome)
+                    .join();
+        });
     }
 
     @Override // getGenDepth
@@ -361,6 +395,7 @@ public class NMSChunkGenerator extends ChunkGenerator {
         ChunkPos ChunkPos = ChunkAccess.getPos(); // getPos
         SectionPos sectionPos = SectionPos.bottomOf(ChunkAccess); // bottomOf
         RandomState randomstate = chunkgeneratorstructurestate.randomState(); // randomState
+        Climate.Sampler climateSampler = randomstate.createClimateSampler(SamplerContext.builder().enableCaches().build());
         MegaChunk mc = new MegaChunk(ChunkPos.x(), ChunkPos.z());
         SingleMegaChunkStructurePopulator[] spops = StructureRegistry.getLargeStructureForMegaChunk(tw, mc);
         CoordPair centerCoords = mc.getCenterBiomeSectionChunkCoords();
@@ -387,7 +422,7 @@ public class NMSChunkGenerator extends ChunkGenerator {
                     try{
                         Object retVal = tryGenerateStructure.method.invoke(this, list.getFirst(), structuremanager, registryAccess, randomstate,
                                 structuretemplatemanager, chunkgeneratorstructurestate.getLevelSeed(),
-                                ChunkAccess, ChunkPos, sectionPos, resourcekey);
+                                ChunkAccess, ChunkPos, resourcekey, climateSampler);
                         TerraformGeneratorPlugin.logger.info(ChunkPos.x() + "," + ChunkPos.z() + " will spawn a vanilla structure, with tryGenerateStructure == " + retVal);
                     }
                     catch(Throwable t)
@@ -405,24 +440,10 @@ public class NMSChunkGenerator extends ChunkGenerator {
         delegate.createReferences(gas, manager, ica);
     }
 
+
     @Override // getSpawnHeight
     public int getSpawnHeight(LevelHeightAccessor levelheightaccessor) {
         return 64;
-    }
-
-    @Override // fillFromNoise
-    public CompletableFuture<ChunkAccess> fillFromNoise(Blender blender,
-                                             RandomState randomstate, StructureManager structuremanager,
-                                             ChunkAccess ChunkAccess) {
-        return delegate.fillFromNoise(blender,
-                randomstate, structuremanager,
-                ChunkAccess);
-    }
-
-    @Override // buildSurface. Used to be buildBase
-    public void buildSurface(WorldGenRegion worldGenRegion, StructureManager structuremanager, RandomState randomstate, ChunkAccess ChunkAccess)
-    {
-        delegate.buildSurface(worldGenRegion, structuremanager, randomstate, ChunkAccess);
     }
 
 
@@ -462,19 +483,20 @@ public class NMSChunkGenerator extends ChunkGenerator {
         return this.getFirstOccupiedHeight(i, j, heightmap_type, levelheightaccessor, randomstate) - 1;
     }
 
+    @Override
+    public void addDebugScreenInfo(List<String> list,
+                                   RandomState randomState,
+                                   BlockPos blockPos,
+                                   SamplerContext samplerContext)
+    {
+
+    }
+
     @Override // getBaseHeight
     public int getBaseHeight(int i, int j, Heightmap.Types heightmap_type, LevelHeightAccessor levelheightaccessor, RandomState randomstate) {
         // return delegate.a(x, z, var2, var3);
         return 100;
         // return org.terraform.coregen.HeightMap.getBlockHeight(tw, x, z);
-    }
-
-    // private static boolean biomeDebug = false;
-
-
-    @Override // addDebugScreenInfo
-    public void addDebugScreenInfo(List<String> list, RandomState randomstate, BlockPos BlockPos) {
-
     }
 
 }

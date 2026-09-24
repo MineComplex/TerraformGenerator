@@ -1,4 +1,4 @@
-package org.terraform.v26_1;
+package org.terraform.v26_3;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -10,7 +10,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.EntitySpawnReason;
-import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.vehicle.minecart.MinecartChest;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.biome.Biome;
@@ -27,7 +27,7 @@ import org.bukkit.Material;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.craftbukkit.block.CraftBiome;
 import org.bukkit.craftbukkit.block.data.CraftBlockData;
-import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
+import org.bukkit.entity.EntityType;
 import org.jetbrains.annotations.NotNull;
 import org.terraform.biome.custombiomes.CustomBiomeType;
 import org.terraform.coregen.NaturalSpawnType;
@@ -145,7 +145,7 @@ public class PopulatorDataICA extends PopulatorDataICABiomeWriterAbstract {
     }
 
     @Override
-    public void addEntity(int rawX, int rawY, int rawZ, org.bukkit.entity.EntityType type) {
+    public void addEntity(float rawX, float rawY, float rawZ, EntityType type) {
         parent.addEntity(rawX, rawY, rawZ, type);
     }
 
@@ -246,7 +246,7 @@ public class PopulatorDataICA extends PopulatorDataICABiomeWriterAbstract {
     @Override
     public void spawnMinecartWithChest(int x, int y, int z, TerraLootTable table, @NotNull Random random) {
         //EntityType.CHEST_MINECART.create(generatoraccessseed.getLevel(), EntitySpawnReason.CHUNK_GENERATION);
-        MinecartChest minecartChest = (MinecartChest) EntityType.CHEST_MINECART.create(
+        MinecartChest minecartChest = (MinecartChest) EntityTypes.CHEST_MINECART.create(
                 ws.getMinecraftWorld(), EntitySpawnReason.CHUNK_GENERATION);
 
         //For whatever reason, the mineshaft code does a null check.

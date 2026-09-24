@@ -34,6 +34,6 @@ public class CheeseCave extends NoiseCaveAbstract {
                       +(TConfig.c.CAVES_STRUCTURE_SUPPRESSION_THRESHOLD) * (distSquared / 40000f);
         }
 
-        return surfaceFilter * cheese <= -0.3f;
+        return surfaceFilter * cheese <= TConfig.c.CAVES_NOISECAVES_CHEESECAVE_THRESHOLD;
     }
 }

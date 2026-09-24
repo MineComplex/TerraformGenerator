@@ -3,6 +3,7 @@ package org.terraform.utils;
 import org.bukkit.Material;
 import org.jetbrains.annotations.NotNull;
 import org.terraform.biome.BiomeBank;
+import org.terraform.utils.version.Version;
 
 import java.util.Objects;
 
@@ -20,12 +21,14 @@ public class WoodUtils {
             case SANDY_BEACH, JUNGLE, JUNGLE_RIVER, BAMBOO_FOREST -> wood.getWood(WoodSpecies.JUNGLE);
             case CHERRY_GROVE, DARK_FOREST, DARK_FOREST_RIVER, DARK_FOREST_BEACH ->
                     wood.getWood(WoodSpecies.DARK_OAK);
+            case PALE_FOREST -> wood.getWood(WoodSpecies.PALE_OAK);
+            case DAPPLED_FOREST, DAPPLEDFOREST_BEACH ->  wood.getWood(WoodSpecies.POPLAR);
             default -> wood.getWood(WoodSpecies.OAK);
         };
     }
 
     public enum WoodSpecies {
-        OAK, SPRUCE, BIRCH, JUNGLE, ACACIA, DARK_OAK
+        OAK, SPRUCE, BIRCH, JUNGLE, ACACIA, DARK_OAK, PALE_OAK, POPLAR
     }
 
     public enum WoodType {

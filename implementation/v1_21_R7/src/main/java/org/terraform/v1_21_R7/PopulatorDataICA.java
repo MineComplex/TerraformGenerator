@@ -14,8 +14,8 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.vehicle.minecart.MinecartChest;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.biome.Biome;
-import net.minecraft.world.level.block.entity.BrushableBlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BrushableBlockEntity;
 import net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkAccess;
@@ -38,7 +38,9 @@ import org.terraform.main.TerraformGeneratorPlugin;
 import org.terraform.utils.version.TerraformFieldHandler;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
+import java.util.Random;
 
 public class PopulatorDataICA extends PopulatorDataICABiomeWriterAbstract {
     private final PopulatorDataAbstract parent;
@@ -66,13 +68,13 @@ public class PopulatorDataICA extends PopulatorDataICABiomeWriterAbstract {
     public @NotNull Material getType(int x, int y, int z) {
         // return parent.getType(x, y, z);
         BlockState ibd = ica.getBlockState(new BlockPos(x, y, z)); // getState
-        return CraftBlockData.createData(ibd).getMaterial();
+        return CraftBlockData.fromData(ibd).getMaterial();
     }
 
     public BlockData getBlockData(int x, int y, int z) {
         // return parent.getBlockData(x, y, z);
         BlockState ibd = ica.getBlockState(new BlockPos(x, y, z)); // getState
-        return CraftBlockData.createData(ibd);
+        return CraftBlockData.fromData(ibd);
     }
 
     @Override
@@ -101,9 +103,7 @@ public class PopulatorDataICA extends PopulatorDataICABiomeWriterAbstract {
     @Override
     public void setBiome(int rawX, int rawY, int rawZ, org.bukkit.block.Biome biome) {
         // TerraformGeneratorPlugin.logger.info("Set " + rawX + "," + rawY + "," + rawZ + " to " + biome);
-        ica.setBiome(rawX >> 2, rawY >> 2, rawZ >> 2,
-                Objects.requireNonNull(CraftBiome.bukkitToMinecraftHolder(biome))
-        );
+        ica.setBiome(rawX >> 2, rawY >> 2, rawZ >> 2, CraftBiome.bukkitToMinecraftHolder(biome));
     }
 
     @Override
@@ -144,7 +144,7 @@ public class PopulatorDataICA extends PopulatorDataICABiomeWriterAbstract {
     }
 
     @Override
-    public void addEntity(int rawX, int rawY, int rawZ, org.bukkit.entity.EntityType type) {
+    public void addEntity(float rawX, float rawY, float rawZ, org.bukkit.entity.EntityType type) {
         parent.addEntity(rawX, rawY, rawZ, type);
     }
 

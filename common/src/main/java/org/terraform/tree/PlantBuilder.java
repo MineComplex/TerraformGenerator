@@ -7,12 +7,14 @@ import org.terraform.data.SimpleBlock;
 import org.terraform.main.TConfig;
 import org.terraform.utils.BlockUtils;
 import org.terraform.utils.GenUtils;
+import org.terraform.utils.version.V_26_3;
 
 import java.util.Random;
 
 import static org.terraform.utils.GenUtils.randChoice;
 
 public enum PlantBuilder {
+    TALL_GRASS(Material.TALL_GRASS, true),
     DEAD_BUSH(Material.DEAD_BUSH),
     BUSH(Material.BUSH),
     SHORT_DRY_GRASS(Material.SHORT_DRY_GRASS),
@@ -20,6 +22,7 @@ public enum PlantBuilder {
     BROWN_MUSHROOM(Material.BROWN_MUSHROOM),
     RED_MUSHROOM(Material.RED_MUSHROOM),
     GRASS(Material.SHORT_GRASS),
+    RED_SHRUB(V_26_3.RED_SHRUB),
     SUGAR_CANE(Material.SUGAR_CANE),
     FERN(Material.FERN),
     OAK_LEAVES(Material.OAK_LEAVES),
@@ -102,7 +105,11 @@ public enum PlantBuilder {
         randChoice(rand, options).build(data, x, y, z);
     }
 
-    public static void build(@NotNull PopulatorDataAbstract data, int x, int y, int z, @NotNull PlantBuilder... options)
+    public static void build(@NotNull PopulatorDataAbstract data,
+                             int x,
+                             int y,
+                             int z,
+                             @NotNull PlantBuilder... options)
     {
         randChoice(options).build(data, x, y, z);
     }
@@ -121,19 +128,17 @@ public enum PlantBuilder {
     }
 
     public int build(@NotNull Random rand,
-                     @NotNull PopulatorDataAbstract data,
-                     int x,
-                     int y,
-                     int z,
-                     int minHeight,
-                     int maxHeight)
+                      @NotNull PopulatorDataAbstract data,
+                      int x,
+                      int y,
+                      int z,
+                      int minHeight,
+                      int maxHeight)
     {
         if (!TConfig.arePlantsEnabled()) {
             return 0;
         }
-        if (data.getType(x, y, z) != Material.AIR) {
-            return 0;
-        }
+        if(data.getType(x,y,z) != Material.AIR) return 0;
         return BlockUtils.spawnPillar(rand, data, x, y, z, material, minHeight, maxHeight);
     }
 
@@ -148,9 +153,8 @@ public enum PlantBuilder {
 
         int height = GenUtils.randInt(rand, minHeight, maxHeight);
         for (int i = 0; i < height; i++) {
-            if (!block.getRelative(0, i, 0).lsetType(material)) {
+            if(!block.getRelative(0, i, 0).lsetType(material))
                 break;
-            }
         }
         return height;
     }
