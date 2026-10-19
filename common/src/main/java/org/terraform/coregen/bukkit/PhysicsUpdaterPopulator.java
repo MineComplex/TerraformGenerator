@@ -49,7 +49,7 @@ public class PhysicsUpdaterPopulator extends BlockPopulator implements Listener 
             flushChanges();
         }
     }
-    private static void flushChanges() {
+    public static void flushChanges() {
 
         if (cache.isEmpty()) {
             return;

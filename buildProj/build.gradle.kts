@@ -10,7 +10,7 @@ buildscript {
 
 dependencies {
     implementation(project(":common"))
-    implementation(project(":implementation:v1_21_R7"))
+    implementation(project(":implementation:v26_3"))
 /*    implementation(project(":implementation:v26_1"))
     implementation(project(":implementation:v26_2"))
     implementation(project(":implementation:v26_3"))*/
@@ -37,7 +37,7 @@ tasks.shadowJar {
             dependsOn(":implementation:Spigotv1_21_R7:remap")
         }*/
 	
-    doFirst {
+    run {
         val yamlFile = file("${rootProject.projectDir}/common/src/main/resources/plugin.yml")
         val yaml = org.yaml.snakeyaml.Yaml()
         val config = yaml.load<Map<String, Any>>(yamlFile.inputStream())

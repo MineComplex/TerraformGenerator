@@ -25,7 +25,7 @@ import org.terraform.coregen.populatordata.PopulatorDataPostGen;
 import org.terraform.coregen.populatordata.PopulatorDataSpigotAPI;
 import org.terraform.data.TerraformWorld;
 import org.terraform.main.TerraformGeneratorPlugin;
-import org.terraform.main.config.TConfig;
+import org.terraform.main.TConfig;
 import org.terraform.utils.GenUtils;
 import org.terraform.utils.version.TerraformFieldHandler;
 import org.terraform.utils.version.TerraformMethodHandler;

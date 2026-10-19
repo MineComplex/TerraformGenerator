@@ -48,7 +48,7 @@ public class NativeGeneratorPatcherPopulator extends BlockPopulator implements L
     }
 
     //Should only be called in a wrapped synchronized block
-    private static void flushChanges() {
+    public static void flushChanges() {
         if (cache.isEmpty())
             return;
 

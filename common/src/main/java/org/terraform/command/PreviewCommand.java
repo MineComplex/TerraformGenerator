@@ -3,6 +3,7 @@ package org.terraform.command;
 import org.bukkit.FeatureFlag;
 import org.bukkit.HeightMap;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
 import org.bukkit.block.data.BlockData;
@@ -25,6 +26,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.Locale;
 import java.util.Random;
 import java.util.Set;
 import java.util.Stack;
@@ -289,6 +291,12 @@ public class PreviewCommand extends TerraCommand {
         @Override
         public String getName() {
             return name;
+        }
+
+        @NotNull
+        @Override
+        public NamespacedKey getKey() {
+            return NamespacedKey.minecraft(name.toLowerCase(Locale.ROOT));
         }
 
         @NotNull

@@ -1,10 +1,7 @@
-plugins {
-  id("io.papermc.paperweight.userdev") version "2.0.0-beta.21"
-}
-
 dependencies {
     compileOnly(project(":common"))
-    paperweight.paperDevBundle("26.3.build.+")
+    compileOnly("cn.dreeam.leaf:leaf-api:26.3.local-SNAPSHOT")
+    compileOnly("cn.dreeam.leaf:leaf-server:26.3.local-SNAPSHOT")
 	
 	compileOnly("org.jetbrains:annotations:20.1.0")
     compileOnly("com.github.AvarionMC:yaml:1.1.7")

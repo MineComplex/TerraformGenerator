@@ -34,7 +34,7 @@ import org.terraform.data.CoordPair;
 import org.terraform.data.MegaChunk;
 import org.terraform.data.TerraformWorld;
 import org.terraform.main.TerraformGeneratorPlugin;
-import org.terraform.main.config.TConfig;
+import org.terraform.main.TConfig;
 import org.terraform.structure.SingleMegaChunkStructurePopulator;
 import org.terraform.structure.StructureLocator;
 import org.terraform.structure.StructurePopulator;
@@ -42,13 +42,11 @@ import org.terraform.structure.StructureRegistry;
 import org.terraform.structure.VanillaStructurePopulator;
 import org.terraform.structure.ancientcity.AncientCityPopulator;
 import org.terraform.structure.mineshaft.MineshaftPopulator;
-import org.terraform.structure.monument.MonumentPopulator;
 import org.terraform.structure.pillager.mansion.MansionPopulator;
 import org.terraform.structure.pyramid.PyramidPopulator;
 import org.terraform.structure.small.buriedtreasure.BuriedTreasurePopulator;
 import org.terraform.structure.stronghold.StrongholdPopulator;
 import org.terraform.structure.trialchamber.TrialChamberPopulator;
-import org.terraform.structure.warmoceanruins.WarmOceanRuinsPopulator;
 import org.terraform.utils.version.TerraformFieldHandler;
 import org.terraform.utils.version.TerraformMethodHandler;
 
@@ -154,66 +152,8 @@ public class NMSChunkGenerator extends ChunkGenerator {
             TerraformGeneratorPlugin.logger.info("Vanilla locate for " + feature.getClass().getName() + " invoked.");
 
             if (holder.value().getClass() == StrongholdStructure.class) { // stronghold
-                int[] coords = new StrongholdPopulator().getNearestFeature(tw, pX, pZ);
-                return new Pair<>(new BlockPos(coords[0], 20, coords[1]), holder);
-            }
-            else if(!TConfig.c.DEVSTUFF_VANILLA_LOCATE_DISABLE)
-            {
-                if (holder.value().getClass() == OceanMonumentStructure.class) {
-
-                    int[] coords = StructureLocator.locateSingleMegaChunkStructure(tw, pX, pZ, new MonumentPopulator(), TConfig.c.DEVSTUFF_VANILLA_LOCATE_TIMEOUTMILLIS);
-
-                    return new Pair<>
-                            (new BlockPos(coords[0], 50, coords[1]), holder);
-                } else if (holder.value().getClass() == WoodlandMansionStructure.class) {
-
-                    int[] coords = StructureLocator.locateSingleMegaChunkStructure(tw, pX, pZ, new MansionPopulator(), TConfig.c.DEVSTUFF_VANILLA_LOCATE_TIMEOUTMILLIS);
-
-                    return new Pair<>
-                            (new BlockPos(coords[0], 50, coords[1]), holder);
-                } else if (holder.value().getClass() == DesertPyramidStructure.class) {
-
-                    int[] coords = StructureLocator.locateSingleMegaChunkStructure(tw, pX, pZ, new PyramidPopulator(), TConfig.c.DEVSTUFF_VANILLA_LOCATE_TIMEOUTMILLIS);
-
-                    return new Pair<>
-                            (new BlockPos(coords[0], 50, coords[1]), holder);
-                }else if (holder.value().getClass() == MineshaftStructure.class) {
-
-                    int[] coords = StructureLocator.locateSingleMegaChunkStructure(tw, pX, pZ, new MineshaftPopulator(), TConfig.c.DEVSTUFF_VANILLA_LOCATE_TIMEOUTMILLIS);
-
-                    return new Pair<>
-                            (new BlockPos(coords[0], 50, coords[1]), holder);
-                }else if (holder.value().getClass() == OceanRuinStructure.class) {
-
-                    int[] coords = StructureLocator.locateSingleMegaChunkStructure(tw, pX, pZ, new WarmOceanRuinsPopulator(), TConfig.c.DEVSTUFF_VANILLA_LOCATE_TIMEOUTMILLIS);
-
-                    return new Pair<>
-                            (new BlockPos(coords[0], 50, coords[1]), holder);
-                }else if (holder.value() instanceof JigsawStructure
-                          //bm is structure
-                          && MinecraftServer.getServer().registryAccess().lookup(Registries.STRUCTURE).orElseThrow().getValue(Identifier.parse("ancient_city")) == holder.value()
-                ) {
-
-                    int[] coords = StructureLocator.locateSingleMegaChunkStructure(tw, pX, pZ, new AncientCityPopulator(), TConfig.c.DEVSTUFF_VANILLA_LOCATE_TIMEOUTMILLIS);
-
-                    return new Pair<>
-                            (new BlockPos(coords[0], 50, coords[1]), holder);
-                } else if (holder.value() instanceof JigsawStructure
-                           //bm is structure
-                        && MinecraftServer.getServer().registryAccess().lookup(Registries.STRUCTURE).orElseThrow().getValue(Identifier.parse("trial_chambers")) == holder.value()
-                ) { // Trial Chamber
-
-                    int[] coords = StructureLocator.locateSingleMegaChunkStructure(tw, pX, pZ, new TrialChamberPopulator(), TConfig.c.DEVSTUFF_VANILLA_LOCATE_TIMEOUTMILLIS);
-
-                    return new Pair<>
-                            (new BlockPos(coords[0], 50, coords[1]), holder);
-                } else if (holder.value().getClass() == BuriedTreasureStructure.class) {
-                    // Buried Treasure
-                    int[] coords = StructureLocator.locateMultiMegaChunkStructure(tw, new MegaChunk(pX, 0, pZ), new BuriedTreasurePopulator(), TConfig.c.DEVSTUFF_VANILLA_LOCATE_TIMEOUTMILLIS);
-                    if(coords == null) return null;
-                    return new Pair<>
-                            (new BlockPos(coords[0], 50, coords[1]), holder);
-                }
+                StructureLocator.StructureLocation coords = new StrongholdPopulator().getNearestFeature(tw, pX, pZ);
+                return new Pair<>(new BlockPos(coords.x(), 20, coords.z()), holder);
             }
         }
         return null;

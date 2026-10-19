@@ -11,7 +11,7 @@ import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 import org.terraform.coregen.HeightMap;
 import org.terraform.data.TerraformWorld;
-import org.terraform.main.config.TConfig;
+import org.terraform.main.TConfig;
 
 import java.util.Set;
 import java.util.stream.Stream;
